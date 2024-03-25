@@ -28,7 +28,7 @@
             <div
                 class="container b-container"
                 id="b-container"
-                :class="{ 'is-txl': !isSwitched, 'is-z': isSwitched }"
+                :class="{ 'is-txl': isSwitched, 'is-z': isSwitched }"
             >
                 <form class="form" id="b-form">
                     <h2 class="form_title title">登入账号</h2>
@@ -107,7 +107,7 @@
 <script setup>
 import { ref } from "vue";
 
-const isSwitched = ref(false);
+const isSwitched = ref(true);
 </script>
 
 <style scoped>
