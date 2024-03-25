@@ -117,47 +117,20 @@ const isSwitched = ref(false);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 12px;
+    font-size: 1.5vh;
     background-color: #ecf0f3;
     color: #a0a5a8;
 }
 
 .shell {
     position: relative;
-    width: 1000px;
-    min-width: 1000px;
-    min-height: 600px;
-    height: 600px;
-    padding: 25px;
+    width: 100vh;
+    height: 60vh;
+    padding: 4vh;
     background-color: #ecf0f3;
-    box-shadow: 10px 10px 10px #d1d9e6, -10px -10px 10px #f9f9f9;
-    border-radius: 12px;
+    box-shadow: 1vh 1vh 1vh #d1d9e6, -1vh -1vh 1vh #f9f9f9;
+    border-radius: 5vh;
     overflow: hidden;
-}
-
-/* 设置响应式 */
-@media (max-width: 1200px) {
-    .shell {
-        transform: scale(0.7);
-    }
-}
-
-@media (max-width: 1000px) {
-    .shell {
-        transform: scale(0.6);
-    }
-}
-
-@media (max-width: 800px) {
-    .shell {
-        transform: scale(0.5);
-    }
-}
-
-@media (max-width: 600px) {
-    .shell {
-        transform: scale(0.4);
-    }
 }
 
 .container {
@@ -166,9 +139,9 @@ const isSwitched = ref(false);
     align-items: center;
     position: absolute;
     top: 0;
-    width: 600px;
+    width: 53vh;
     height: 100%;
-    padding: 25px;
+    padding: 0 3vh;
     background-color: #ecf0f3;
     transition: 1.25s;
 }
@@ -182,91 +155,76 @@ const isSwitched = ref(false);
     height: 100%;
 }
 
-.iconfont {
-    margin: 0 5px;
-    border: rgba(0, 0, 0, 0.5) 2px solid;
-    border-radius: 50%;
-    font-size: 25px;
-    padding: 3px;
-    opacity: 0.5;
-    transition: 0.1s;
-}
-
-.iconfont:hover {
-    opacity: 1;
-    transition: 0.15s;
-    cursor: pointer;
-}
-
 .form_input {
-    width: 350px;
-    height: 40px;
-    margin: 4px 0;
-    padding-left: 25px;
-    font-size: 13px;
-    letter-spacing: 0.15px;
+    width: 30vh;
+    height: 3.5vh;
+    margin: 0.5vh 0;
+    padding-left: 2vh;
+    font-size: 1.3vh;
     border: none;
     outline: none;
     background-color: #ecf0f3;
     transition: 0.25s ease;
-    border-radius: 8px;
-    box-shadow: inset 2px 2px 4px #d1d9e6, inset -2px -2px 4px #f9f9f9;
+    border-radius: 1vh;
+    box-shadow: inset 0.2vh 0.2vh 0.4vh #d1d9e6,
+        inset -0.2vh -0.2vh 0.4vh #f9f9f9;
 }
 
 .form_input:focus {
-    box-shadow: inset 4px 4px 4px #d1d9e6, inset -4px -4px 4px #f9f9f9;
+    box-shadow: inset 0.4vh 0.4vh 0.4vh #d1d9e6,
+        inset -0.4vh -0.4vh 0.4vh #f9f9f9;
 }
 
 .form_span {
-    margin-top: 30px;
-    margin-bottom: 12px;
+    margin-top: 3vh;
+    margin-bottom: 1.2vh;
 }
 
 .form_link {
     color: #181818;
-    font-size: 15px;
-    margin-top: 25px;
-    border-bottom: 1px solid #a0a5a8;
+    font-size: 1.5vh;
+    margin-top: 2.5vh;
+    border-bottom: 0.1vh solid #a0a5a8;
     line-height: 2;
 }
 
 .title {
-    font-size: 34px;
+    font-size: 3.5vh;
     font-weight: 700;
     line-height: 3;
     color: #181818;
-    letter-spacing: 10px;
+    letter-spacing: 1vh;
 }
 
 .description {
-    font-size: 14px;
-    letter-spacing: 0.25px;
+    font-size: 1.4vh;
+    letter-spacing: 0.05vh;
     text-align: center;
     line-height: 1.6;
 }
 
 .button {
-    width: 180px;
-    height: 50px;
-    border-radius: 25px;
-    margin-top: 50px;
+    width: 18vh;
+    height: 5vh;
+    border-radius: 2.5vh;
+    margin-top: 3vh;
     font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 1.15px;
+    font-size: 1.4vh;
+    letter-spacing: 0.15vh;
     background-color: #4b70e2;
     color: #f9f9f9;
-    box-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #f9f9f9;
+    box-shadow: 0.8vh 0.8vh 1.6vh #d1d9e6, -0.8vh -0.8vh 1.6vh #f9f9f9;
     border: none;
     outline: none;
 }
 
 .a-container {
     z-index: 100;
-    left: calc(100% - 600px);
+    left: calc(100% - 60vh);
 }
 
 .b-container {
-    left: calc(100% - 600px);
+    left: calc(100% - 60vh);
     z-index: 0;
 }
 
@@ -278,22 +236,22 @@ const isSwitched = ref(false);
     top: 0;
     left: 0;
     height: 100%;
-    width: 400px;
-    padding: 50px;
+    width: 40vh;
+    padding: 5vh;
     z-index: 200;
     transition: 1.25s;
     background-color: #ecf0f3;
     overflow: hidden;
-    box-shadow: 4px 4px 10px #d1d9e6, -4px -4px 10px #d1d9e6;
+    box-shadow: 0.4vh 0.4vh 1vh #d1d9e6, -0.4vh -0.4vh 1vh #d1d9e6;
 }
 
 .switch_circle {
     position: absolute;
-    width: 500px;
-    height: 500px;
+    width: 50vh;
+    height: 50vh;
     border-radius: 50%;
     background-color: #ecf0f3;
-    box-shadow: inset 8px 8px 12px #b8bec7, inset -8px -8px 12px #fff;
+    box-shadow: inset 0.8vh 0.8vh 1.2vh #b8bec7, inset -0.8vh -0.8vh 1.2vh #fff;
     bottom: -60%;
     left: -60%;
     transition: 1.25s;
@@ -302,8 +260,8 @@ const isSwitched = ref(false);
 .switch_circle-t {
     top: -30%;
     left: 60%;
-    width: 300px;
-    height: 300px;
+    width: 30vh;
+    height: 30vh;
 }
 
 .switch_container {
@@ -312,8 +270,8 @@ const isSwitched = ref(false);
     align-items: center;
     flex-direction: column;
     position: absolute;
-    width: 400px;
-    padding: 50px 55px;
+    width: 40vh;
+    padding: 5vh 5.5vh;
     transition: 1.25s;
 }
 
@@ -323,14 +281,14 @@ const isSwitched = ref(false);
 
 .switch_button:hover,
 .submit:hover {
-    box-shadow: 6px 6px 10px #d1d9e6, -6px -6px 10px #f9f9f9;
+    box-shadow: 0.6vh 0.6vh 1vh #d1d9e6, -0.6vh -0.6vh 1vh #f9f9f9;
     transform: scale(0.985);
     transition: 0.25s;
 }
 
 .switch_button:active,
 .switch_button:focus {
-    box-shadow: 2px 2px 6px #d1d9e6, -2px -2px 6px #f9f9f9;
+    box-shadow: 0.2vh 0.2vh 0.6vh #d1d9e6, -0.2vh -0.2vh 0.6vh #f9f9f9;
     transform: scale(0.97);
     transition: 0.25s;
 }
@@ -357,42 +315,5 @@ const isSwitched = ref(false);
     opacity: 0;
     position: absolute;
     transition: 1.25s;
-}
-
-.is-gx {
-    animation: is-gx 1.25s;
-}
-
-@keyframes is-gx {
-    0%,
-    10%,
-    100% {
-        width: 400px;
-    }
-
-    30%,
-    50% {
-        width: 500px;
-    }
-}
-
-.iconfont {
-    font-family: "iconfont" !important;
-    font-size: 16px;
-    font-style: normal;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-.icon-weixin:before {
-    content: "\f0106";
-}
-
-.icon-QQ:before {
-    content: "\e882";
-}
-
-.icon-bilibili-line:before {
-    content: "\e66d";
 }
 </style>
