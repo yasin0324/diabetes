@@ -1,14 +1,13 @@
 <template>
     <div class="main">
         <div class="shell">
-            <div class="container a-container" id="a-container">
-                <form action="" method="" class="form" id="a-form">
+            <div
+                class="container a-container"
+                id="a-container"
+                :class="{ 'is-txl': isSwitched }"
+            >
+                <form class="form" id="a-form">
                     <h2 class="form_title title">创建账号</h2>
-                    <div class="form_icons">
-                        <i class="iconfont icon-QQ"></i>
-                        <i class="iconfont icon-weixin"></i>
-                        <i class="iconfont icon-bilibili-line"></i>
-                    </div>
                     <span class="form_span">选择注册方式活电子邮箱注册</span>
                     <input type="text" class="form_input" placeholder="Name" />
                     <input type="text" class="form_input" placeholder="Email" />
@@ -17,18 +16,22 @@
                         class="form_input"
                         placeholder="Password"
                     />
-                    <button class="form_button button submit">SIGN UP</button>
+                    <button
+                        class="form_button button submit"
+                        @click.prevent="isSwitched = false"
+                    >
+                        SIGN UP
+                    </button>
                 </form>
             </div>
 
-            <div class="container b-container" id="b-container">
-                <form action="" method="" class="form" id="b-form">
+            <div
+                class="container b-container"
+                id="b-container"
+                :class="{ 'is-txl': !isSwitched, 'is-z': isSwitched }"
+            >
+                <form class="form" id="b-form">
                     <h2 class="form_title title">登入账号</h2>
-                    <div class="form_icons">
-                        <i class="iconfont icon-QQ"></i>
-                        <i class="iconfont icon-weixin"></i>
-                        <i class="iconfont icon-bilibili-line"></i>
-                    </div>
                     <span class="form_span">选择登录方式活电子邮箱登录</span>
                     <input type="text" class="form_input" placeholder="Email" />
                     <input
@@ -37,33 +40,62 @@
                         placeholder="Password"
                     />
                     <a class="form_link">忘记密码？</a>
-                    <button class="form_button button submit">SIGN IN</button>
+                    <button
+                        class="form_button button submit"
+                        @click.prevent="isSwitched = true"
+                    >
+                        SIGN IN
+                    </button>
                 </form>
             </div>
 
-            <div class="switch" id="switch-cnt">
-                <div class="switch_circle"></div>
-                <div class="switch_circle switch_circle-t"></div>
-                <div class="switch_container" id="switch-c1">
+            <div
+                class="switch"
+                id="switch-cnt"
+                :class="{ 'is-txr': isSwitched }"
+            >
+                <div
+                    class="switch_circle"
+                    :class="{ 'is-txr': isSwitched }"
+                ></div>
+                <div
+                    class="switch_circle switch_circle-t"
+                    :class="{ 'is-txr': isSwitched }"
+                ></div>
+                <div
+                    class="switch_container"
+                    id="switch-c1"
+                    :class="{ 'is-hidden': isSwitched }"
+                >
                     <h2 class="switch_title title" style="letter-spacing: 0">
                         Welcome Back！
                     </h2>
                     <p class="switch_description description">
                         已有账号？去登录！
                     </p>
-                    <button class="switch_button button switch-btn">
+                    <button
+                        class="switch_button button switch-btn"
+                        @click="isSwitched = true"
+                    >
                         SIGN IN
                     </button>
                 </div>
 
-                <div class="switch_container is-hidden" id="switch-c2">
+                <div
+                    class="switch_container"
+                    id="switch-c2"
+                    :class="{ 'is-hidden': !isSwitched }"
+                >
                     <h2 class="switch_title title" style="letter-spacing: 0">
                         Hello Friend！
                     </h2>
                     <p class="switch_description description">
                         还没有账号？去注册！
                     </p>
-                    <button class="switch_button button switch-btn">
+                    <button
+                        class="switch_button button switch-btn"
+                        @click="isSwitched = false"
+                    >
                         SIGN UP
                     </button>
                 </div>
@@ -73,39 +105,9 @@
 </template>
 
 <script setup>
-let switchCtn = document.querySelector("#switch-cnt");
-let switchC1 = document.querySelector("#switch-c1");
-let switchC2 = document.querySelector("#switch-c2");
-let switchCircle = document.querySelectorAll(".switch_circle");
-let switchBtn = document.querySelectorAll(".switch-btn");
-let aContainer = document.querySelector("#a-container");
-let bContainer = document.querySelector("#b-container");
-let allButtons = document.querySelectorAll(".submit");
+import { ref } from "vue";
 
-let getButtons = (e) => e.preventDefault();
-let changeForm = (e) => {
-    switchCtn.classList.add("is-gx");
-    setTimeout(function () {
-        switchCtn.classList.remove("is-gx");
-    }, 1500);
-    switchCtn.classList.toggle("is-txr");
-    switchCircle[0].classList.toggle("is-txr");
-    switchCircle[1].classList.toggle("is-txr");
-
-    switchC1.classList.toggle("is-hidden");
-    switchC2.classList.toggle("is-hidden");
-    aContainer.classList.toggle("is-txl");
-    bContainer.classList.toggle("is-txl");
-    bContainer.classList.toggle("is-z");
-};
-
-let shell = (e) => {
-    for (var i = 0; i < allButtons.length; i++)
-        allButtons[i].addEventListener("click", getButtons);
-    for (var i = 0; i < switchBtn.length; i++)
-        switchBtn[i].addEventListener("click", changeForm);
-};
-window.addEventListener("load", shell);
+const isSwitched = ref(false);
 </script>
 
 <style scoped>
@@ -334,7 +336,7 @@ window.addEventListener("load", shell);
 }
 
 .is-txr {
-    left: calc(100% - 400px);
+    left: calc(100% - 50vh);
     transition: 1.25s;
     transform-origin: left;
 }
