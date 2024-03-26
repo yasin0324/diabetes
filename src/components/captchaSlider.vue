@@ -24,6 +24,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
+import service from "../util/request";
 
 let currentCaptchaId = ref(null);
 let currentCaptchaConfig = ref(null);
@@ -172,7 +173,7 @@ async function valid(captchaConfig) {
 
     await axios({
         method: "post",
-        url: "http://192.168.1.116:8080/login/username",
+        url: "http://124.221.104.7:12006/login/username",
         data: {
             userName: "",
             password: "",
@@ -250,9 +251,9 @@ async function valid(captchaConfig) {
 // }
 
 function refreshCaptcha() {
-    axios({
+    service({
         method: "get",
-        url: "http://192.168.177.206:8088/captcha/get",
+        url: "/captcha/get",
         params: { type: "SLIDER" },
     })
         .then((res) => {

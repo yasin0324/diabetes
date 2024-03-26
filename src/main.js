@@ -1,20 +1,23 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import ElementPlus from 'element-plus';
-import '/node_modules/element-plus/dist/index.css'
-import router from './router'
+import { createApp } from "vue";
+import App from "./App.vue";
+import ElementPlus from "element-plus";
+import "/node_modules/element-plus/dist/index.css";
+import router from "./router";
 
 // 滑块验证码组件
-import captchaSlider from './components/captchaSlider.vue'
+import captchaSlider from "./components/captchaSlider.vue";
+// 导航栏组件
+import headerNav from "./components/headerNav/index.vue";
 
 // vue实例
-const app = createApp(App)
+const app = createApp(App);
 
 // 全局注册
-app.use(ElementPlus)
-app.use(router)
+app.use(ElementPlus);
+app.use(router);
 
 // 全局组件挂载
-app.component('captcha-slider', captchaSlider)
+app.component("captcha-slider", captchaSlider);
+app.component("header-nav", headerNav);
 
-app.mount('#app')
+app.mount("#app");

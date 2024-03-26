@@ -112,6 +112,8 @@ const isSwitched = ref(true);
 
 <style scoped>
 .main {
+    /* background: url("../../common/image/1.png"); */
+    background-size: cover;
     width: 100%;
     height: 100vh;
     display: flex;
