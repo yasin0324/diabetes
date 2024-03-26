@@ -3,6 +3,7 @@
         <div class="header-nav">
             <div class="logoImg">
                 <img src="" alt="" />
+                <h1>name</h1>
             </div>
             <div class="time"></div>
             <el-menu
@@ -65,6 +66,8 @@ const toLogin = () => {
     align-items: center;
     .logoImg {
         height: 100%;
+        display: flex;
+        align-items: center;
         img {
             height: 100%;
             width: 10vh;
