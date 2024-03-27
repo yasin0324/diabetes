@@ -2,8 +2,8 @@
     <div>
         <div class="header-nav">
             <div class="logoImg">
-                <img src="" alt="" />
-                <h1>name</h1>
+                <img src="./logo/logo.png" alt="" />
+                <!-- <h1>name</h1> -->
             </div>
             <div class="time"></div>
             <el-menu
@@ -72,7 +72,7 @@ const toLogin = () => {
         align-items: center;
         img {
             height: 100%;
-            width: 10vh;
+            width: 15vh;
             margin-left: 1vh;
         }
     }
