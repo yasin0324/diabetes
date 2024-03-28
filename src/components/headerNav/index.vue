@@ -33,6 +33,7 @@
 </template>
 <script setup>
 import { useRouter } from "vue-router";
+import service from "../../util/request";
 
 const router = useRouter();
 

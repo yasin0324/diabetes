@@ -23,6 +23,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import { ElMessage } from "element-plus";
 import axios from "axios";
 import service from "../util/request";
 
@@ -53,7 +54,7 @@ function initConfig(
         sliderImageHeight,
         end,
     };
-    printLog("init", currentCaptchaConfig.value);
+    console.log("init", currentCaptchaConfig.value);
     return currentCaptchaConfig.value;
 }
 
@@ -121,7 +122,7 @@ function move(event) {
     currentCaptchaConfig.value.moveX = moveX;
     currentCaptchaConfig.value.movePercent = moveX / bgImageWidth;
     doMove(currentCaptchaConfig.value);
-    printLog("move", track);
+    console.log("move", track);
 }
 
 function up(event) {
@@ -148,14 +149,14 @@ function up(event) {
     };
 
     trackArr.push(track);
-    printLog("up", track);
+    console.log("up", track);
     valid(currentCaptchaConfig.value);
 }
 
 async function valid(captchaConfig) {
     let data = {
         id: currentCaptchaId.value,
-        captchaTrack: {
+        data: {
             bgImageWidth: captchaConfig.bgImageWidth,
             bgImageHeight: captchaConfig.bgImageHeight,
             sliderImageWidth: captchaConfig.sliderImageWidth,
@@ -166,89 +167,28 @@ async function valid(captchaConfig) {
         },
     };
 
-    // const res = await axios.post("http://localhost:8080/check", data);
-    // if (res.data) {
-    //   alert("验证成功!!!");
-    // }
-
-    await axios({
+    service({
+        url: "/captcha/check",
         method: "post",
-        url: "http://124.221.104.7:12006/login/username",
         data: {
-            userName: "",
-            password: "",
-            id: "",
-            data,
+            id: data.id,
+            data: data.data,
         },
     })
         .then((res) => {
             console.log(res);
+            if (res.data.code === 200) {
+                ElMessage.success("验证成功");
+            } else {
+                ElMessage.error(res.data.msg);
+            }
         })
         .catch((err) => {
             console.log(err);
         });
 
-    // await axios({
-    //   method: "post",
-    //   url: "http://localhost:8080/login/mobile",
-    //   data: {
-    //     mobile: "",
-    //     smsCode: "",
-    //     id: "",
-    //     data,
-    //   },
-    // })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-
-    // await axios({
-    //   method: "post",
-    //   url: "http://localhost:8080/register",
-    //   data: {
-    //     nickName: "",
-    //     mobile: "",
-    //     password: "",
-    //     smsCode: "",
-    //     name: "",
-    //     gender: "",
-    //     id: "",
-    //     data,
-    //   },
-    // })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-
     refreshCaptcha();
 }
-
-// async function refreshCaptcha() {
-//   const { data } = await axios.get("http://192.168.1.116:8088/captcha/get", {
-//     params: {
-//       type: "SLIDER",
-//     },
-//   });
-//   reset();
-//   currentCaptchaId.value = data.id;
-//   const bgImg = document.getElementById("bg-img");
-//   const sliderImg = document.getElementById("slider-img");
-//   bgImg.src = data.captcha.backgroundImage;
-//   sliderImg.src = data.captcha.sliderImage;
-//   initConfig(
-//     bgImg.offsetWidth,
-//     bgImg.offsetHeight,
-//     sliderImg.offsetWidth,
-//     sliderImg.offsetHeight,
-//     206
-//   );
-// }
 
 function refreshCaptcha() {
     service({
@@ -258,6 +198,19 @@ function refreshCaptcha() {
     })
         .then((res) => {
             console.log(res);
+            reset();
+            currentCaptchaId.value = res.data.id;
+            const bgImg = document.getElementById("bg-img");
+            const sliderImg = document.getElementById("slider-img");
+            bgImg.src = res.data.captcha.backgroundImage;
+            sliderImg.src = res.data.captcha.templateImage;
+            initConfig(
+                bgImg.offsetWidth,
+                bgImg.offsetHeight,
+                sliderImg.offsetWidth,
+                sliderImg.offsetHeight,
+                206
+            );
         })
         .catch((err) => {
             console.log(err);
@@ -295,7 +248,6 @@ onMounted(() => {
     sliderMoveBtn.addEventListener("touchstart", down);
     sliderCloseBtn.addEventListener("click", () => {});
     sliderRefreshBtn.addEventListener("click", refreshCaptcha);
-    refreshCaptcha();
 });
 
 onUnmounted(() => {
