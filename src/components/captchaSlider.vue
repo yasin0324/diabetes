@@ -24,8 +24,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { ElMessage } from "element-plus";
-import axios from "axios";
-import service from "../util/request";
+import { captchaGet, captchaCheck } from "../api/Captcha/index";
 
 let currentCaptchaId = ref(null);
 let currentCaptchaConfig = ref(null);
@@ -167,14 +166,7 @@ async function valid(captchaConfig) {
         },
     };
 
-    service({
-        url: "/captcha/check",
-        method: "post",
-        data: {
-            id: data.id,
-            data: data.data,
-        },
-    })
+    captchaCheck(data)
         .then((res) => {
             console.log(res);
             if (res.data.code === 200) {
@@ -191,11 +183,7 @@ async function valid(captchaConfig) {
 }
 
 function refreshCaptcha() {
-    service({
-        method: "get",
-        url: "/captcha/get",
-        params: { type: "SLIDER" },
-    })
+    captchaGet()
         .then((res) => {
             console.log(res);
             reset();
