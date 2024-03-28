@@ -90,13 +90,13 @@ const toLogin = () => {
         .el-menu-item {
             background-color: transparent; /* 使用 transparent 来使背景颜色透明 */
         }
-        .el-menu-item:hover{
-            color:#a3c57d;
+        .el-menu-item:hover {
+            color: #a3c57d;
             background-color: #e5f4e6;
             transition: color 0.3s ease, background-color 0.3s ease;
         }
     }
-    
+
     :deep(.el-menu-item) {
         font-size: 2vh;
         height: 100%;
@@ -115,7 +115,7 @@ const toLogin = () => {
         }
     }
     .login:hover {
-        color:#a3c57d;
+        color: #a3c57d;
         background-color: #e5f4e6;
         transition: color 0.3s ease, background-color 0.3s ease;
     }
