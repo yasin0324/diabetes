@@ -8,9 +8,8 @@
             >
                 <form class="form" id="a-form">
                     <h2 class="form_title title">创建账号</h2>
-                    <span class="form_span">选择注册方式活电子邮箱注册</span>
                     <input type="text" class="form_input" placeholder="Name" />
-                    <input type="text" class="form_input" placeholder="Email" />
+                    <input type="text" class="form_input" placeholder="mobile" />
                     <input
                         type="text"
                         class="form_input"
@@ -32,7 +31,6 @@
             >
                 <form class="form" id="b-form">
                     <h2 class="form_title title">登入账号</h2>
-                    <span class="form_span">选择登录方式活电子邮箱登录</span>
                     <input type="text" class="form_input" placeholder="Email" />
                     <input
                         type="text"
@@ -54,14 +52,6 @@
                 id="switch-cnt"
                 :class="{ 'is-txr': isSwitched }"
             >
-                <div
-                    class="switch_circle"
-                    :class="{ 'is-txr': isSwitched }"
-                ></div>
-                <div
-                    class="switch_circle switch_circle-t"
-                    :class="{ 'is-txr': isSwitched }"
-                ></div>
                 <div
                     class="switch_container"
                     id="switch-c1"
@@ -112,7 +102,7 @@ const isSwitched = ref(true);
 
 <style scoped>
 .main {
-    /* background: url("../../common/image/1.png"); */
+    background-image: url("../../common/image/login.png");
     background-size: cover;
     width: 100%;
     height: 100vh;
@@ -130,7 +120,7 @@ const isSwitched = ref(true);
     height: 60vh;
     padding: 4vh;
     background-color: #ecf0f3;
-    box-shadow: 1vh 1vh 1vh #d1d9e6, -1vh -1vh 1vh #f9f9f9;
+    box-shadow: 1vh 1vh 1vh #d1d9e6;
     border-radius: 5vh;
     overflow: hidden;
 }
@@ -177,11 +167,6 @@ const isSwitched = ref(true);
         inset -0.4vh -0.4vh 0.4vh #f9f9f9;
 }
 
-.form_span {
-    margin-top: 3vh;
-    margin-bottom: 1.2vh;
-}
-
 .form_link {
     color: #181818;
     font-size: 1.5vh;
@@ -202,7 +187,7 @@ const isSwitched = ref(true);
     font-size: 1.4vh;
     letter-spacing: 0.05vh;
     text-align: center;
-    line-height: 1.6;
+    line-height: 1.4vh;
 }
 
 .button {
@@ -215,7 +200,7 @@ const isSwitched = ref(true);
     letter-spacing: 0.15vh;
     background-color: #4b70e2;
     color: #f9f9f9;
-    box-shadow: 0.8vh 0.8vh 1.6vh #d1d9e6, -0.8vh -0.8vh 1.6vh #f9f9f9;
+    /* box-shadow: 0.8vh 0.8vh 1.6vh #d1d9e6, -0.8vh -0.8vh 1.6vh #f9f9f9; */
     border: none;
     outline: none;
 }
@@ -231,6 +216,8 @@ const isSwitched = ref(true);
 }
 
 .switch {
+    background-image: url("../../common/image/login1.jpg");
+    background-size: cover;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -247,23 +234,9 @@ const isSwitched = ref(true);
     box-shadow: 0.4vh 0.4vh 1vh #d1d9e6, -0.4vh -0.4vh 1vh #d1d9e6;
 }
 
-.switch_circle {
-    position: absolute;
-    width: 50vh;
-    height: 50vh;
-    border-radius: 50%;
-    background-color: #ecf0f3;
-    box-shadow: inset 0.8vh 0.8vh 1.2vh #b8bec7, inset -0.8vh -0.8vh 1.2vh #fff;
-    bottom: -60%;
-    left: -60%;
-    transition: 1.25s;
-}
-
-.switch_circle-t {
-    top: -30%;
-    left: 60%;
-    width: 30vh;
-    height: 30vh;
+.switch_description {
+    color: #ffffff;
+    margin-bottom: 0;
 }
 
 .switch_container {
