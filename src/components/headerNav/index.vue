@@ -107,6 +107,7 @@ const toLogin = () => {
         right: 5vh;
         display: flex;
         align-items: center;
+        justify-content: center;
         cursor: pointer;
         width: 5vw;
         height: 100%;
