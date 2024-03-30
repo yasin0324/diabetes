@@ -21,12 +21,12 @@ export function registerUser(data) {
 
 // 用户名密码登录
 export function loginUsername(data) {
-    return requestAnimationFrame({
+    return request({
         method: "post",
         url: "/login/username",
         data: {
-            userName: "data.userName",
-            password: "data.password",
+            userName: data.userName,
+            password: data.password,
         },
     });
 }

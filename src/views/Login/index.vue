@@ -318,7 +318,7 @@ function registerByMobile() {
 
 // 登录
 function loginBySelectedMethod() {
-    loginType === "userName"
+    loginType.value === "userName"
         ? loginUsername(login.value)
               .then((res) => {
                   console.log(res);
