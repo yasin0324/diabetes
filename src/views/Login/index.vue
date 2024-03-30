@@ -6,22 +6,42 @@
                 id="a-container"
                 :class="{ 'is-txl': isSwitched }"
             >
-                <form class="form" id="a-form">
-                    <h2 class="form_title title">创建账号</h2>
-                    <input type="text" class="form_input" placeholder="Name" />
-                    <input type="text" class="form_input" placeholder="mobile" />
-                    <input
-                        type="text"
-                        class="form_input"
-                        placeholder="Password"
-                    />
-                    <button
-                        class="form_button button submit"
-                        @click.prevent="isSwitched = false"
+                <el-form
+                    class="form"
+                    id="a-form"
+                    :model="register"
+                    :rules="registerRules"
+                >
+                    <el-form-item>
+                        <h2 class="form_title title">创建账号</h2></el-form-item
                     >
-                        SIGN UP
-                    </button>
-                </form>
+                    <el-form-item
+                        class="form_item"
+                        v-for="(input, index) in registerInputs"
+                        :key="index"
+                        :prop="input.prop"
+                        :id="input.prop"
+                    >
+                        <el-input
+                            :type="input.type"
+                            class="form_input"
+                            :placeholder="input.placeholder"
+                            v-model="register[input.prop]"
+                        >
+                        </el-input>
+                        <template v-if="input.prop === 'smsCode'" slot="append">
+                            <el-button @click="getSmsCode">获取</el-button>
+                        </template>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button
+                            class="form_button button submit"
+                            @click="registerByMobile"
+                        >
+                            注 册
+                        </el-button></el-form-item
+                    >
+                </el-form>
             </div>
 
             <div
@@ -29,22 +49,64 @@
                 id="b-container"
                 :class="{ 'is-txl': isSwitched, 'is-z': isSwitched }"
             >
-                <form class="form" id="b-form">
-                    <h2 class="form_title title">登入账号</h2>
-                    <input type="text" class="form_input" placeholder="Email" />
-                    <input
-                        type="text"
-                        class="form_input"
-                        placeholder="Password"
-                    />
-                    <a class="form_link">忘记密码？</a>
-                    <button
-                        class="form_button button submit"
-                        @click.prevent="isSwitched = true"
+                <el-form
+                    class="form"
+                    id="b-form"
+                    :model="login"
+                    :rules="loginRules"
+                >
+                    <el-form-item>
+                        <h2 class="form_title title">登录账号</h2></el-form-item
                     >
-                        SIGN IN
-                    </button>
-                </form>
+                    <el-form-item>
+                        <el-radio-group v-model="loginType">
+                            <el-radio label="userName">用户名登录</el-radio>
+                            <el-radio aria-label="mobile"
+                                >手机登录</el-radio
+                            ></el-radio-group
+                        >
+                    </el-form-item>
+                    <el-form-item
+                        v-if="loginType === 'userName'"
+                        class="form_item"
+                        v-for="(input, index) in loginUsernameInputs"
+                        :key="index"
+                        :prop="input.prop"
+                        :id="input.prop"
+                        ><el-input
+                            :type="input.type"
+                            class="form_input"
+                            :placeholder="input.placeholder"
+                            v-model="login[input.prop]"
+                        ></el-input
+                    ></el-form-item>
+                    <el-form-item
+                        v-else
+                        class="form_item"
+                        v-for="(input, index) in loginMobileInputs"
+                        :key="index + 2"
+                        :prop="input.prop"
+                        :id="input.prop"
+                    >
+                        <el-input
+                            :type="input.type"
+                            class="form_input"
+                            :placeholder="input.placeholder"
+                            v-model="login[input.prop]"
+                        ></el-input>
+                        <template v-if="input.prop === 'smsCode'" slot="append">
+                            <el-button @click="getSmsCode">获取</el-button>
+                        </template>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button
+                            class="form_button button submit"
+                            @click="loginBySelectedMethod"
+                        >
+                            登 录
+                        </el-button></el-form-item
+                    >
+                </el-form>
             </div>
 
             <div
@@ -67,7 +129,7 @@
                         class="switch_button button switch-btn"
                         @click="isSwitched = true"
                     >
-                        SIGN IN
+                        登 录
                     </button>
                 </div>
 
@@ -86,7 +148,7 @@
                         class="switch_button button switch-btn"
                         @click="isSwitched = false"
                     >
-                        SIGN UP
+                        注 册
                     </button>
                 </div>
             </div>
@@ -96,8 +158,182 @@
 
 <script setup>
 import { ref } from "vue";
+import {
+    smsCodeGet,
+    registerUser,
+    loginUsername,
+    loginMobile,
+} from "../../api/Login";
 
 const isSwitched = ref(true);
+
+// 注册表单信息
+const register = ref({
+    nickName: "",
+    mobile: "",
+    password: "",
+    smsCode: "",
+    name: "",
+    gender: "",
+});
+
+// 登录表单信息
+const login = ref({
+    userName: "",
+    password: "",
+    mobile: "",
+    smsCode: "",
+});
+
+const loginType = ref("userName");
+const confirmPassword = ref("");
+
+// 验证密码是否一致
+const validateConfirmPassword = (rule, value, callback) => {
+    if (value === register.value.password) {
+        callback();
+    } else {
+        callback(new Error("两次输入密码不一致"));
+    }
+};
+
+// 注册表单校验规则
+const registerRules = ref({
+    nickName: [{ required: true, message: "请输入昵称", trigger: "blur" }],
+    mobile: [
+        { required: true, message: "请输入手机号", trigger: "blur" },
+        {
+            pattern: /^1[3-9]\d{9}$/,
+            message: "手机号格式不正确",
+            trigger: "blur",
+        },
+    ],
+    smsCode: [{ required: true, message: "请输入验证码", trigger: "blur" }],
+    password: [
+        { required: true, message: "请输入密码", trigger: "blur" },
+        {
+            min: 6,
+            max: 12,
+            message: "密码长度在 6 到 12 个字符",
+            trigger: "blur",
+        },
+    ],
+    confirmPassword: [
+        { required: true, message: "请确认密码", trigger: "blur" },
+        { validator: validateConfirmPassword, trigger: "blur" },
+    ],
+});
+
+// 登录表单校验规则
+const loginRules = ref({
+    userName: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+    mobile: [
+        { required: true, message: "请输入手机号", trigger: "blur" },
+        {
+            pattern: /^1[3-9]\d{9}$/,
+            message: "手机号格式不正确",
+            trigger: "blur",
+        },
+    ],
+    password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+    smsCode: [{ required: true, message: "请输入验证码", trigger: "blur" }],
+});
+
+// 输入框数组
+const registerInputs = ref([
+    {
+        type: "text",
+        placeholder: "昵称",
+        prop: "nickName",
+    },
+    {
+        type: "text",
+        placeholder: "手机号",
+        prop: "mobile",
+    },
+    {
+        type: "text",
+        placeholder: "验证码",
+        prop: "smsCode",
+    },
+    {
+        type: "password",
+        placeholder: "密码",
+        prop: "password",
+    },
+    {
+        type: "password",
+        placeholder: "确认密码",
+        prop: "confirmPassword",
+    },
+]);
+
+const loginUsernameInputs = ref([
+    {
+        type: "text",
+        placeholder: "用户名",
+        prop: "userName",
+    },
+    {
+        type: "password",
+        placeholder: "密码",
+        prop: "password",
+    },
+]);
+
+const loginMobileInputs = ref([
+    {
+        type: "text",
+        placeholder: "手机号",
+        prop: "mobile",
+    },
+    {
+        type: "text",
+        placeholder: "验证码",
+        prop: "smsCode",
+    },
+]);
+
+// 获取手机验证码
+function getSmsCode() {
+    smsCodeGet(register.value.mobile)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
+// 注册
+function registerByMobile() {
+    registerUser(register.value)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
+// 登录
+function loginBySelectedMethod() {
+    loginType === "userName"
+        ? loginUsername(login.value)
+              .then((res) => {
+                  console.log(res);
+              })
+              .catch((err) => {
+                  console.log(err);
+              })
+        : loginMobile(login.value)
+              .then((res) => {
+                  console.log(res);
+              })
+              .catch((err) => {
+                  console.log(err);
+              });
+}
 </script>
 
 <style scoped>
@@ -146,8 +382,15 @@ const isSwitched = ref(true);
     width: 100%;
     height: 100%;
 }
+:deep(.el-form-item__content) {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
 
-.form_input {
+:deep(.el-input__wrapper) {
     width: 30vh;
     height: 3.5vh;
     margin: 0.5vh 0;
@@ -157,9 +400,28 @@ const isSwitched = ref(true);
     outline: none;
     background-color: #ecf0f3;
     transition: 0.25s ease;
-    border-radius: 1vh;
+    background-color: rgba(255, 255, 255, 0);
+    border: none;
     box-shadow: inset 0.2vh 0.2vh 0.4vh #d1d9e6,
         inset -0.2vh -0.2vh 0.4vh #f9f9f9;
+    border-radius: 1vh;
+}
+
+:deep(#smsCode) {
+    width: 33.5vh;
+    .el-button {
+        width: 16vh;
+        height: 3vh;
+        margin-left: 1vh;
+        border-radius: 2.5vh;
+        font-weight: 700;
+        font-size: 1.4vh;
+        letter-spacing: 0.15vh;
+        background-color: #4b70e2;
+        color: #f9f9f9;
+        border: none;
+        outline: none;
+    }
 }
 
 .form_input:focus {
@@ -200,7 +462,6 @@ const isSwitched = ref(true);
     letter-spacing: 0.15vh;
     background-color: #4b70e2;
     color: #f9f9f9;
-    /* box-shadow: 0.8vh 0.8vh 1.6vh #d1d9e6, -0.8vh -0.8vh 1.6vh #f9f9f9; */
     border: none;
     outline: none;
 }
