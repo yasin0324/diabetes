@@ -88,7 +88,8 @@ const toLogin = () => {
         width: 70vh;
         border-bottom: 0;
         .el-menu-item {
-            background-color: transparent; /* 使用 transparent 来使背景颜色透明 */
+            background-color: transparent; 
+            color: black;
         }
         .el-menu-item:hover {
             color: #a3c57d;
