@@ -14,7 +14,6 @@
                 <div class="slider-move-btn" id="slider-move-btn"></div>
             </div>
             <div class="bottom">
-                <div class="close-btn" id="slider-close-btn"></div>
                 <div class="refresh-btn" id="slider-refresh-btn"></div>
             </div>
         </div>
@@ -22,13 +21,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, defineEmits } from "vue";
 import { ElMessage } from "element-plus";
 import { captchaGet, captchaCheck } from "../api/Captcha/index";
 
 let currentCaptchaId = ref(null);
 let currentCaptchaConfig = ref(null);
 let isPrintLog = ref(false);
+
+const emit = defineEmits(["close-dialog"]);
 
 function printLog(...params) {
     if (isPrintLog.value) {
@@ -170,16 +171,15 @@ async function valid(captchaConfig) {
         .then((res) => {
             console.log(res);
             if (res.data.code === 200) {
-                ElMessage.success("验证成功");
+                emit("close-dialog");
             } else {
-                ElMessage.error(res.data.msg);
+                refreshCaptcha();
             }
         })
         .catch((err) => {
             console.log(err);
+            refreshCaptcha();
         });
-
-    refreshCaptcha();
 }
 
 function refreshCaptcha() {
@@ -229,13 +229,11 @@ function reset() {
 
 onMounted(() => {
     const sliderMoveBtn = document.getElementById("slider-move-btn");
-    const sliderCloseBtn = document.getElementById("slider-close-btn");
     const sliderRefreshBtn = document.getElementById("slider-refresh-btn");
-
     sliderMoveBtn.addEventListener("mousedown", down);
     sliderMoveBtn.addEventListener("touchstart", down);
-    sliderCloseBtn.addEventListener("click", () => {});
     sliderRefreshBtn.addEventListener("click", refreshCaptcha);
+    refreshCaptcha();
 });
 
 onUnmounted(() => {
@@ -296,15 +294,13 @@ onUnmounted(() => {
 }
 
 .refresh-btn,
-.close-btn,
 .slider-move-track,
 .slider-move-btn {
     background: url(https://static.geetest.com/static/ant/sprite.1.2.4.png)
         no-repeat;
 }
 
-.refresh-btn,
-.close-btn {
+.refresh-btn {
     display: inline-block;
 }
 
@@ -334,12 +330,11 @@ onUnmounted(() => {
 }
 
 .slider-move-btn:hover,
-.close-btn:hover,
 .refresh-btn:hover {
     cursor: pointer;
 }
 
-.bottom .close-btn {
+.bottom {
     width: 20px;
     height: 20px;
     background-position: 0 44.86874%;
