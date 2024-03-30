@@ -7,6 +7,7 @@
                 :class="{ 'is-txl': isSwitched }"
             >
                 <el-form
+                    ref="registerForm"
                     class="form"
                     id="a-form"
                     :model="register"
@@ -30,13 +31,19 @@
                         >
                         </el-input>
                         <template v-if="input.prop === 'smsCode'" slot="append">
-                            <el-button @click="getSmsCode">获取</el-button>
+                            <el-button
+                                :disabled="isCountingDown"
+                                @click="getSmsCode"
+                                >{{
+                                    isCountingDown ? `${countdown}s` : "获 取"
+                                }}</el-button
+                            >
                         </template>
                     </el-form-item>
                     <el-form-item>
                         <el-button
                             class="form_button button submit"
-                            @click="registerByMobile"
+                            @click="submitaForm"
                         >
                             注 册
                         </el-button></el-form-item
@@ -50,6 +57,7 @@
                 :class="{ 'is-txl': isSwitched, 'is-z': isSwitched }"
             >
                 <el-form
+                    ref="loginForm"
                     class="form"
                     id="b-form"
                     :model="login"
@@ -95,13 +103,19 @@
                             v-model="login[input.prop]"
                         ></el-input>
                         <template v-if="input.prop === 'smsCode'" slot="append">
-                            <el-button @click="getSmsCode">获取</el-button>
+                            <el-button
+                                :disabled="isCountingDown"
+                                @click="getSmsCode"
+                                >{{
+                                    isCountingDown ? `${countdown}s` : "获 取"
+                                }}</el-button
+                            >
                         </template>
                     </el-form-item>
                     <el-form-item>
                         <el-button
                             class="form_button button submit"
-                            @click="loginBySelectedMethod"
+                            @click="submitbForm"
                         >
                             登 录
                         </el-button></el-form-item
@@ -152,12 +166,22 @@
                     </button>
                 </div>
             </div>
+
+            <el-dialog
+                v-model="dialogVisible"
+                width="31vh"
+                class="captchaDialog"
+                show-close="false"
+            >
+                <captcha-slider @close-dialog="finishCheck"></captcha-slider>
+            </el-dialog>
         </div>
     </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import {
     smsCodeGet,
     registerUser,
@@ -165,7 +189,17 @@ import {
     loginMobile,
 } from "../../api/Login";
 
+const router = useRouter();
 const isSwitched = ref(true);
+
+// 滑块验证码对话框
+const dialogVisible = ref(false);
+
+// 滑块验证码校验成功
+function finishCheck() {
+    dialogVisible.value = false;
+    isSwitched.value ? loginBySelectedMethod() : registerByMobile();
+}
 
 // 注册表单信息
 const register = ref({
@@ -213,8 +247,8 @@ const registerRules = ref({
         { required: true, message: "请输入密码", trigger: "blur" },
         {
             min: 6,
-            max: 12,
-            message: "密码长度在 6 到 12 个字符",
+            max: 18,
+            message: "密码长度在 6 到 18 个字符",
             trigger: "blur",
         },
     ],
@@ -294,11 +328,26 @@ const loginMobileInputs = ref([
     },
 ]);
 
+// 获取验证码倒计时
+const countdown = ref(60);
+const isCountingDown = ref(false);
+
 // 获取手机验证码
 function getSmsCode() {
-    smsCodeGet(register.value.mobile)
+    smsCodeGet(isSwitched.value ? login.value : register.value)
         .then((res) => {
             console.log(res);
+            isCountingDown.value = true;
+            const timer = setInterval(() => {
+                if (countdown.value > 0) {
+                    countdown.value--;
+                    console.log(countdown.value);
+                } else {
+                    isCountingDown.value = false;
+                    countdown.value = 60;
+                    clearInterval(timer);
+                }
+            }, 1000);
         })
         .catch((err) => {
             console.log(err);
@@ -322,6 +371,7 @@ function loginBySelectedMethod() {
         ? loginUsername(login.value)
               .then((res) => {
                   console.log(res);
+                  router.push("/home");
               })
               .catch((err) => {
                   console.log(err);
@@ -329,11 +379,37 @@ function loginBySelectedMethod() {
         : loginMobile(login.value)
               .then((res) => {
                   console.log(res);
+                  router.push("/home");
               })
               .catch((err) => {
                   console.log(err);
               });
 }
+
+// 提交表单
+const registerForm = ref(null);
+const loginForm = ref(null);
+
+const submitaForm = async () => {
+    if (!registerForm.value) return;
+    await registerForm.value.validate((valid) => {
+        if (valid) {
+            dialogVisible.value = true;
+        } else {
+            return false;
+        }
+    });
+};
+const submitbForm = async () => {
+    if (!loginForm.value) return;
+    await loginForm.value.validate((valid) => {
+        if (valid) {
+            dialogVisible.value = true;
+        } else {
+            return false;
+        }
+    });
+};
 </script>
 
 <style scoped>
@@ -422,6 +498,16 @@ function loginBySelectedMethod() {
         border: none;
         outline: none;
     }
+}
+
+:deep(.el-dialog) {
+    background: transparent;
+    box-shadow: none;
+    margin: 25vh auto;
+}
+
+:deep(.el-dialog__header) {
+    padding-bottom: 0;
 }
 
 .form_input:focus {

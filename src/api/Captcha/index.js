@@ -13,7 +13,7 @@ export function captchaGet() {
 export function captchaCheck(data) {
     return request({
         method: "post",
-        url: "/capthca/check",
+        url: "/captcha/check",
         data: {
             id: data.id,
             data: data.data,
