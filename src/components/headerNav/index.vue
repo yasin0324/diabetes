@@ -23,27 +23,44 @@
                 </el-menu-item>
             </el-menu>
 
-            <div class="login" @click="toLogin">
-                <el-avatar
-                    v-if="userInfo.avatar"
-                    :size="50"
-                    :src="userInfo.avatar"
-                ></el-avatar>
-                <el-icon v-else="userInfo" :size="30">
+            <div class="login">
+                <el-dropdown v-if="token">
+                    <el-avatar
+                        class="userAvatar"
+                        :size="50"
+                        :src="userInfo.avatar"
+                    ></el-avatar>
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                            <el-dropdown-item
+                                @click="toUser"
+                                class="dropdownNickName"
+                                >{{ userInfo.nickName }}</el-dropdown-item
+                            >
+                            <el-dropdown-item @click="toUser"
+                                >个人中心</el-dropdown-item
+                            >
+                            <el-dropdown-item @click="toLogout"
+                                >退出登录</el-dropdown-item
+                            >
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
+                <el-icon v-else :size="30" @click="toLogin">
                     <UserFilled />
                 </el-icon>
-                <p class="login-text" v-if="!userInfo.nickName">登录</p>
+                <p class="login-text" v-if="!token" @click="toLogin">登录</p>
             </div>
         </div>
     </div>
 </template>
 <script setup>
 import { useRouter } from "vue-router";
-import { getInfo } from "../../api/Login";
+import { getInfo, logout } from "../../api/Login";
 import { onMounted, ref } from "vue";
 
 const router = useRouter();
-const num = ref(0);
+const token = localStorage.getItem("token");
 
 // 路由数组
 const routerArr = [
@@ -65,9 +82,20 @@ const toLogin = () => {
     router.push("/login");
 };
 
+// 登出
+const toLogout = () => {
+    logout()
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
 // 用户信息
 const userInfo = ref({});
-function getUserInfo() {
+const getUserInfo = () => {
     getInfo()
         .then((res) => {
             console.log(res.data);
@@ -76,7 +104,12 @@ function getUserInfo() {
         .catch((err) => {
             console.log(err);
         });
-}
+};
+
+// 跳转个人中心
+const toUser = () => {
+    router.push(`/user/${userInfo.value.userId}`);
+};
 
 onMounted(() => {
     getUserInfo();
@@ -133,11 +166,11 @@ onMounted(() => {
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
         width: 5vw;
         height: 100%;
         .login-text {
             font-size: 1.8vh;
+            cursor: pointer;
         }
     }
     .login:hover {
