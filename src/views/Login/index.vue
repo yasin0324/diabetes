@@ -424,7 +424,7 @@ const submitbForm = async () => {
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .main {
     background-image: url("../../common/image/login.png");
     background-size: cover;
