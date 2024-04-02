@@ -16,6 +16,40 @@ const routes = [
                 path: "/health",
                 name: "health",
                 component: () => import("../views/HealthRecord/index.vue"),
+                children: [
+                    {
+                        path: "blood",
+                        name: "blood",
+                        component: () =>
+                            import(
+                                "../views/HealthRecord/bloodRecord/index.vue"
+                            ),
+                    },
+                    {
+                        path: "diet",
+                        name: "diet",
+                        component: () =>
+                            import(
+                                "../views/HealthRecord/dietRecord/index.vue"
+                            ),
+                    },
+                    {
+                        path: "medicine",
+                        name: "medicine",
+                        component: () =>
+                            import(
+                                "../views/HealthRecord/medicineRecord/index.vue"
+                            ),
+                    },
+                    {
+                        path: "sports",
+                        name: "sports",
+                        component: () =>
+                            import(
+                                "../views/HealthRecord/sportsRecord/index.vue"
+                            ),
+                    },
+                ],
             },
             {
                 path: "tool",
@@ -31,6 +65,12 @@ const routes = [
                 path: "store",
                 name: "store",
                 component: () => import("../views/store/index.vue"),
+            },
+            // 动态路由，根据用户id显示不同的用户主页
+            {
+                path: "user/:id",
+                name: "user",
+                component: () => import("../views/User/index.vue"),
             },
         ],
     },

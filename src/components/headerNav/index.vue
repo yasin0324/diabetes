@@ -14,7 +14,6 @@
                 class="el-menu-demo"
             >
                 <el-menu-item
-                    @click="saveCurrentPage"
                     v-for="item in routerArr"
                     :key="item.name"
                     :index="'/' + item.path"
@@ -58,6 +57,8 @@
 import { useRouter } from "vue-router";
 import { getInfo, logout } from "../../api/Login";
 import { onMounted, ref } from "vue";
+import { getInfo } from "../../api/Login";
+import { onMounted, ref, computed } from "vue";
 
 const router = useRouter();
 const token = localStorage.getItem("token");
@@ -72,10 +73,7 @@ const routerArr = [
 ];
 
 //记录当前页面
-const defaultPage = sessionStorage.getItem("currentPage") || "/" + routerArr[0];
-const saveCurrentPage = (e) => {
-    sessionStorage.setItem("currentPage", e.index);
-};
+const defaultPage = computed(() => router.currentRoute.value.path);
 
 // 登录
 const toLogin = () => {
