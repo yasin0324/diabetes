@@ -3,7 +3,6 @@
         <div class="header-nav">
             <div class="logoImg">
                 <img src="./logo/logo.png" alt="" />
-                <!-- <h1>name</h1> -->
             </div>
             <div class="time"></div>
             <el-menu
@@ -56,8 +55,6 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { getInfo, logout } from "../../api/Login";
-import { onMounted, ref } from "vue";
-import { getInfo } from "../../api/Login";
 import { onMounted, ref, computed } from "vue";
 
 const router = useRouter();
