@@ -69,8 +69,10 @@ const routerArr = [
     { name: "商城", path: "store" },
 ];
 
-//记录当前页面
-const defaultPage = computed(() => router.currentRoute.value.path);
+//记录当前页面,只记录第一个/后面，第二个/前的路径
+const defaultPage = computed(() => {
+    return "/" + router.currentRoute.value.path.split("/")[1];
+});
 
 // 登录
 const toLogin = () => {

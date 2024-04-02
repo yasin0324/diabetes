@@ -9,10 +9,9 @@
                 active-text-color="#a3c57d"
             >
                 <el-menu-item
-                    @click="saveCurrentPage"
                     v-for="item in routerArr"
                     :key="item.name"
-                    :index="'/health/' + item.path"
+                    :index="item.path"
                     >{{ item.name }}</el-menu-item
                 >
             </el-menu>
@@ -21,23 +20,24 @@
 </template>
 <script setup>
 import { useRouter } from "vue-router";
+import { computed } from "vue";
 
 const router = useRouter();
 
 // 路由数组
 const routerArr = [
-    { name: "血糖记录", path: "blood" },
-    { name: "饮食记录", path: "diet" },
-    { name: "用药记录", path: "medicine" },
-    { name: "运动记录", path: "sports" },
+    { name: "血糖记录", path: "/health/blood" },
+    { name: "饮食记录", path: "/health/diet" },
+    { name: "用药记录", path: "/health/medicine" },
+    { name: "运动记录", path: "/health/sports" },
 ];
 
 // 记录当前页面
-const defaultPage =
-    sessionStorage.getItem("currentHealthPage") || "/health" + routerArr[0];
-const saveCurrentPage = (e) => {
-    sessionStorage.setItem("currentHealthPage", e.index);
-};
+const defaultPage = computed(() => {
+    return router.currentRoute.value.path === "/health"
+        ? "/health/blood"
+        : router.currentRoute.value.path;
+});
 </script>
 <style lang="less" scoped>
 .main {
