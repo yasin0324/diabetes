@@ -236,11 +236,12 @@ onMounted(() => {
     refreshCaptcha();
 });
 
-onUnmounted(() => {
-    const sliderMoveBtn = document.getElementById("slider-move-btn");
-    sliderMoveBtn.removeEventListener("mousedown", down);
-    sliderMoveBtn.removeEventListener("touchstart", down);
-});
+// onUnmounted(() => {
+//     const sliderMoveBtn = document.getElementById("slider-move-btn");
+//     sliderMoveBtn.removeEventListener("mousedown", down);
+//     sliderMoveBtn.removeEventListener("touchstart", down);
+// });
+
 </script>
 <style lang="less" scoped>
 .slider {

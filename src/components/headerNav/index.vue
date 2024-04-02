@@ -24,19 +24,26 @@
             </el-menu>
 
             <div class="login" @click="toLogin">
-                <el-icon :size="30">
+                <el-avatar
+                    v-if="userInfo.avatar"
+                    :size="50"
+                    :src="userInfo.avatar"
+                ></el-avatar>
+                <el-icon v-else="userInfo" :size="30">
                     <UserFilled />
                 </el-icon>
-                <p class="login-text">登录</p>
+                <p class="login-text" v-if="!userInfo.nickName">登录</p>
             </div>
         </div>
     </div>
 </template>
 <script setup>
 import { useRouter } from "vue-router";
-import service from "../../util/request";
+import { getInfo } from "../../api/Login";
+import { onMounted, ref } from "vue";
 
 const router = useRouter();
+const num = ref(0);
 
 // 路由数组
 const routerArr = [
@@ -57,6 +64,23 @@ const saveCurrentPage = (e) => {
 const toLogin = () => {
     router.push("/login");
 };
+
+// 用户信息
+const userInfo = ref({});
+function getUserInfo() {
+    getInfo()
+        .then((res) => {
+            console.log(res.data);
+            userInfo.value = res.data;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
+onMounted(() => {
+    getUserInfo();
+});
 </script>
 
 <style lang="less" scoped>
@@ -88,7 +112,7 @@ const toLogin = () => {
         width: 70vh;
         border-bottom: 0;
         .el-menu-item {
-            background-color: transparent; 
+            background-color: transparent;
             color: black;
         }
         .el-menu-item:hover {
