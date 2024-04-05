@@ -42,11 +42,11 @@ const defaultPage = computed(() => {
 <style lang="less" scoped>
 .main {
     width: 100%;
-    height: 30vh;
+    height: 20vh;
     background-image: url("../../common/image/cloud-sky-blue.jpg");
     background-size: cover;
     .headerMenu {
-        padding-top: 17vh;
+        padding-top: 7vh;
         :deep(.el-menu) {
             margin: 0 auto;
             display: flex;
