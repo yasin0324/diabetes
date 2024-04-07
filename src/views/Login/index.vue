@@ -30,6 +30,7 @@
                             v-model="register[input.prop]"
                         >
                         </el-input>
+                        <!-- eslint-disable -->
                         <template v-if="input.prop === 'smsCode'" slot="append">
                             <el-button
                                 :disabled="isCountingDown"
@@ -497,6 +498,7 @@ const submitbForm = async () => {
 
 :deep(#smsCode) {
     width: 33.5vh;
+    /*!eslint-disable*/
     .el-button {
         width: 16vh;
         height: 3vh;

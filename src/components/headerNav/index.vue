@@ -54,6 +54,7 @@
 </template>
 <script setup>
 import { useRouter } from "vue-router";
+import service from "../../util/request";
 import { getInfo, logout } from "../../api/Login";
 import { onMounted, ref, computed } from "vue";
 
@@ -69,7 +70,6 @@ const routerArr = [
     { name: "商城", path: "store" },
 ];
 
-//记录当前页面,只记录第一个/后面，第二个/前的路径
 const defaultPage = computed(() => {
     return "/" + router.currentRoute.value.path.split("/")[1];
 });

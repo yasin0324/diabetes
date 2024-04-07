@@ -8,12 +8,12 @@ const routes = [
         component: () => import("../views/index.vue"),
         children: [
             {
-                path: "/home",
+                path: "home",
                 name: "home",
                 component: () => import("../views/Home/index.vue"),
             },
             {
-                path: "/health",
+                path: "health",
                 name: "health",
                 redirect: "/health/blood",
                 component: () => import("../views/HealthRecord/index.vue"),
