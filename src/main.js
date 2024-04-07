@@ -9,6 +9,8 @@ import elementIcons from "./components/SvgIcon/svgicon.js";
 import captchaSlider from "./components/captchaSlider.vue";
 // 导航栏组件
 import headerNav from "./components/headerNav/index.vue";
+// 健康记录导航栏组件
+import healthHeader from "./components/healthRecord/healthHeader.vue";
 
 // vue实例
 const app = createApp(App);
@@ -21,5 +23,6 @@ app.use(elementIcons);
 // 全局组件挂载
 app.component("captcha-slider", captchaSlider);
 app.component("header-nav", headerNav);
+app.component("health-header", healthHeader);
 
 app.mount("#app");

@@ -34,11 +34,11 @@ service.interceptors.response.use(
         res.data.data.token && setToken(res.data.data.token);
         //若未设置状态码则默认为成功状态
         const code = res.data.code || 200;
-        ElMessage({
-            message: res.data.msg,
-            type: "success",
-            duration: 3 * 1000,
-        });
+        // ElMessage({
+        //     message: res.data.msg,
+        //     type: "success",
+        //     duration: 3 * 1000,
+        // });
         //登录过期
         if (code == 401) {
             return res.data;

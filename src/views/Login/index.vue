@@ -142,7 +142,7 @@
                     </p>
                     <button
                         class="switch_button button switch-btn"
-                        @click="isSwitched = true"
+                        @click="switchLR"
                     >
                         登 录
                     </button>
@@ -161,7 +161,7 @@
                     </p>
                     <button
                         class="switch_button button switch-btn"
-                        @click="isSwitched = false"
+                        @click="switchLR"
                     >
                         注 册
                     </button>
@@ -193,15 +193,6 @@ import {
 const router = useRouter();
 const isSwitched = ref(true);
 
-// 滑块验证码对话框
-const dialogVisible = ref(false);
-
-// 滑块验证码校验成功
-function finishCheck() {
-    dialogVisible.value = false;
-    isSwitched.value ? loginBySelectedMethod() : registerByMobile();
-}
-
 // 注册表单信息
 const register = ref({
     nickName: "",
@@ -219,6 +210,26 @@ const login = ref({
     mobile: "",
     smsCode: "",
 });
+
+// 登录注册切换
+function switchLR() {
+    isSwitched.value = !isSwitched.value;
+    resetForm();
+}
+
+// 表单重置
+function resetForm() {
+    (register.value = {}), (login.value = {});
+}
+
+// 滑块验证码对话框
+const dialogVisible = ref(false);
+
+// 滑块验证码校验成功
+function finishCheck() {
+    dialogVisible.value = false;
+    isSwitched.value ? loginBySelectedMethod() : registerByMobile();
+}
 
 const loginType = ref("userName");
 const confirmPassword = ref("");
@@ -359,6 +370,7 @@ function getSmsCode() {
 function registerByMobile() {
     registerUser(register.value)
         .then((res) => {
+            isSwitched.value = true;
             console.log(res);
         })
         .catch((err) => {
@@ -380,7 +392,7 @@ function loginBySelectedMethod() {
         : loginMobile(login.value)
               .then((res) => {
                   console.log(res);
-                  router.push("/home");
+                  router.replace("/home");
               })
               .catch((err) => {
                   console.log(err);

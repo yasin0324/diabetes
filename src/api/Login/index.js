@@ -65,3 +65,14 @@ export function logout() {
         },
     });
 }
+
+// 获取用户信息
+export function getInfo() {
+    return request({
+        method: "get",
+        url: "/customer/list",
+        headers: {
+            token: getToken(),
+        },
+    });
+}

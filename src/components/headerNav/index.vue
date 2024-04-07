@@ -3,7 +3,6 @@
         <div class="header-nav">
             <div class="logoImg">
                 <img src="./logo/logo.png" alt="" />
-                <!-- <h1>name</h1> -->
             </div>
             <div class="time"></div>
             <el-menu
@@ -22,11 +21,33 @@
                 </el-menu-item>
             </el-menu>
 
-            <div class="login" @click="toLogin">
-                <el-icon :size="30">
+            <div class="login">
+                <el-dropdown v-if="token">
+                    <el-avatar
+                        class="userAvatar"
+                        :size="50"
+                        :src="userInfo.avatar"
+                    ></el-avatar>
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                            <el-dropdown-item
+                                @click="toUser"
+                                class="dropdownNickName"
+                                >{{ userInfo.nickName }}</el-dropdown-item
+                            >
+                            <el-dropdown-item @click="toUser"
+                                >个人中心</el-dropdown-item
+                            >
+                            <el-dropdown-item @click="toLogout"
+                                >退出登录</el-dropdown-item
+                            >
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
+                <el-icon v-else :size="30" @click="toLogin">
                     <UserFilled />
                 </el-icon>
-                <p class="login-text">登录</p>
+                <p class="login-text" v-if="!token" @click="toLogin">登录</p>
             </div>
         </div>
     </div>
@@ -34,9 +55,11 @@
 <script setup>
 import { useRouter } from "vue-router";
 import service from "../../util/request";
-import {computed} from "vue"
+import { getInfo, logout } from "../../api/Login";
+import { onMounted, ref, computed } from "vue";
 
 const router = useRouter();
+const token = localStorage.getItem("token");
 
 // 路由数组
 const routerArr = [
@@ -47,13 +70,47 @@ const routerArr = [
     { name: "商城", path: "store" },
 ];
 
-//记录当前页面
-const defaultPage = computed(() => router.currentRoute.value.path);
+const defaultPage = computed(() => {
+    return "/" + router.currentRoute.value.path.split("/")[1];
+});
 
 // 登录
 const toLogin = () => {
     router.push("/login");
 };
+
+// 登出
+const toLogout = () => {
+    logout()
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
+// 用户信息
+const userInfo = ref({});
+const getUserInfo = () => {
+    getInfo()
+        .then((res) => {
+            console.log(res.data);
+            userInfo.value = res.data;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
+// 跳转个人中心
+const toUser = () => {
+    router.push(`/user/${userInfo.value.userId}`);
+};
+
+onMounted(() => {
+    getUserInfo();
+});
 </script>
 
 <style lang="less" scoped>
@@ -85,7 +142,7 @@ const toLogin = () => {
         width: 70vh;
         border-bottom: 0;
         .el-menu-item {
-            background-color: transparent; 
+            background-color: transparent;
             color: black;
         }
         .el-menu-item:hover {
@@ -106,11 +163,11 @@ const toLogin = () => {
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
         width: 5vw;
         height: 100%;
         .login-text {
             font-size: 1.8vh;
+            cursor: pointer;
         }
     }
     .login:hover {
