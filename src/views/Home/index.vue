@@ -1,21 +1,5 @@
 <template>
     <div ref="maxbox" class="box">
-        <!-- <div class="headimg">
-            <el-row>
-                <el-col :span="12" class="head1">
-                    <div class="image-container">
-                        <img ref="image1" src="./img/head1.png" alt="">
-                        <div ref="text1" class="overlay-text">合理控制饮食</div>
-                    </div>
-                </el-col>
-                <el-col :span="12" class="head2">
-                    <div class="image-container">
-                        <img ref="image2" src="./img/head2.png" alt="">
-                        <div ref="text2" class="overlay-text">健康享受生活</div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div> -->
         <div class="headimg">
             <el-row>
                 <el-col :span="24" class="head1">
@@ -52,9 +36,8 @@
         <div class="articleNews">
             <div class="moreNews">
                 <h2>热门信息文章</h2>
-                <div>
-
-                    <span>更多文章信息</span>
+                <div >
+                    <span @click="toUrlnews">更多文章信息</span>
                 </div>
                 
             </div>
@@ -62,33 +45,55 @@
                 <!-- <li v-for="(item, index) in articleNews" :key="index">
                     {{ item }}
                 </li> -->
-                <li @click="toUrlnews">
-                    <img src="./img/head2.png" alt="">
-                    <h4>糖尿病如何控制？</h4>
-                    <span>根据王涵详细研究，我们发现……………………</span>
-                </li>
-                <li>
-                    <img src="./img/head2.png" alt="">
-                    <h4>糖尿病如何控制？</h4>
-                    <span>根据王涵详细研究，我们发现……………………</span>
-                </li>
-                <li>
-                    <img src="./img/head2.png" alt="">
-                    <h4>糖尿病如何控制？</h4>
-                    <span>根据王涵详细研究，我们发现……………………</span>
-                </li>
-                <li>
-                    <img src="./img/head2.png" alt="">
-                    <h4>糖尿病如何控制？</h4>
-                    <span>根据王涵详细研究，我们发现……………………</span>
+                <li v-for="(item,index) in articleNews" :key="index">
+                    <a :href="item.Url">
+                        <img :src="item.imgUrl" alt="">
+                        <h4>{{ item.head }}</h4>
+                        <span>{{ item.News }}</span>
+                    </a>
                 </li>
             </ul>
+        </div>
+        <div class="footer">
+            <div class="wrapper">
+                <div class="top">
+                    <ul>
+                        <li><span>价格亲民</span></li>
+                        <li><span>物流快捷</span></li>
+                        <li><span>品质新鲜</span></li>
+                    </ul>
+                </div>
+                <div class="bottom">
+                    <p>
+                        <a href="#">关于我们</a>
+                        |
+                        <a href="#">帮助中心</a>
+                        |
+                        <a href="#">售后服务</a>
+                        |
+                        <a href="#">配送与验收</a>
+                        |
+                        <a href="#">商务合作</a>
+                        |
+                        <a href="#">搜索推荐</a>
+                        |
+                        <a href="#">友情链接</a>
+                    </p>
+                    <p>CopyRight @ 小兔鲜儿</p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
   
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from "vue-router";
+import { 
+    getTextNews 
+} from "../../api/Home/index"
+
+const router = useRouter()
 
 const showImages = () => {
     const img1 = document.querySelector('.head1 img');
@@ -110,11 +115,25 @@ const showImages = () => {
 };
 setTimeout(showImages, 0);
 
-let articleNews = ref
+onMounted(()=>{
+    getNews();
+})
+
+let News = ref()
+function getNews() {
+    getTextNews()
+        .then((res) => {
+            console.log(res);
+            News.value = res.data.data;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
 
 // 网页跳转函数
 const toUrlnews = () =>{
-    router.push()
+    router.push("/articles")
 }
 </script>
 
@@ -241,6 +260,10 @@ const toUrlnews = () =>{
                 span{
                     font-size: 12px;
                 }
+                a{
+                    color: inherit;
+                    text-decoration: none;
+                }
             }
             li:hover{
                 color: #81c783;
@@ -248,9 +271,54 @@ const toUrlnews = () =>{
                 padding-right: 0px;
                 // height: 40vh;
                 transition: color 0.3s ease,padding-left 0.3s ease, padding-right 0.3s ease;
+            } 
+        }
+    }
+    .footer{
+        width: 100%;
+        height: 50vh;
+        background-color: #333;
+        .top{
+            padding-top: 10vh;
+            height: 20vh;
+            border-bottom: 3px solid #434343;
+            li{
+                float: left;
+                width: calc(100% / 3); /* 平分水平宽度 */
+                height: 58px;
+                text-align: center;
+                line-height: 58px;
+                span{
+                    font-size: 2vw;
+                    
+                    color: #fff;
+                }
             }
         }
-        
+        .bottom{
+            padding-top: 5vh;
+            font-size: 14px;
+            color: #999;
+            text-align: center;
+            p{
+                margin-bottom: 2vh;
+            }
+            a{
+                font-size: 14px;
+                color: #999;
+            }
+            a:hover{
+                color: #81c783;
+                transition: color 0.3s ease
+            }
+        }
+        ul,ol {
+            list-style: none;
+        }
+        a {
+            text-decoration: none;
+            color: #333;
+        }
     }
 }
 
