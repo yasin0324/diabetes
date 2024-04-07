@@ -1,5 +1,11 @@
 <template>
-    <div>文章推荐</div>
+    <div>
+        
+    </div>
 </template>
-<script setup></script>
-<style lang="less" scoped></style>
+<script setup>
+
+</script>
+<style lang="less" scoped>
+
+</style>
