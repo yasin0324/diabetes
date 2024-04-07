@@ -15,6 +15,7 @@ const routes = [
             {
                 path: "/health",
                 name: "health",
+                redirect: "/health/blood",
                 component: () => import("../views/HealthRecord/index.vue"),
                 children: [
                     {
