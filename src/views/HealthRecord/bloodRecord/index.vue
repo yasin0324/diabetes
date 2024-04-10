@@ -10,7 +10,6 @@
                         placeholder="选 择 日 期"
                         format="YYYY-MM-DD"
                         value-format="YYYY-MM-DD"
-                        :default-active="new Date()"
                     ></el-date-picker>
                 </div>
             </div>
@@ -169,7 +168,7 @@ import { ref, onMounted } from "vue";
 import { setBloodRecord } from "../../../api/healthRecord";
 import * as echarts from "echarts";
 // 血糖记录日期
-const recordDate = ref(new Date());
+const recordDate = ref(formatDate(new Date()));
 // 添加记录
 const recordOpen = ref(false);
 // 血糖值
@@ -375,7 +374,7 @@ onMounted(() => {
                     flex-direction: column;
                     align-items: center;
                     .cardContent {
-                        margin-top: 5vh;
+                        margin-top: 3vh;
                         display: flex;
                         flex-direction: row;
                         align-items: end;
@@ -395,7 +394,6 @@ onMounted(() => {
                         }
                     }
                     .cardFooter {
-                        margin-top: 2vh;
                         font-size: 2.5vh;
                     }
                 }
