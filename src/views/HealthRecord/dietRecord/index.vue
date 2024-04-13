@@ -127,20 +127,106 @@
                 </div>
                 <div class="recordMainOther">
                     <div class="breakfast">
-                        <div class="header">
+                        <div class="left">
                             <div class="chart">
                                 <div
                                     id="breakfastChart"
-                                    style="height: 20vh; width: 30vh"
+                                    style="height: 28vh; width: 30vh"
                                 ></div>
                             </div>
+                            <div class="calorie">
+                                <div class="num">155</div>
+                                <div class="unit">千卡</div>
+                            </div>
                         </div>
-                        <div class="content"></div>
+                        <div class="content">
+                            <el-table
+                                height="24vh"
+                                class="foodlist"
+                                :data="breakfastData"
+                                stripe
+                            >
+                                <el-table-column
+                                    fixed="left"
+                                    label="食物"
+                                    prop="food"
+                                    width="110"
+                                ></el-table-column>
+                                <el-table-column
+                                    label="重量"
+                                    prop="weight"
+                                    width="100"
+                                ></el-table-column>
+                                <el-table-column
+                                    label="蛋白质"
+                                    prop="protein"
+                                    width="100"
+                                ></el-table-column>
+                                <el-table-column
+                                    label="脂肪"
+                                    prop="fat"
+                                    width="100"
+                                ></el-table-column>
+                                <el-table-column
+                                    label="碳水化合物"
+                                    prop="carbohydrate"
+                                    width="100"
+                                ></el-table-column>
+                                <el-table-column
+                                    label="热量"
+                                    prop="heat"
+                                    width="100"
+                                ></el-table-column>
+                                <el-table-column
+                                    label="GI(升糖指数)"
+                                    prop="gi"
+                                    width="100"
+                                ></el-table-column>
+                                <el-table-column
+                                    label="GL(升糖负荷)"
+                                    prop="gl"
+                                    width="100"
+                                ></el-table-column>
+                                <el-table-column
+                                    fixed="right"
+                                    width="96"
+                                    label="编辑"
+                                    ><template #default>
+                                        <el-button
+                                            link
+                                            size="small"
+                                            type="primary"
+                                            >编辑</el-button
+                                        >
+                                        <el-button
+                                            link
+                                            size="small"
+                                            type="danger"
+                                        >
+                                            删除
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <el-button class="addButton" type="success" round>
+                                记 录 饮 食
+                            </el-button>
+                        </div>
                     </div>
                     <div class="lunch"></div>
                     <div class="dinner"></div>
                     <div class="moreEat"></div>
                 </div>
+            </div>
+        </div>
+        <div class="guidance">
+            <div class="guidanceHeader">
+                <div class="title"><h1>饮食指导</h1></div>
+            </div>
+        </div>
+        <div class="dietary">
+            <div class="dietaryHeader">
+                <div class="title"><h1>推荐食谱</h1></div>
             </div>
         </div>
     </div>
@@ -200,16 +286,17 @@ function drawPieChart(id, data, time) {
         },
         tooltip: {
             trigger: "item",
-            formatter: "{b}:{c}克({d}%)",
+            formatter: "{b}: {c}克({d}%)",
         },
         legend: {
-            orient: "vertical",
-            left: "right",
+            orient: "horizontal",
+            left: "center",
+            bottom: "bottom",
         },
         series: [
             {
                 type: "pie",
-                radius: "50%",
+                radius: "80%",
                 label: {
                     show: false,
                 },
@@ -227,6 +314,69 @@ function drawPieChart(id, data, time) {
     };
     myChart.setOption(option);
 }
+
+const breakfastData = ref([
+    {
+        food: "苹果",
+        weight: "100g",
+        protein: "0.3g",
+        fat: "0.4g",
+        carbohydrate: "14g",
+        heat: "52kcal",
+        gi: "38",
+        gl: "5",
+    },
+    {
+        food: "香蕉",
+        weight: "100g",
+        protein: "1.3g",
+        fat: "0.3g",
+        carbohydrate: "22g",
+        heat: "89kcal",
+        gi: "51",
+        gl: "11",
+    },
+    {
+        food: "鸡蛋",
+        weight: "100g",
+        protein: "13g",
+        fat: "11g",
+        carbohydrate: "1g",
+        heat: "155kcal",
+        gi: "0",
+        gl: "0",
+    },
+    {
+        food: "牛奶",
+        weight: "100g",
+        protein: "3.3g",
+        fat: "3.6g",
+        carbohydrate: "4.8g",
+        heat: "66kcal",
+        gi: "27",
+        gl: "1",
+    },
+    {
+        food: "面包",
+        weight: "100g",
+        protein: "8.3g",
+        fat: "1.1g",
+        carbohydrate: "50g",
+        heat: "250kcal",
+        gi: "70",
+        gl: "35",
+    },
+    {
+        food: "酸奶",
+        weight: "100g",
+        protein: "4.3g",
+        fat: "3.6g",
+        carbohydrate: "4.8g",
+        heat: "66kcal",
+        gi: "27",
+        gl: "1",
+    },
+]);
 
 onMounted(() => {
     drawPieChart(
@@ -324,7 +474,78 @@ onMounted(() => {
                     background-color: #fff;
                     border-radius: 5vh;
                     margin-top: 2vh;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    .left {
+                        width: 30vh;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        .calorie {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: end;
+                            .num {
+                                font-size: 2vh;
+                                font-weight: bold;
+                            }
+                            .unit {
+                                margin-left: 0.5vh;
+                                font-size: 1.5vh;
+                                color: #8f8f8f;
+                            }
+                        }
+                    }
+                    .content {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        .foodlist {
+                            border-top-right-radius: 4vh;
+                            margin-top: 1vh;
+                            width: 70vh;
+                        }
+                        .addButton {
+                            margin-top: 1vh;
+                            width: 60vh;
+                        }
+                    }
                 }
+            }
+        }
+    }
+    .guidance {
+        width: 130vh;
+        margin: 0 auto 2vh;
+        border-radius: 5vh;
+        background-color: #ecf0f3;
+        box-shadow: 1vh 1vh 1vh #d1d9e6;
+        .guidanceHeader {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            border-bottom: 1vh solid #a0a5a8;
+            padding-left: 3vh;
+            .title {
+                color: #01111abe;
+            }
+        }
+    }
+    .dietary {
+        width: 130vh;
+        margin: 0 auto 2vh;
+        border-radius: 5vh;
+        background-color: #ecf0f3;
+        box-shadow: 1vh 1vh 1vh #d1d9e6;
+        .dietaryHeader {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            border-bottom: 1vh solid #a0a5a8;
+            padding-left: 3vh;
+            .title {
+                color: #01111abe;
             }
         }
     }

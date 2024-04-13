@@ -15,13 +15,14 @@
             </div>
 
             <div class="recordCard">
-                <div class="card" v-for="item in 1">
+                <div class="card">
                     <div class="cardMain">
                         <div class="cardContent">
                             <h1>7.2</h1>
                             <p>mmol/L</p>
                         </div>
                         <div class="cardFooter">早餐前</div>
+                        <el-button>编辑</el-button>
                     </div>
                 </div>
                 <div class="card">
