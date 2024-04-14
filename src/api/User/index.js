@@ -1,19 +1,14 @@
 import request from '../../util/request'
 import { getToken, removeToken } from "../../util/auth";
 
-// 获取用户个性化文章
-export function getTextNews(data) {
+// 获取用户信息
+export function getUserName(data) {
     // console.log(data)
     return request({
         method: "get",
-        url: "/article/list",
+        url: "/customer/list",
         headers: {
             token: getToken(),
         },
-        params:{
-            title: data.title,
-            author: data.author,
-            type: data.type
-        }
     });
 }

@@ -30,8 +30,7 @@ service.interceptors.request.use(
 // response拦截器
 service.interceptors.response.use(
     (res) => {
-        //设置token
-        res.data.data.token && setToken(res.data.data.token);
+        // console.log(res)
         //若未设置状态码则默认为成功状态
         const code = res.data.code || 200;
         // ElMessage({

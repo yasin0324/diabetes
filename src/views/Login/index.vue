@@ -183,6 +183,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { setToken } from "../../util/auth";
 import {
     smsCodeGet,
     registerUser,
@@ -384,6 +385,7 @@ function loginBySelectedMethod() {
         ? loginUsername(login.value)
               .then((res) => {
                   console.log(res);
+                  setToken(res.data.token)
                   router.push("/home");
               })
               .catch((err) => {
