@@ -1,5 +1,5 @@
 import request from "../../util/request";
-import { getToken, removeToken } from "../../util/auth";
+import { getToken, removeToken,setToken } from "../../util/auth";
 
 // 用户注册
 export function registerUser(data) {

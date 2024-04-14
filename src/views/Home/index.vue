@@ -46,44 +46,55 @@
                 <!-- <li v-for="(item, index) in articleNews" :key="index">
                     {{ item }}
                 </li> -->
-                <li v-for="(item,index) in articleNews" :key="index">
-                    <a :href="item.Url">
-                        <img :src="item.imgUrl" alt="">
-                        <h4>{{ item.head }}</h4>
-                        <span>{{ item.News }}</span>
+                <li v-for="(item,index) in News" :key="index">
+                    <a :href="item.link" target="_blank">
+                        <img :src="item.picture" alt="">
+                        <h4>{{ item.title }}</h4>
+                        <p>
+                            {{ item.preview }}
+                        </p>
+                        <p>
+                            作者：{{ item.author }}
+                            <span style="margin-left:10%"> 
+                                <el-icon><Star /></el-icon>
+                                {{ item.likeNum }}
+                            </span>
+                        </p>
+
                     </a>
                 </li>
             </ul>
         </div>
         <div class="footer">
             <div class="wrapper">
-                <div class="top">
-                    <ul>
-                        <li><span>价格亲民</span></li>
-                        <li><span>物流快捷</span></li>
-                        <li><span>品质新鲜</span></li>
-                    </ul>
-                </div>
-                <div class="bottom">
-                    <p>
-                        <a href="#">关于我们</a>
-                        |
-                        <a href="#">帮助中心</a>
-                        |
-                        <a href="#">售后服务</a>
-                        |
-                        <a href="#">配送与验收</a>
-                        |
-                        <a href="#">商务合作</a>
-                        |
-                        <a href="#">搜索推荐</a>
-                        |
-                        <a href="#">友情链接</a>
-                    </p>
-                    <p>CopyRight @ 小兔鲜儿</p>
-                </div>
+            <div class="top">
+                <ul>
+                    <li><span>个性化服务</span></li>
+                    <li><span>实时监测</span></li>
+                    <li><span>专业指导</span></li>
+                </ul>
+            </div>
+            <div class="bottom">
+                <p>
+                    <a href="#">关于我们</a>
+                    |
+                    <a href="#">使用指南</a>
+                    |
+                    <a href="#">技术支持</a>
+                    |
+                    <a href="#">隐私政策</a>
+                    |
+                    <a href="#">用户协议</a>
+                    |
+                    <a href="#">常见问题</a>
+                    |
+                    <a href="#">联系我们</a>
+                </p>
+                <p>版权所有 © 控糖宝-糖尿病患者个性化血糖管理系统</p>
             </div>
         </div>
+</div>
+
     </div>
 </template>
 
@@ -96,15 +107,10 @@ import {
 
 const router = useRouter()
 
-const toArticles = () => {
-    router.push("/articles");
-};
 
 const showImages = () => {
     const img1 = document.querySelector(".head1 img");
-    // const img2 = document.querySelector('.head2 img');
     const text1 = document.querySelector(".head1 .overlay-text");
-    // const text2 = document.querySelector('.head2 .overlay-text');
     const maxbox = document.querySelector(".box");
     maxbox.style.opacity = "1";
     if (img1) {
@@ -112,11 +118,6 @@ const showImages = () => {
         text1.style.fontSize = "12vh";
         text1.style.opacity = "1";
     }
-    // if (img2) {
-    //     img2.style.opacity = '1';
-    //     text2.style.fontSize = '15vh';
-    //     text2.style.opacity = '1';
-    // }
 };
 setTimeout(showImages, 0);
 
@@ -124,12 +125,17 @@ onMounted(()=>{
     getNews();
 })
 
-let News = ref()
+let News = ref('')
 function getNews() {
-    getTextNews()
+    let data = {
+        title:"",
+        author:"",
+        type:""
+    }
+    getTextNews(data)
         .then((res) => {
             console.log(res);
-            News.value = res.data.data;
+            News.value = res.data;
         })
         .catch((err) => {
             console.log(err);
@@ -215,7 +221,7 @@ const toUrlnews = () =>{
     .articleNews {
         position: relative;
         width: 100%;
-        height: 40vh;
+        // height: 40vh;
         margin-top: 2vw;
         text-align: center;
         .moreNews {
@@ -246,10 +252,8 @@ const toUrlnews = () =>{
                 display: inline-block;
                 width: 25%;
                 height: 35vh;
-                // padding-top: 10px;
                 padding-left: 10px;
                 padding-right: 10px;
-                // padding-bottom: 10px;
                 box-sizing: border-box;
                 cursor: pointer;
                 img {
@@ -260,9 +264,22 @@ const toUrlnews = () =>{
                 h4 {
                     margin-top: 0px;
                     margin-bottom: 0px;
+                    width: 100%;
+                    font-size: 1.5vw;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
-                span {
-                    font-size: 12px;
+                p{
+                    margin: 0%;
+                    font-size: 1vw;
+                    width: 100%;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    p{
+                        vertical-align: middle;
+                    }
                 }
                 a{
                     color: inherit;
