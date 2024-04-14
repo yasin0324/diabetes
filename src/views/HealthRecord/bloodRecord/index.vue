@@ -407,6 +407,7 @@ onMounted(() => {
                         margin: 5vh 5vh 2vh 5vh;
                         width: 15vh;
                         height: 15vh;
+                        border-radius: 3vh;
                         :deep(.el-icon) {
                             height: 5vh;
                             width: 5vh;

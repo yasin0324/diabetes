@@ -10,7 +10,114 @@
                         placeholder="选 择 日 期"
                         format="YYYY-MM-DD"
                         value-format="YYYY-MM-DD"
-                    ></el-date-picker>
+                    >
+                    </el-date-picker>
+                </div>
+            </div>
+            <div class="recordMain">
+                <div class="medicineRecord">
+                    <div class="addRecord">
+                        <el-button class="button">添 加 记 录</el-button>
+                    </div>
+                    <div class="timelineRecord">
+                        <el-timeline>
+                            <el-timeline-item
+                                timestamp="空腹"
+                                placement="top"
+                                size="large"
+                                color="#a4c681"
+                            >
+                                <el-card>
+                                    <div class="content">
+                                        <h1>速效胰岛素</h1>
+                                        <p>剂量：1粒</p>
+                                        <p>用途：降血糖</p>
+                                        <p>备注：一日两次，第一次</p>
+                                        <img
+                                            src="../../../common/image/face.png"
+                                        />
+                                        <p>记录于 2024-04-13 6:50:10</p>
+                                    </div>
+                                </el-card>
+                                <el-card>
+                                    <div class="content">
+                                        <h1>速效胰岛素</h1>
+                                        <p>剂量：1粒</p>
+                                        <p>用途：降血糖</p>
+                                        <p>备注：一日两次，第一次</p>
+                                        <img
+                                            src="../../../common/image/face.png"
+                                        />
+                                        <p>记录于 2024-04-13 7:50:10</p>
+                                    </div>
+                                </el-card>
+                            </el-timeline-item>
+                            <el-timeline-item
+                                timestamp="午餐后"
+                                placement="top"
+                                size="large"
+                                color="#a4c681"
+                            >
+                                <el-card>
+                                    <div class="content">
+                                        <h1>血压药</h1>
+                                        <p>剂量：1粒</p>
+                                        <p>用途：降血压</p>
+                                        <p>备注：一日三次，第二次</p>
+                                        <img
+                                            src="../../../common/image/face.png"
+                                        />
+                                        <p>记录于 2024-04-13 14:50:10</p>
+                                    </div>
+                                </el-card>
+                            </el-timeline-item>
+                        </el-timeline>
+                    </div>
+                </div>
+                <div class="medicineClock">
+                    <div class="addClock">
+                        <el-button class="button">用 药 提 醒</el-button>
+                    </div>
+                    <div class="timelineClock">
+                        <el-timeline>
+                            <el-timeline-item
+                                timestamp="2024-04-13 20:00:00"
+                                placement="top"
+                                size="large"
+                                color="#a4c681"
+                            >
+                                <el-card>
+                                    <div class="content">
+                                        <h1>速效胰岛素</h1>
+                                        <p>剂量：1粒</p>
+                                        <p>用途：降血糖</p>
+                                        <p>备注：一日两次，第一次</p>
+                                        <img
+                                            src="../../../common/image/face.png"
+                                        />
+                                    </div>
+                                </el-card>
+                            </el-timeline-item>
+                            <el-timeline-item
+                                timestamp="2024-04-13 21:00:00"
+                                placement="top"
+                                size="large"
+                                color="#a4c681"
+                            >
+                                <el-card>
+                                    <div class="content">
+                                        <h1>血压药</h1>
+                                        <p>剂量：1粒</p>
+                                        <p>用途：降血压</p>
+                                        <p>备注：一日三次，第二次</p>
+                                        <img
+                                            src="../../../common/image/face.png"
+                                        />
+                                    </div>
+                                </el-card>
+                            </el-timeline-item>
+                        </el-timeline>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,6 +171,98 @@ const recordDate = ref(formatDate(new Date()));
                 margin-top: 1vh;
                 .el-date-editor {
                     width: 18vh;
+                }
+            }
+        }
+        .recordMain {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            .medicineRecord {
+                padding-bottom: 2vh;
+                width: 40%;
+                .addRecord {
+                    display: flex;
+                    justify-content: center;
+                    margin: 1vh;
+                    .button {
+                        width: 50%;
+                        height: 100%;
+                        border-radius: 3vh;
+                        background-color: #a4c681;
+                        color: #fff;
+                        font-size: 1.8vh;
+                        font-weight: bold;
+                    }
+                }
+                .timelineRecord {
+                    padding-left: 1vh;
+                    padding-top: 1vh;
+                    height: 70vh;
+                    overflow: scroll;
+                    overflow-x: hidden;
+                    scrollbar-color: #fff #ecf0f3;
+                    scrollbar-width: thin;
+                    :deep(.el-timeline) {
+                        --el-timeline-node-color: #a4c681;
+                        .el-timeline-item {
+                            .el-timeline-item__timestamp {
+                                font-size: 2vh;
+                            }
+                            img {
+                                width: 10vh;
+                                height: 10vh;
+                            }
+                            .el-card {
+                                border-radius: 5vh;
+                                margin-bottom: 1vh;
+                            }
+                        }
+                    }
+                }
+            }
+            .medicineClock {
+                padding-bottom: 2vh;
+                width: 40%;
+                padding-left: 5vh;
+                .addClock {
+                    display: flex;
+                    justify-content: center;
+                    margin: 1vh;
+                    .button {
+                        width: 50%;
+                        height: 100%;
+                        border-radius: 3vh;
+                        background-color: #a4c681;
+                        color: #fff;
+                        font-size: 1.8vh;
+                        font-weight: bold;
+                    }
+                }
+                .timelineClock {
+                    padding-left: 1vh;
+                    padding-top: 1vh;
+                    height: 70vh;
+                    overflow: scroll;
+                    overflow-x: hidden;
+                    scrollbar-color: #fff #ecf0f3;
+                    scrollbar-width: thin;
+                    :deep(.el-timeline) {
+                        --el-timeline-node-color: #a4c681;
+                        .el-timeline-item {
+                            .el-timeline-item__timestamp {
+                                font-size: 2vh;
+                            }
+                            img {
+                                width: 10vh;
+                                height: 10vh;
+                            }
+                            .el-card {
+                                border-radius: 5vh;
+                                margin-bottom: 1vh;
+                            }
+                        }
+                    }
                 }
             }
         }
