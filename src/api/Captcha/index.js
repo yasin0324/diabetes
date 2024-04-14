@@ -4,7 +4,7 @@ import request from "../../util/request";
 export function captchaGet() {
     return request({
         method: "get",
-        url: "/captcha/get",
+        url: "/common/captcha/get",
         params: { type: "SLIDER" },
     });
 }
@@ -13,7 +13,7 @@ export function captchaGet() {
 export function captchaCheck(data) {
     return request({
         method: "post",
-        url: "/captcha/check",
+        url: "/common/captcha/check",
         data: {
             id: data.id,
             data: data.data,

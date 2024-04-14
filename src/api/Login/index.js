@@ -5,7 +5,7 @@ import { getToken, removeToken,setToken } from "../../util/auth";
 export function registerUser(data) {
     return request({
         method: "post",
-        url: "/register",
+        url: "/user/register",
         headers: {
             smsCode: data.smsCode,
             mobile: data.mobile,
@@ -24,7 +24,7 @@ export function registerUser(data) {
 export function loginUsername(data) {
     return request({
         method: "post",
-        url: "/login/username",
+        url: "/user/login/username",
         data: {
             userName: data.userName,
             password: data.password,
@@ -36,7 +36,7 @@ export function loginUsername(data) {
 export function smsCodeGet(data) {
     return request({
         method: "get",
-        url: "/code/mobile",
+        url: "/common/code/mobile",
         params: {
             mobile: data.mobile,
         },
@@ -47,7 +47,7 @@ export function smsCodeGet(data) {
 export function loginMobile(data) {
     return request({
         method: "post",
-        url: "/login/mobile",
+        url: "/user/login/mobile",
         headers: {
             mobile: data.mobile,
             smsCode: data.smsCode,
@@ -59,7 +59,7 @@ export function loginMobile(data) {
 export function logout() {
     return request({
         method: "post",
-        url: "/logout",
+        url: "/user/logout",
         headers: {
             token: getToken(),
         },
