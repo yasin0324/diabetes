@@ -15,18 +15,62 @@
             </div>
 
             <div class="recordCard">
-                <div class="card">
-                    <div class="cardMain">
+                <div
+                    class="card"
+                    v-for="(record, index) in records"
+                    :key="index"
+                >
+                    <div class="cardMain" v-show="!updateOpen[index]">
                         <div class="cardContent">
-                            <h1>7.2</h1>
+                            <h1>{{ record.glucoseLevel }}</h1>
                             <p>mmol/L</p>
                         </div>
-                        <div class="cardFooter">早餐前</div>
-                        <el-button>编辑</el-button>
+                        <div class="cardFooter">{{ record.periodLabel }}</div>
+                        <div class="cardRemark" v-if="record.remark">
+                            <div
+                                class="remarkContent"
+                                style="
+                                    width: 20vh;
+                                    height: 5vh;
+                                    font-size: 1.4vh;
+                                    color: #606266;
+                                    word-wrap: break-word;
+                                "
+                            >
+                                {{ record.remark }}
+                            </div>
+                        </div>
+                        <el-button
+                            @click="startUpdate(index)"
+                            style="
+                                margin-top: 1vh;
+                                border-radius: 2vh;
+                                background-color: #4cb5ab;
+                                color: #fff;
+                            "
+                            >编辑</el-button
+                        >
+                        <el-popconfirm
+                            width="200"
+                            confirm-button-text="删除"
+                            cancel-button-text="取消"
+                            title="确定删除该记录？"
+                        >
+                            <template #reference>
+                                <el-button
+                                    type="danger"
+                                    :icon="CloseBold"
+                                    circle
+                                    style="
+                                        padding: 0;
+                                        margin-left: 0;
+                                        margin-top: 1vh;
+                                    "
+                                />
+                            </template>
+                        </el-popconfirm>
                     </div>
-                </div>
-                <div class="card">
-                    <div class="recordInfo" v-show="recordOpen">
+                    <div class="updateInfo" v-show="updateOpen[index]">
                         <div class="recordForm">
                             <el-form>
                                 <el-form-item class="bloodNumRecord">
@@ -45,7 +89,7 @@
                                         class="bloodNumInput"
                                         controls-position="right"
                                         size="small"
-                                        v-model="bloodNum"
+                                        v-model="record.glucoseLevel"
                                         :precision="1"
                                         :step="0.1"
                                     ></el-input-number>
@@ -64,7 +108,7 @@
                                     </div>
                                     <el-select
                                         class="selectTag"
-                                        v-model="timeTag"
+                                        v-model="record.periodLabel"
                                         size="small"
                                         placeholder="选择"
                                     >
@@ -90,7 +134,93 @@
                                     </div>
                                     <el-input
                                         class="remark"
-                                        v-model="remark"
+                                        v-model="record.remark"
+                                        type="textarea"
+                                        placeholder="添加备注"
+                                        :rows="4"
+                                        :autosize="{ minRows: 4, maxRows: 4 }"
+                                        style="margin-top: 0.5vh"
+                                        resize="none"
+                                    ></el-input>
+                                </el-form-item>
+                            </el-form>
+                        </div>
+                        <div class="footer">
+                            <el-button @click="updateOpen[index] = false"
+                                >取消</el-button
+                            >
+                            <el-button type="primary" @click="updateRecord"
+                                >修改</el-button
+                            >
+                        </div>
+                    </div>
+                </div>
+                <div class="card" v-if="records.length < 8">
+                    <div class="recordInfo" v-show="recordOpen">
+                        <div class="recordForm">
+                            <el-form>
+                                <el-form-item class="bloodNumRecord">
+                                    <div
+                                        class="unit"
+                                        style="
+                                            font-size: 1.8vh;
+                                            height: 1.8vh;
+                                            line-height: 1.8vh;
+                                            font-weight: bold;
+                                        "
+                                    >
+                                        血糖值(mmol/L):
+                                    </div>
+                                    <el-input-number
+                                        class="bloodNumInput"
+                                        controls-position="right"
+                                        size="small"
+                                        v-model="addRecordData.bloodNum"
+                                        :precision="1"
+                                        :step="0.1"
+                                    ></el-input-number>
+                                </el-form-item>
+                                <el-form-item class="timeTag">
+                                    <div
+                                        class="unit"
+                                        style="
+                                            font-size: 1.8vh;
+                                            height: 1.8vh;
+                                            line-height: 1.8vh;
+                                            font-weight: bold;
+                                        "
+                                    >
+                                        选择时段标签:
+                                    </div>
+                                    <el-select
+                                        class="selectTag"
+                                        v-model="addRecordData.timeTag"
+                                        size="small"
+                                        placeholder="选择"
+                                    >
+                                        <el-option
+                                            v-for="item in options"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.value"
+                                        />
+                                    </el-select>
+                                </el-form-item>
+                                <el-form-item class="recordRemark">
+                                    <div
+                                        class="unit"
+                                        style="
+                                            font-size: 1.8vh;
+                                            height: 1.8vh;
+                                            line-height: 1.8vh;
+                                            font-weight: bold;
+                                        "
+                                    >
+                                        添加备注:
+                                    </div>
+                                    <el-input
+                                        class="remark"
+                                        v-model="addRecordData.remark"
                                         type="textarea"
                                         placeholder="添加备注"
                                         :rows="4"
@@ -166,16 +296,23 @@
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
-import { setBloodRecord } from "../../../api/healthRecord";
+import {
+    setBloodRecord,
+    updateBloodRecord,
+    delBloodRecord,
+    BloodRecordList,
+} from "../../../api/healthRecord";
+import { CloseBold } from "@element-plus/icons-vue";
 import * as echarts from "echarts";
 // 血糖记录日期
 const recordDate = ref(formatDate(new Date()));
 // 添加记录
 const recordOpen = ref(false);
-// 血糖值
-const bloodNum = ref(0);
-// 时段标签
-const timeTag = ref("");
+const addRecordData = ref({
+    bloodNum: 0,
+    timeTag: "",
+    remark: "",
+});
 const options = ref([
     { value: "空腹", label: "空腹" },
     { value: "早餐后", label: "早餐后" },
@@ -186,8 +323,6 @@ const options = ref([
     { value: "睡前", label: "睡前" },
     { value: "夜间", label: "夜间" },
 ]);
-// 记录备注
-const remark = ref("");
 // 日期格式化
 // YYYY-MM-DD HH:mm:ss
 function formatDateTime(date) {
@@ -209,15 +344,22 @@ function formatDate(date) {
 // 添加记录
 const addRecord = () => {
     const data = ref({
-        glucoseLevel: bloodNum.value,
-        recordTime: formatDateTime(new Date()),
-        periodLabel: timeTag.value,
-        remark: remark.value,
+        glucoseLevel: addRecordData.value.bloodNum,
+        recordTime: `${recordDate.value} 12:00:00`,
+        periodLabel: addRecordData.value.timeTag,
+        remark: addRecordData.value.remark,
     });
     console.log(data.value);
     setBloodRecord(data.value)
         .then((res) => {
             console.log(res);
+            records.value.push(data.value);
+            addRecordData.value = {
+                bloodNum: 0,
+                timeTag: "",
+                remark: "",
+            };
+            recordOpen.value = false;
         })
         .catch((err) => {
             console.log(err);
@@ -329,6 +471,35 @@ function showBloodVisible() {
 }
 // 血糖分析日期
 const analyseDate = ref("recent7days");
+
+// 血糖记录
+const records = ref([]);
+// 每个记录的编辑状态
+const updateOpen = ref(records.value.map(() => false));
+// 开始编辑记录
+const startUpdate = (index) => {
+    // 对应的编辑状态设置为true
+    updateOpen.value[index] = true;
+};
+// 修改记录
+const updateRecord = (index) => {
+    const data = {
+        id: records.value[index].id,
+        glucoseLevel: records.value[index].glucoseLevel,
+        recordTime: records.value[index].recordTime,
+        periodLabel: records.value[index].periodLabel,
+        remark: records.value[index].remark,
+    };
+    updateBloodRecord(data)
+        .then((res) => {
+            console.log(res);
+            updateOpen.value[index] = false;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
 onMounted(() => {
     showBloodVisible();
 });
@@ -427,6 +598,35 @@ onMounted(() => {
                     }
                 }
                 .recordInfo {
+                    margin-left: 1vh;
+                    margin-right: 1vh;
+                    .recordForm {
+                        margin-top: 3vh;
+                        .bloodNumRecord {
+                            display: flex;
+                            .bloodNumInput {
+                                width: 9.4vh;
+                            }
+                        }
+                        .timeTag {
+                            :deep(.el-select) {
+                                margin-left: 1vh;
+                                width: 10vh;
+                            }
+                        }
+                    }
+                    .footer {
+                        display: flex;
+                        justify-content: space-around;
+                        .el-button {
+                            width: 8vh;
+                            height: 4vh;
+                            border-radius: 3vh;
+                            font-weight: bold;
+                        }
+                    }
+                }
+                .updateInfo {
                     margin-left: 1vh;
                     margin-right: 1vh;
                     .recordForm {
