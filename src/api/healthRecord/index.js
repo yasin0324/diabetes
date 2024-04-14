@@ -52,7 +52,7 @@ export function delBloodRecord(data) {
 export function BloodRecordList(begin, end) {
     return request({
         method: "get",
-        url: "/record/glucose/list",
+        url: "/glucose/record/list",
         headers: {
             token: token,
         },

@@ -10,6 +10,7 @@
                         placeholder="选 择 日 期"
                         format="YYYY-MM-DD"
                         value-format="YYYY-MM-DD"
+                        @change="getRecordOne"
                     ></el-date-picker>
                 </div>
             </div>
@@ -27,48 +28,42 @@
                         </div>
                         <div class="cardFooter">{{ record.periodLabel }}</div>
                         <div class="cardRemark" v-if="record.remark">
-                            <div
-                                class="remarkContent"
-                                style="
-                                    width: 20vh;
-                                    height: 5vh;
-                                    font-size: 1.4vh;
-                                    color: #606266;
-                                    word-wrap: break-word;
-                                "
-                            >
+                            <div class="remarkContent">
                                 {{ record.remark }}
                             </div>
                         </div>
-                        <el-button
-                            @click="startUpdate(index)"
-                            style="
-                                margin-top: 1vh;
-                                border-radius: 2vh;
-                                background-color: #4cb5ab;
-                                color: #fff;
-                            "
-                            >编辑</el-button
-                        >
-                        <el-popconfirm
-                            width="200"
-                            confirm-button-text="删除"
-                            cancel-button-text="取消"
-                            title="确定删除该记录？"
-                        >
-                            <template #reference>
-                                <el-button
-                                    type="danger"
-                                    :icon="CloseBold"
-                                    circle
-                                    style="
-                                        padding: 0;
-                                        margin-left: 0;
-                                        margin-top: 1vh;
-                                    "
-                                />
-                            </template>
-                        </el-popconfirm>
+                        <div class="cardButtonRecord">
+                            <el-button
+                                @click="startUpdate(index)"
+                                style="
+                                    margin-top: 1vh;
+                                    border-radius: 2vh;
+                                    background-color: #4cb5ab;
+                                    color: #fff;
+                                "
+                                >编辑</el-button
+                            >
+                            <el-popconfirm
+                                width="200"
+                                confirm-button-text="删除"
+                                cancel-button-text="取消"
+                                title="确定删除该记录？"
+                                @confirm="delRecord(record.id)"
+                            >
+                                <template #reference>
+                                    <el-button
+                                        type="danger"
+                                        :icon="CloseBold"
+                                        circle
+                                        style="
+                                            padding: 0;
+                                            margin-left: 0;
+                                            margin-top: 1vh;
+                                        "
+                                    />
+                                </template>
+                            </el-popconfirm>
+                        </div>
                     </div>
                     <div class="updateInfo" v-show="updateOpen[index]">
                         <div class="recordForm">
@@ -149,7 +144,9 @@
                             <el-button @click="updateOpen[index] = false"
                                 >取消</el-button
                             >
-                            <el-button type="primary" @click="updateRecord"
+                            <el-button
+                                type="primary"
+                                @click="updateRecord(index)"
                                 >修改</el-button
                             >
                         </div>
@@ -269,6 +266,7 @@
                         format="YYYY-MM-DD"
                         value-format="YYYY-MM-DD"
                         :disabled-date="(time) => time.getTime() > Date.now()"
+                        @change="getRecordMore"
                     ></el-date-picker>
                 </div>
             </div>
@@ -353,7 +351,8 @@ const addRecord = () => {
     setBloodRecord(data.value)
         .then((res) => {
             console.log(res);
-            records.value.push(data.value);
+            // records.value.push(data.value);
+            getRecordOne();
             addRecordData.value = {
                 bloodNum: 0,
                 timeTag: "",
@@ -371,68 +370,17 @@ const visibleDate = ref([
     formatDate(new Date()),
 ]);
 // 血糖记录可视化
-function showBloodVisible() {
+function showBloodVisible(chartData) {
     const chartDom = document.getElementById("bloodVisibleChart");
     chartDom?.removeAttribute("_echarts_instance_");
     const myChart = echarts.init(chartDom);
 
-    const data = [
-        ["2000-06-05", 116],
-        ["2000-06-06", 129],
-        ["2000-06-07", 135],
-        ["2000-06-08", 86],
-        ["2000-06-09", 73],
-        ["2000-06-10", 85],
-        ["2000-06-11", 73],
-        ["2000-06-12", 68],
-        ["2000-06-13", 92],
-        ["2000-06-14", 130],
-        ["2000-06-15", 245],
-        ["2000-06-16", 139],
-        ["2000-06-17", 115],
-        ["2000-06-18", 111],
-        ["2000-06-19", 309],
-        ["2000-06-20", 206],
-        ["2000-06-21", 137],
-        ["2000-06-22", 128],
-        ["2000-06-23", 85],
-        ["2000-06-24", 94],
-        ["2000-06-25", 71],
-        ["2000-06-26", 106],
-        ["2000-06-27", 84],
-        ["2000-06-28", 93],
-        ["2000-06-29", 85],
-        ["2000-06-30", 73],
-        ["2000-07-01", 83],
-        ["2000-07-02", 125],
-        ["2000-07-03", 107],
-        ["2000-07-04", 82],
-        ["2000-07-05", 44],
-        ["2000-07-06", 72],
-        ["2000-07-07", 106],
-        ["2000-07-08", 107],
-        ["2000-07-09", 66],
-        ["2000-07-10", 91],
-        ["2000-07-11", 92],
-        ["2000-07-12", 113],
-        ["2000-07-13", 107],
-        ["2000-07-14", 131],
-        ["2000-07-15", 111],
-        ["2000-07-16", 64],
-        ["2000-07-17", 69],
-        ["2000-07-18", 88],
-        ["2000-07-19", 77],
-        ["2000-07-20", 83],
-        ["2000-07-21", 111],
-        ["2000-07-22", 57],
-        ["2000-07-23", 55],
-        ["2000-07-24", 60],
-    ];
-    const dateList = data.map(function (item) {
-        return item[0];
+    const dateList = chartData.value.map(function (item) {
+        const [date, periodLabel] = item.name.split(" ");
+        return `${date}\n${periodLabel}`;
     });
-    const valueList = data.map(function (item) {
-        return item[1];
+    const valueList = chartData.value.map(function (item) {
+        return item.value;
     });
     const option = {
         visualMap: [
@@ -441,24 +389,49 @@ function showBloodVisible() {
                 type: "continuous",
                 seriesIndex: 0,
                 min: 0,
-                max: 400,
-            },
-        ],
-        title: [
-            {
-                left: "center",
-                text: "Gradient along the y axis",
+                max: 14,
             },
         ],
         tooltip: {
             trigger: "axis",
+            formatter: function (params) {
+                return params[0].name + "<br>" + params[0].value + " mmol/L";
+            },
+            borderColor: "#4cb5ab",
+            textStyle: {
+                color: "#3d4a51",
+            },
         },
         xAxis: [
             {
                 data: dateList,
+                axisLabel: {
+                    interval: 0,
+                },
+                axisTick: {
+                    alignWithLabel: true,
+                },
             },
         ],
         yAxis: [{}],
+        dataZoom: {
+            xAxisIndex: 0,
+            show: true,
+            type: "slider",
+            brushSelect: false,
+            moveHandleSize: 0,
+            startValue: 0,
+            endValue: 12,
+            bottom: 10,
+            zoomLock: true,
+            handleSize: 0,
+            borderColor: "#4cb5ab",
+            fillerColor: "#4cb5ab",
+            height: 10,
+            maxValueSpan: 12,
+            minValueSpan: 12,
+            throttle: 0,
+        },
         series: [
             {
                 type: "line",
@@ -483,6 +456,7 @@ const startUpdate = (index) => {
 };
 // 修改记录
 const updateRecord = (index) => {
+    console.log(records.value[index]);
     const data = {
         id: records.value[index].id,
         glucoseLevel: records.value[index].glucoseLevel,
@@ -493,7 +467,81 @@ const updateRecord = (index) => {
     updateBloodRecord(data)
         .then((res) => {
             console.log(res);
+            getRecordOne();
             updateOpen.value[index] = false;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+// 时段标签的顺序
+const periodOrder = [
+    "空腹",
+    "早餐后",
+    "午餐前",
+    "午餐后",
+    "晚餐前",
+    "晚餐后",
+    "睡前",
+    "夜间",
+];
+// 查看记录
+const getRecordOne = () => {
+    BloodRecordList(recordDate.value, recordDate.value)
+        .then((res) => {
+            records.value = res.data.bloodGlucoseRecordsList[0].sort(
+                (a, b) =>
+                    periodOrder.indexOf(a.periodLabel) -
+                    periodOrder.indexOf(b.periodLabel)
+            );
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+// 删除记录
+const delRecord = (id) => {
+    delBloodRecord(id)
+        .then((res) => {
+            console.log(res);
+            getRecordOne();
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
+// 获取多日记录（用于可视化）
+const getRecordMore = () => {
+    console.log(visibleDate.value[0], visibleDate.value[1]);
+    BloodRecordList(visibleDate.value[0], visibleDate.value[1])
+        .then((res) => {
+            console.log(res);
+            const chartData = ref([]);
+            // 遍历每一天的血糖记录
+            for (let i = 0; i < res.data.localDateList.length; i++) {
+                const date = res.data.localDateList[i];
+                const records = res.data.bloodGlucoseRecordsList[i];
+
+                // 按照时段标签的顺序排序记录
+                records.sort(
+                    (a, b) =>
+                        periodOrder.indexOf(a.periodLabel) -
+                        periodOrder.indexOf(b.periodLabel)
+                );
+
+                // 遍历每个记录，生成echarts图表的数据
+                for (const record of records) {
+                    chartData.value.push({
+                        // 横坐标显示记录日期及其时段标签
+                        name: `${date} ${record.periodLabel}`,
+                        // 纵坐标为血糖水平
+                        value: record.glucoseLevel,
+                    });
+                }
+            }
+            console.log(chartData.value);
+            showBloodVisible(chartData);
         })
         .catch((err) => {
             console.log(err);
@@ -501,7 +549,8 @@ const updateRecord = (index) => {
 };
 
 onMounted(() => {
-    showBloodVisible();
+    getRecordOne();
+    getRecordMore();
 });
 </script>
 <style lang="less" scoped>
@@ -545,8 +594,9 @@ onMounted(() => {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
+                    position: relative;
+                    height: 100%;
                     .cardContent {
-                        margin-top: 3vh;
                         display: flex;
                         flex-direction: row;
                         align-items: end;
@@ -565,8 +615,23 @@ onMounted(() => {
                             font-weight: bold;
                         }
                     }
+                    .cardRemark {
+                        .remarkContent {
+                            margin-top: 0.5vh;
+                            width: 20vh;
+                            height: 3vh;
+                            text-align: center;
+                            font-size: 1.4vh;
+                            color: #606266;
+                            word-wrap: break-word;
+                        }
+                    }
                     .cardFooter {
                         font-size: 2.5vh;
+                    }
+                    .cardButtonRecord {
+                        position: absolute;
+                        bottom: 2vh;
                     }
                 }
                 .buttonAll {
