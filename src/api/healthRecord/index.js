@@ -8,7 +8,7 @@ const token = getToken();
 export function setBloodRecord(data) {
     return request({
         method: "post",
-        url: "/customer/glucose/save",
+        url: "/customer/glucose/record/save",
         headers: {
             token: token,
         },
