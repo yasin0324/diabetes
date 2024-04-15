@@ -254,7 +254,7 @@
         </div>
         <div class="bloodVisible">
             <div class="visibleHeader">
-                <div class="title"><h1>血糖可视化</h1></div>
+                <div class="title"><h1>血糖图表</h1></div>
                 <div class="datePicker">
                     <el-date-picker
                         v-model="visibleDate"
@@ -281,10 +281,13 @@
             <div class="analyseHeader">
                 <div class="title"><h1>血糖分析</h1></div>
                 <div class="datePicker">
-                    <el-radio-group v-model="analyseDate">
-                        <el-radio value="recent7days">近7天</el-radio>
-                        <el-radio value="recent15days">近15天</el-radio>
-                        <el-radio value="recent30days">近30天</el-radio>
+                    <el-radio-group
+                        v-model="analyseDate"
+                        @change="changeRecently"
+                    >
+                        <el-radio value="7">近7天</el-radio>
+                        <el-radio value="15">近15天</el-radio>
+                        <el-radio value="30">近30天</el-radio>
                     </el-radio-group>
                 </div>
             </div>
@@ -351,7 +354,6 @@ const addRecord = () => {
     setBloodRecord(data.value)
         .then((res) => {
             console.log(res);
-            // records.value.push(data.value);
             getRecordOne();
             addRecordData.value = {
                 bloodNum: 0,
@@ -390,6 +392,9 @@ function showBloodVisible(chartData) {
                 seriesIndex: 0,
                 min: 0,
                 max: 14,
+                inRange: {
+                    color: ["#fecc59", "#56e1b8", "#f6756e"],
+                },
             },
         ],
         tooltip: {
@@ -421,15 +426,15 @@ function showBloodVisible(chartData) {
             brushSelect: false,
             moveHandleSize: 0,
             startValue: 0,
-            endValue: 12,
+            endValue: 10,
             bottom: 10,
             zoomLock: true,
             handleSize: 0,
             borderColor: "#4cb5ab",
             fillerColor: "#4cb5ab",
             height: 10,
-            maxValueSpan: 12,
-            minValueSpan: 12,
+            maxValueSpan: 10,
+            minValueSpan: 10,
             throttle: 0,
         },
         series: [
@@ -443,7 +448,7 @@ function showBloodVisible(chartData) {
     myChart.setOption(option);
 }
 // 血糖分析日期
-const analyseDate = ref("recent7days");
+const analyseDate = ref("7");
 
 // 血糖记录
 const records = ref([]);
@@ -513,7 +518,6 @@ const delRecord = (id) => {
 
 // 获取多日记录（用于可视化）
 const getRecordMore = () => {
-    console.log(visibleDate.value[0], visibleDate.value[1]);
     BloodRecordList(visibleDate.value[0], visibleDate.value[1])
         .then((res) => {
             console.log(res);
@@ -548,9 +552,176 @@ const getRecordMore = () => {
         });
 };
 
+// 获取近些天数据
+const getRecordRecently = (days) => {
+    const begin = formatDate(
+        new Date(new Date().setDate(new Date().getDate() - days))
+    );
+    const end = formatDate(new Date());
+    BloodRecordList(begin, end)
+        .then((res) => {
+            const data = res.data;
+            const ranges = {
+                空腹: [4.4, 6.1],
+                午餐前: [5.0, 7.8],
+                晚餐前: [5.0, 7.8],
+                早餐后: [5.0, 9.4],
+                午餐后: [5.0, 9.4],
+                晚餐后: [5.0, 9.4],
+                睡前: [4.4, 8.3],
+                夜间: [3.9, 6.1],
+            };
+            // 初始化统计结果
+            const stats = ref({
+                空腹: { total: 0, normal: 0, high: 0, low: 0 },
+                午餐前: { total: 0, normal: 0, high: 0, low: 0 },
+                晚餐前: { total: 0, normal: 0, high: 0, low: 0 },
+                早餐后: { total: 0, normal: 0, high: 0, low: 0 },
+                午餐后: { total: 0, normal: 0, high: 0, low: 0 },
+                晚餐后: { total: 0, normal: 0, high: 0, low: 0 },
+                睡前: { total: 0, normal: 0, high: 0, low: 0 },
+                夜间: { total: 0, normal: 0, high: 0, low: 0 },
+            });
+            // 记录血糖次数统计
+            for (let day of data.bloodGlucoseRecordsList) {
+                for (let record of day) {
+                    let period = record.periodLabel;
+                    let level = record.glucoseLevel;
+                    stats.value[period].total++;
+                    if (level < ranges[period][0]) {
+                        stats.value[period].low++;
+                    } else if (level > ranges[period][1]) {
+                        stats.value[period].high++;
+                    } else {
+                        stats.value[period].normal++;
+                    }
+                }
+            }
+            // 统计餐前血糖记录总次数，正常次数，偏高次数
+            // 统计餐后血糖记录总次数，正常次数，偏高次数
+            const brforeMeal = ref({
+                total: 0,
+                normal: 0,
+                high: 0,
+                normalRate: 0,
+            });
+            const afterMeal = ref({
+                total: 0,
+                normal: 0,
+                high: 0,
+                normalRate: 0,
+            });
+            for (let period in stats.value) {
+                if (period === "午餐前" || period === "晚餐前") {
+                    brforeMeal.value.total += stats.value[period].total;
+                    brforeMeal.value.normal += stats.value[period].normal;
+                    brforeMeal.value.high += stats.value[period].high;
+                } else if (
+                    period === "早餐后" ||
+                    period === "午餐后" ||
+                    period === "晚餐后"
+                ) {
+                    afterMeal.value.total += stats.value[period].total;
+                    afterMeal.value.normal += stats.value[period].normal;
+                    afterMeal.value.high += stats.value[period].high;
+                }
+            }
+            // 统计血糖记录总次数，正常次数，偏高次数，偏低次数，达标占比（正常次数/总次数），不达标占比（1-达标占比）
+            const allTotal = ref({
+                total: 0,
+                normal: 0,
+                high: 0,
+                low: 0,
+                normalRate: 0,
+            });
+            for (let period in stats.value) {
+                allTotal.value.total += stats.value[period].total;
+                allTotal.value.normal += stats.value[period].normal;
+                allTotal.value.high += stats.value[period].high;
+                allTotal.value.low += stats.value[period].low;
+            }
+            allTotal.value.normalRate = (
+                (allTotal.value.normal / allTotal.value.total) *
+                100
+            ).toFixed(0);
+            console.log(brforeMeal.value, afterMeal.value);
+            console.log(
+                allTotal.value,
+                allTotal.value.normalRate,
+                (100 - allTotal.value.normalRate).toFixed(0)
+            );
+            console.log(stats.value);
+            // 计算同一天的血糖餐前餐后血糖波动，及餐前餐后血糖差值（早餐后-空腹，午餐后-午餐前，晚餐后-晚餐前），统计所选日期区间中 早餐、午餐、晚餐前后血糖差值在0-2.2之前的次数，在2.3-4.4之间的次数，差值>=4.5的次数
+            const fluctuation = ref({
+                早餐: { low: 0, normal: 0, high: 0 },
+                午餐: { low: 0, normal: 0, high: 0 },
+                晚餐: { low: 0, normal: 0, high: 0 },
+            });
+            for (let day of data.bloodGlucoseRecordsList) {
+                let beforeMeal = day.find(
+                    (record) => record.periodLabel === "空腹"
+                );
+                let afterMeal = day.find(
+                    (record) => record.periodLabel === "早餐后"
+                );
+                if (beforeMeal && afterMeal) {
+                    let diff = afterMeal.glucoseLevel - beforeMeal.glucoseLevel;
+                    if (0 <= diff < 2.3) {
+                        fluctuation.value["早餐"].low++;
+                    } else if (diff < 4.5) {
+                        fluctuation.value["早餐"].normal++;
+                    } else {
+                        fluctuation.value["早餐"].high++;
+                    }
+                }
+                beforeMeal = day.find(
+                    (record) => record.periodLabel === "午餐前"
+                );
+                afterMeal = day.find(
+                    (record) => record.periodLabel === "午餐后"
+                );
+                if (beforeMeal && afterMeal) {
+                    let diff = afterMeal.glucoseLevel - beforeMeal.glucoseLevel;
+                    if (diff < 2.3) {
+                        fluctuation.value["午餐"].low++;
+                    } else if (diff < 4.5) {
+                        fluctuation.value["午餐"].normal++;
+                    } else {
+                        fluctuation.value["午餐"].high++;
+                    }
+                }
+                beforeMeal = day.find(
+                    (record) => record.periodLabel === "晚餐前"
+                );
+                afterMeal = day.find(
+                    (record) => record.periodLabel === "晚餐后"
+                );
+                if (beforeMeal && afterMeal) {
+                    let diff = afterMeal.glucoseLevel - beforeMeal.glucoseLevel;
+                    if (diff < 2.3) {
+                        fluctuation.value["晚餐"].low++;
+                    } else if (diff < 4.5) {
+                        fluctuation.value["晚餐"].normal++;
+                    } else {
+                        fluctuation.value["晚餐"].high++;
+                    }
+                }
+            }
+            console.log(fluctuation.value);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+// 切换近些天数据
+const changeRecently = () => {
+    getRecordRecently(parseInt(analyseDate.value));
+};
+
 onMounted(() => {
     getRecordOne();
     getRecordMore();
+    changeRecently();
 });
 </script>
 <style lang="less" scoped>
