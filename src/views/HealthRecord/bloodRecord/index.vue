@@ -291,7 +291,147 @@
                     </el-radio-group>
                 </div>
             </div>
-            <div class="analyseMain" style="height: 50vh"></div>
+            <div class="analyseMain" style="height: 50vh">
+                <div id="chart1"></div>
+                <div id="chart2">
+                    <div class="oneBlood">
+                        <div class="BloodHeader">空腹血糖</div>
+                        <div class="BloodMain">
+                            <div class="left">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ stats["空腹"].total }}次
+                                    </div>
+                                    <div class="end">总测量次数</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (stats["空腹"].normal /
+                                                    stats["空腹"].total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">达标率</div>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ stats["空腹"].high }}次
+                                    </div>
+                                    <div class="end">空腹血糖偏高</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (stats["空腹"].high /
+                                                    stats["空腹"].total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">占比</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="twoBlood">
+                        <div class="BloodHeader">餐前血糖</div>
+                        <div class="BloodMain">
+                            <div class="left">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ beforeMeal.total }}次
+                                    </div>
+                                    <div class="end">总测量次数</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (beforeMeal.normal /
+                                                    beforeMeal.total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">达标率</div>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ beforeMeal.high }}次
+                                    </div>
+                                    <div class="end">餐前血糖偏高</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (beforeMeal.high /
+                                                    beforeMeal.total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">占比</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="threeBlood">
+                        <div class="BloodHeader">餐后血糖</div>
+                        <div class="BloodMain">
+                            <div class="left">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ afterMeal.total }}次
+                                    </div>
+                                    <div class="end">总测量次数</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (afterMeal.normal /
+                                                    afterMeal.total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">达标率</div>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ afterMeal.high }}次
+                                    </div>
+                                    <div class="end">餐后血糖偏高</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (afterMeal.high /
+                                                    afterMeal.total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">占比</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="chart3"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -552,6 +692,66 @@ const getRecordMore = () => {
         });
 };
 
+// 初始化统计结果
+const stats = ref({
+    空腹: { total: 0, normal: 0, high: 0, low: 0 },
+    午餐前: { total: 0, normal: 0, high: 0, low: 0 },
+    晚餐前: { total: 0, normal: 0, high: 0, low: 0 },
+    早餐后: { total: 0, normal: 0, high: 0, low: 0 },
+    午餐后: { total: 0, normal: 0, high: 0, low: 0 },
+    晚餐后: { total: 0, normal: 0, high: 0, low: 0 },
+    睡前: { total: 0, normal: 0, high: 0, low: 0 },
+    夜间: { total: 0, normal: 0, high: 0, low: 0 },
+});
+// 餐前血糖记录统计
+const beforeMeal = ref({
+    total: 0,
+    normal: 0,
+    high: 0,
+    normalRate: 0,
+});
+// 餐后血糖记录统计
+const afterMeal = ref({
+    total: 0,
+    normal: 0,
+    high: 0,
+    normalRate: 0,
+});
+// 所有血糖记录统计
+const allTotal = ref({
+    total: 0,
+    normal: 0,
+    high: 0,
+    low: 0,
+    normalRate: 0,
+});
+// 血糖波动统计
+const fluctuation = ref({
+    早餐: { low: 0, normal: 0, high: 0 },
+    午餐: { low: 0, normal: 0, high: 0 },
+    晚餐: { low: 0, normal: 0, high: 0 },
+});
+// 数据初始化
+function resetData() {
+    stats.value = {
+        空腹: { total: 0, normal: 0, high: 0, low: 0 },
+        午餐前: { total: 0, normal: 0, high: 0, low: 0 },
+        晚餐前: { total: 0, normal: 0, high: 0, low: 0 },
+        早餐后: { total: 0, normal: 0, high: 0, low: 0 },
+        午餐后: { total: 0, normal: 0, high: 0, low: 0 },
+        晚餐后: { total: 0, normal: 0, high: 0, low: 0 },
+        睡前: { total: 0, normal: 0, high: 0, low: 0 },
+        夜间: { total: 0, normal: 0, high: 0, low: 0 },
+    };
+    beforeMeal.value = { total: 0, normal: 0, high: 0, normalRate: 0 };
+    afterMeal.value = { total: 0, normal: 0, high: 0, normalRate: 0 };
+    allTotal.value = { total: 0, normal: 0, high: 0, low: 0, normalRate: 0 };
+    fluctuation.value = {
+        早餐: { low: 0, normal: 0, high: 0 },
+        午餐: { low: 0, normal: 0, high: 0 },
+        晚餐: { low: 0, normal: 0, high: 0 },
+    };
+}
 // 获取近些天数据
 const getRecordRecently = (days) => {
     const begin = formatDate(
@@ -571,17 +771,7 @@ const getRecordRecently = (days) => {
                 睡前: [4.4, 8.3],
                 夜间: [3.9, 6.1],
             };
-            // 初始化统计结果
-            const stats = ref({
-                空腹: { total: 0, normal: 0, high: 0, low: 0 },
-                午餐前: { total: 0, normal: 0, high: 0, low: 0 },
-                晚餐前: { total: 0, normal: 0, high: 0, low: 0 },
-                早餐后: { total: 0, normal: 0, high: 0, low: 0 },
-                午餐后: { total: 0, normal: 0, high: 0, low: 0 },
-                晚餐后: { total: 0, normal: 0, high: 0, low: 0 },
-                睡前: { total: 0, normal: 0, high: 0, low: 0 },
-                夜间: { total: 0, normal: 0, high: 0, low: 0 },
-            });
+            resetData();
             // 记录血糖次数统计
             for (let day of data.bloodGlucoseRecordsList) {
                 for (let record of day) {
@@ -599,23 +789,11 @@ const getRecordRecently = (days) => {
             }
             // 统计餐前血糖记录总次数，正常次数，偏高次数
             // 统计餐后血糖记录总次数，正常次数，偏高次数
-            const brforeMeal = ref({
-                total: 0,
-                normal: 0,
-                high: 0,
-                normalRate: 0,
-            });
-            const afterMeal = ref({
-                total: 0,
-                normal: 0,
-                high: 0,
-                normalRate: 0,
-            });
             for (let period in stats.value) {
                 if (period === "午餐前" || period === "晚餐前") {
-                    brforeMeal.value.total += stats.value[period].total;
-                    brforeMeal.value.normal += stats.value[period].normal;
-                    brforeMeal.value.high += stats.value[period].high;
+                    beforeMeal.value.total += stats.value[period].total;
+                    beforeMeal.value.normal += stats.value[period].normal;
+                    beforeMeal.value.high += stats.value[period].high;
                 } else if (
                     period === "早餐后" ||
                     period === "午餐后" ||
@@ -627,13 +805,6 @@ const getRecordRecently = (days) => {
                 }
             }
             // 统计血糖记录总次数，正常次数，偏高次数，偏低次数，达标占比（正常次数/总次数），不达标占比（1-达标占比）
-            const allTotal = ref({
-                total: 0,
-                normal: 0,
-                high: 0,
-                low: 0,
-                normalRate: 0,
-            });
             for (let period in stats.value) {
                 allTotal.value.total += stats.value[period].total;
                 allTotal.value.normal += stats.value[period].normal;
@@ -644,19 +815,7 @@ const getRecordRecently = (days) => {
                 (allTotal.value.normal / allTotal.value.total) *
                 100
             ).toFixed(0);
-            console.log(brforeMeal.value, afterMeal.value);
-            console.log(
-                allTotal.value,
-                allTotal.value.normalRate,
-                (100 - allTotal.value.normalRate).toFixed(0)
-            );
-            console.log(stats.value);
             // 计算同一天的血糖餐前餐后血糖波动，及餐前餐后血糖差值（早餐后-空腹，午餐后-午餐前，晚餐后-晚餐前），统计所选日期区间中 早餐、午餐、晚餐前后血糖差值在0-2.2之前的次数，在2.3-4.4之间的次数，差值>=4.5的次数
-            const fluctuation = ref({
-                早餐: { low: 0, normal: 0, high: 0 },
-                午餐: { low: 0, normal: 0, high: 0 },
-                晚餐: { low: 0, normal: 0, high: 0 },
-            });
             for (let day of data.bloodGlucoseRecordsList) {
                 let beforeMeal = day.find(
                     (record) => record.periodLabel === "空腹"
@@ -707,7 +866,8 @@ const getRecordRecently = (days) => {
                     }
                 }
             }
-            console.log(fluctuation.value);
+            showChart1();
+            showChart3();
         })
         .catch((err) => {
             console.log(err);
@@ -717,6 +877,138 @@ const getRecordRecently = (days) => {
 const changeRecently = () => {
     getRecordRecently(parseInt(analyseDate.value));
 };
+// 血糖统计图表
+function showChart1() {
+    const chartDom = document.getElementById("chart1");
+    chartDom?.removeAttribute("_echarts_instance_");
+    const myChart = echarts.init(chartDom);
+    const option = {
+        tooltip: {
+            trigger: "item",
+            formatter: "{b}: {c}次 ({d}%)",
+        },
+        title: {
+            text: `${allTotal.value.total}`,
+            subtext: "总次数",
+            left: "center",
+            top: "middle",
+            textStyle: {
+                color: "#009688",
+                fontSize: 40,
+                fontWeight: "bold",
+            },
+        },
+        series: [
+            {
+                type: "pie",
+                radius: ["50%", "90%"],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: "#fff",
+                    borderWidth: 2,
+                },
+                label: {
+                    position: "inside",
+                },
+                labelLine: {
+                    show: false,
+                },
+                data: [
+                    { value: allTotal.value.normal, name: "正常" },
+                    { value: allTotal.value.high, name: "偏高" },
+                    { value: allTotal.value.low, name: "偏低" },
+                ],
+            },
+        ],
+    };
+    myChart.setOption(option);
+}
+function showChart3() {
+    console.log(fluctuation.value);
+    const chartDom = document.getElementById("chart3");
+    chartDom?.removeAttribute("_echarts_instance_");
+    const myChart = echarts.init(chartDom);
+    const option = {
+        title: {
+            text: "餐前餐后血糖波动",
+            subtext: "每餐餐前餐后差值不宜超过：2.2mmol/L",
+            left: "center",
+        },
+        grid: {
+            bottom: 40,
+        },
+        tooltip: {
+            trigger: "item",
+            formatter: "{a}<br>{b}：{c}次",
+        },
+        legend: {
+            data: ["早餐", "午餐", "晚餐"],
+            orient: "vertical",
+            top: "middle",
+            right: 0,
+        },
+        xAxis: {
+            type: "category",
+            data: ["差值0-2.2", "差值2.3-4.4", "差值≥4.5"],
+        },
+        yAxis: {
+            type: "value",
+            name: "次数",
+        },
+        series: [
+            {
+                type: "bar",
+                name: "早餐",
+                data: [
+                    fluctuation.value["早餐"].low,
+                    fluctuation.value["早餐"].normal,
+                    fluctuation.value["早餐"].high,
+                ],
+                itemStyle: {
+                    borderRadius: [20, 20, 0, 0],
+                },
+                label: {
+                    show: true,
+                    position: "top",
+                },
+            },
+            {
+                type: "bar",
+                name: "午餐",
+                data: [
+                    fluctuation.value["午餐"].low,
+                    fluctuation.value["午餐"].normal,
+                    fluctuation.value["午餐"].high,
+                ],
+                itemStyle: {
+                    borderRadius: [20, 20, 0, 0],
+                },
+                label: {
+                    show: true,
+                    position: "top",
+                },
+            },
+            {
+                type: "bar",
+                name: "晚餐",
+                data: [
+                    fluctuation.value["晚餐"].low,
+                    fluctuation.value["晚餐"].normal,
+                    fluctuation.value["晚餐"].high,
+                ],
+                itemStyle: {
+                    borderRadius: [20, 20, 0, 0],
+                },
+                label: {
+                    show: true,
+                    position: "top",
+                },
+            },
+        ],
+    };
+    myChart.setOption(option);
+}
 
 onMounted(() => {
     getRecordOne();
@@ -759,7 +1051,7 @@ onMounted(() => {
                 margin: 3vh 1vh 2vh 5vh;
                 background-color: #fff;
                 width: 25vh;
-                height: 30vh;
+                height: 35vh;
                 border-radius: 5vh;
                 .cardMain {
                     display: flex;
@@ -829,6 +1121,7 @@ onMounted(() => {
                         background-color: rgba(0, 150, 136, 0.7);
                     }
                     .buttonText {
+                        margin-top: 3vh;
                         font-size: 2.5vh;
                         font-weight: bold;
                     }
@@ -939,6 +1232,78 @@ onMounted(() => {
                 .el-radio-group {
                     margin-left: 3vh;
                 }
+            }
+        }
+        .analyseMain {
+            display: flex;
+            flex-direction: row;
+            #chart1 {
+                height: 50vh;
+                width: 40vh;
+            }
+            #chart2 {
+                height: 45vh;
+                width: 40vh;
+                margin: auto 0;
+                background: #fff;
+                border-radius: 5vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                .oneBlood,
+                .twoBlood,
+                .threeBlood {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    height: 13vh;
+                    .BloodHeader {
+                        padding-left: 1vh;
+                        font-size: 2.5vh;
+                        font-weight: bold;
+                        color: #01111abe;
+                    }
+                    .BloodMain {
+                        height: 10vh;
+                        width: 39vh;
+                        margin: 0 auto;
+                        border-radius: 3vh;
+                        background-color: #ecf0f3;
+                        display: flex;
+                        flex-direction: row;
+                        .left,
+                        .right {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: flex-end;
+                            justify-content: space-around;
+                            width: 19vh;
+                            padding-bottom: 2.5vh;
+                            .one {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                .top {
+                                    font-size: 2.5vh;
+                                    color: #01111abe;
+                                    font-weight: bold;
+                                }
+                                .end {
+                                    font-size: 1.6vh;
+                                    color: #6d7073;
+                                    font-weight: bold;
+                                }
+                            }
+                        }
+                        .left {
+                            border-right: 1px solid #e6e6e6;
+                        }
+                    }
+                }
+            }
+            #chart3 {
+                height: 50vh;
+                width: 50vh;
             }
         }
     }

@@ -151,7 +151,18 @@
                                     label="食物"
                                     prop="food"
                                     width="110"
+                                    ><template #default
+                                        ><div>
+                                            <img
+                                                src="../../../common/image/face.png"
+                                                style="
+                                                    width: 5vh;
+                                                    height: 5vh;
+                                                    border-radius: 50%;
+                                                "
+                                            /></div></template
                                 ></el-table-column>
+                                <el-table-column> </el-table-column>
                                 <el-table-column
                                     label="重量"
                                     prop="weight"

@@ -63,3 +63,56 @@ export function BloodRecordList(begin, end) {
     });
 }
 // -----------------------------------------
+
+// 饮食记录----------------------------------
+// 添加记录
+export function setDietRecord(data) {
+    return request({
+        method: "post",
+        url: "/customer/diet/record/save",
+        headers: {
+            token: token,
+        },
+        data: {
+            periodLabel: data.periodLabel,
+            recordTime: data.recordTime,
+            remark: data.remark,
+            foodAndDiets: [data.foodId, data.foodNum],
+        },
+    });
+}
+// 查询记录
+export function dietRecordList(begin, end) {
+    return request({
+        method: "get",
+        url: "/diet/record/list",
+        headers: {
+            token: token,
+        },
+        params: {
+            begin: begin,
+            end: end,
+        },
+    });
+}
+// 修改记录
+export function updateDietRecord(data) {
+    return request({
+        method: 'put',
+        url: '/customer/diet/record/update',
+        headers: {
+            token: token,
+        },
+        data: {
+            id: data.id,
+            periodLabel: data.periodLabel,
+            recordTime: data.recordTime,
+            remark: data.remark,
+            addFoodAndDiets: [data.foodId, data.foodNum],
+            delFoodAndDiets: [data.delFoodId],
+        }
+    })
+}
+// 删除记录
+
+// -----------------------------------------
