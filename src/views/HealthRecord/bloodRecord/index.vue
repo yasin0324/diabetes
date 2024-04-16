@@ -1246,7 +1246,7 @@ onMounted(() => {
                 width: 40vh;
                 margin: auto 0;
                 background: #fff;
-                border-radius: 5vh;
+                border-radius: 3vh;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-around;
