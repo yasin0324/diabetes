@@ -173,3 +173,200 @@ export function getAllType() {
     });
 }
 // -----------------------------------------
+
+// 用药记录----------------------------------
+// 添加记录
+export function setMedicineRecord(data) {
+    return request({
+        method: "post",
+        url: "/customer/medicine/record/save",
+        headers: {
+            token: token,
+        },
+        data: {
+            periodLabel: data.periodLabel,
+            recordTime: data.recordTime,
+            tempMedicines: data.tempMedicines,
+            // tempMedicines: {
+            //     id,          //常用药品id（不选常用药品就不传）
+            //     name,        //药品名称
+            //     application, //药品用途
+            //     picture,     //药品图片
+            //     dosage,      //药品剂量
+            //     remark       //备注
+            // }
+        },
+    });
+}
+// 修改记录
+export function updateMedicineRecord(data) {
+    return request({
+        method: "put",
+        url: "/customer/medicine/record/update",
+        headers: {
+            token: token,
+        },
+        data: {
+            id: data.id,
+            periodLabel: data.periodLabel,
+            recordTime: data.recordTime,
+            addTempMedicines: data.addTempMedicines,
+            // addTempMedicines: {
+            //     id,  //可选
+            //     name,
+            //     use,
+            //     picture,
+            //     count,
+            //     remark,
+            // }
+            removeIds: data.removeIds,
+        },
+    });
+}
+// 获取指定日期内用药记录
+export function getMedicineRecord(begin, end) {
+    return request({
+        method: "get",
+        url: "/medicine/record/list",
+        headers: {
+            token: token,
+        },
+        params: {
+            begin: begin,
+            end: end,
+        },
+    });
+}
+// 删除记录
+export function delMedicineRecord(id) {
+    return request({
+        method: "delete",
+        url: `/customer/medicine/record/delete/${id}`,
+        headers: {
+            token: token,
+        },
+    });
+}
+// 新增用户常用药品
+export function setCommonMedicine(data) {
+    return request({
+        method: "post",
+        url: "/customer/medicine/save",
+        headers: {
+            token: token,
+        },
+        data: {
+            name: data.name,
+            application: data.application,
+            picture: data.picture,
+            dosage: data.dosage,
+            remark: data.remark,
+        },
+    });
+}
+// 修改用户常用药品
+export function updateCommonMedicine(data) {
+    return request({
+        method: "put",
+        url: "/customer/medicine/update",
+        headers: {
+            token: token,
+        },
+        data: {
+            id: data.id, //必需
+            name: data.name,
+            application: data.application,
+            picture: data.picture,
+            dosage: data.dosage,
+            remark: data.remark,
+        },
+    });
+}
+// 删除用户常用药品
+export function delCommonMedicine(id) {
+    return request({
+        method: "delete",
+        url: `/customer/medicine/delete/${id}`,
+        headers: {
+            token: token,
+        },
+    });
+}
+// 根据用户id获取用户常用药品
+export function getCommonMedicine(userId) {
+    return request({
+        method: "get",
+        url: `/customer/medicine/list/userId/${userId}`,
+        headers: {
+            token: token,
+        },
+    });
+}
+// 根据常用药品id获取用户常用药品
+export function getCommonMedicineById(id) {
+    return request({
+        method: "get",
+        url: `/customer/medicine/list/id/${id}`,
+        headers: {
+            token: token,
+        },
+    });
+}
+// 新增用药提醒闹钟
+export function setMedicineClock(data) {
+    return request({
+        method: "post",
+        url: "/customer/medicine/clock/save",
+        headers: {
+            token: token,
+        },
+        data: {
+            name: data.name,
+            application: data.application,
+            picture: data.picture,
+            dosage: data.dosage,
+            remark: data.remark,
+            clock: data.clock, //YYYY-MM-DD HH:mm:ss
+        },
+    });
+}
+// 修改用药提醒闹钟
+export function updateMedicineClock(data) {
+    return request({
+        method: "put",
+        url: "/customer/medicine/clock/update",
+        headers: {
+            token: token,
+        },
+        data: {
+            id: data.id,
+            name: data.name,
+            application: data.application,
+            picture: data.picture,
+            dosage: data.dosage,
+            remark: data.remark,
+            clock: data.clock,
+        },
+    });
+}
+// 获取用户所有用药提醒闹钟
+export function getMedicineClock() {
+    return request({
+        method: "get",
+        url: "/customer/medicine/clock/list",
+        headers: {
+            token: token,
+        },
+    });
+}
+// 删除用药提醒闹钟
+export function delMedicineClock(id) {
+    return request({
+        method: "delete",
+        url: `/customer/medicine/clock/delete/${id}`,
+        headers: {
+            token: token,
+        },
+    });
+}
+// -----------------------------------------

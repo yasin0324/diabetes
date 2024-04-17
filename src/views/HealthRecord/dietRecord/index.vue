@@ -10,6 +10,7 @@
                         placeholder="选择日期"
                         format="YYYY-MM-DD"
                         value-format="YYYY-MM-DD"
+                        @change="getDietRecord"
                     ></el-date-picker>
                 </div>
             </div>
@@ -77,7 +78,7 @@
                                     ><span style="color: #3d4a51"
                                         >{{
                                             Math.round(
-                                                (carbohydrate /
+                                                (allcarbohydrate /
                                                     recommendCarbohydrate) *
                                                     100
                                             )
@@ -94,7 +95,7 @@
                                     style="max-width: 90%"
                                     :percentage="
                                         Math.round(
-                                            (allprotein / recommendProtein) *
+                                            (allportein / recommendPortein) *
                                                 100
                                         )
                                     "
@@ -102,11 +103,12 @@
                                     ><span style="color: #3d4a51"
                                         >{{
                                             Math.round(
-                                                (protein / recommendProtein) *
+                                                (allportein /
+                                                    recommendPortein) *
                                                     100
                                             )
                                         }}
-                                        / {{ recommendProtein }}克</span
+                                        / {{ recommendPortein }}克</span
                                     ></el-progress
                                 >
                             </div>
@@ -125,7 +127,7 @@
                                     ><span style="color: #3d4a51"
                                         >{{
                                             Math.round(
-                                                (fat / recommendFat) * 100
+                                                (allfat / recommendFat) * 100
                                             )
                                         }}
                                         / {{ recommendFat }}克</span
@@ -727,6 +729,7 @@
             v-model="dialogVisible"
             :title="dialogTitle"
             width="600"
+            :before-close="handleClose"
         >
             <div class="content">
                 <div class="search">
@@ -745,11 +748,11 @@
                 </div>
                 <div class="contentMain">
                     <div class="menu">
-                        <el-menu default-active="1" class="foodMenu">
+                        <el-menu class="foodMenu" :default-active="activeIndex">
                             <el-menu-item
                                 v-for="(item, index) in foodType"
                                 :key="index"
-                                :index="index"
+                                :index="index.toString()"
                                 @click="getFoodsByType(item)"
                                 >{{ item }}</el-menu-item
                             >
@@ -911,19 +914,17 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-const heat = ref(788);
 // 推荐摄入热量
 const recommendHeat = ref(2000);
 // 推荐摄入碳水
 const recommendCarbohydrate = ref(297);
 // 推荐摄入蛋白质
-const recommendProtein = ref(85);
+const recommendPortein = ref(85);
 // 推荐摄入脂肪
 const recommendFat = ref(66);
 
 // 饼图
 function drawPieChart(id, data, time) {
-    console.log(data);
     const chartDom = document.getElementById(id);
     chartDom?.removeAttribute("_echarts_instance_");
     const myChart = echarts.init(chartDom);
@@ -963,79 +964,7 @@ function drawPieChart(id, data, time) {
     myChart.setOption(option);
 }
 
-const breakfastData = ref([
-    {
-        food: "苹果",
-        weight: "100",
-        protein: "0.3",
-        fat: "0.4",
-        carbohydrate: "14",
-        heat: "52",
-        gi: "38",
-        gl: "5",
-    },
-    {
-        food: "香蕉",
-        weight: "100g",
-        protein: "1.3g",
-        fat: "0.3g",
-        carbohydrate: "22g",
-        heat: "89kcal",
-        gi: "51",
-        gl: "11",
-    },
-    {
-        food: "鸡蛋",
-        weight: "100g",
-        protein: "13g",
-        fat: "11g",
-        carbohydrate: "1g",
-        heat: "155kcal",
-        gi: "0",
-        gl: "0",
-    },
-    {
-        food: "牛奶",
-        weight: "100g",
-        protein: "3.3g",
-        fat: "3.6g",
-        carbohydrate: "4.8g",
-        heat: "66kcal",
-        gi: "27",
-        gl: "1",
-    },
-    {
-        food: "面包",
-        weight: "100g",
-        protein: "8.3g",
-        fat: "1.1g",
-        carbohydrate: "50g",
-        heat: "250kcal",
-        gi: "70",
-        gl: "35",
-    },
-    {
-        food: "酸奶",
-        weight: "100g",
-        protein: "4.3g",
-        fat: "3.6g",
-        carbohydrate: "4.8g",
-        heat: "66kcal",
-        gi: "27",
-        gl: "1",
-    },
-]);
-
 onMounted(() => {
-    // drawPieChart(
-    //     "breakfastChart",
-    //     [
-    //         { value: 4.6, name: "蛋白质" },
-    //         { value: 1.0, name: "脂肪" },
-    //         { value: 51.3, name: "碳水化合物" },
-    //     ],
-    //     "早餐"
-    // );
     getFoodType();
     getDietRecord();
 });
@@ -1043,6 +972,7 @@ onMounted(() => {
 const dialogVisible = ref(false);
 const dialogTitle = ref("");
 const dialogType = ref("");
+const activeIndex = ref("-1");
 const foodsList = ref([]);
 const foodsListData = ref([]);
 const getFoodsList = ref([]);
@@ -1060,11 +990,28 @@ const allHeat = ref(0);
 const allportein = ref(0);
 const allfat = ref(0);
 const allcarbohydrate = ref(0);
+// 关闭dialog
+function handleClose(done) {
+    clearData();
+    done();
+}
+// 清空数据
+function clearData() {
+    resetAddFood();
+    activeIndex.value = "-1";
+}
 // 查询记录
 function getDietRecord() {
+    breakfast.value = [];
+    lunch.value = [];
+    dinner.value = [];
+    moreEat.value = [];
+    allHeat.value = 0;
+    allportein.value = 0;
+    allfat.value = 0;
+    allcarbohydrate.value = 0;
     dietRecordList(recordDate.value, recordDate.value)
         .then((res) => {
-            console.log(res);
             // 将时段标签为‘早餐’的记录赋值给breakfast，以此类推
             res.data.dietRecordVOList[0].forEach((item) => {
                 if (item.periodLabel === "早餐") {
@@ -1359,6 +1306,7 @@ function searchFoods() {
         .then((res) => {
             console.log(res);
             getFoodsList.value = res.data;
+            activeIndex.value = "-1";
         })
         .catch((err) => {
             console.log(err);
@@ -1381,6 +1329,7 @@ function getAllFoods() {
 // 搜索重置
 function refreshSearch() {
     searchName.value = "";
+    activeIndex.value = "-1";
     getAllFoods();
 }
 // 重置添加食物()
