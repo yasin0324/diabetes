@@ -27,7 +27,9 @@
             <div class="recordMain">
                 <div class="medicineRecord">
                     <div class="addRecord">
-                        <el-button class="button">添 加 记 录</el-button>
+                        <el-button class="button" @click="openAddMedicine"
+                            >添 加 记 录</el-button
+                        >
                     </div>
                     <div class="timelineRecord">
                         <el-timeline>
@@ -75,7 +77,9 @@
                 </div>
                 <div class="medicineClock">
                     <div class="addClock">
-                        <el-button class="button">用 药 提 醒</el-button>
+                        <el-button class="button" @click="openAddClock"
+                            >用 药 提 醒</el-button
+                        >
                     </div>
                     <div class="timelineClock">
                         <el-timeline>
@@ -125,28 +129,102 @@
             title="添加用药记录"
             width="400"
         >
-            <el-form class="recordForm" v-model="recordInfo">
+            <el-form
+                class="recordForm"
+                :model="recordInfo"
+                :rules="rules"
+                ref="form"
+            >
+                <el-form-item label="时段标签" prop="periodLabel">
+                    <el-select
+                        v-model="recordInfo.periodLabel"
+                        placeholder="请选择时段标签"
+                    >
+                        <el-option
+                            v-for="item in periodOrder"
+                            :key="item"
+                            :label="item"
+                            :value="item"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item
                     v-for="(medicine, index) in recordInfo.tempMedicines"
                     :label="'药品' + (index + 1)"
+                    style="padding-right: 0"
+                    prop="tempMedicines"
                 >
-                    <el-card class="medicineCard">
-                        <el-form v-model="recordInfo.tempMedicines[index]">
-                            <el-form-item label="名称"
-                                ><el-input v-model="medicine.name"></el-input
+                    <el-card class="medicineCard" shadow="never">
+                        <template #header>
+                            <div class="cardHeader">
+                                <el-button
+                                    style="border-radius: 1vh"
+                                    type="primary"
+                                    @click="openChoseVisible(index)"
+                                    >选择日常用药</el-button
+                                >
+                                <el-button
+                                    style="border-radius: 1vh"
+                                    type="primary"
+                                    @click="addToCommonMedicine(medicine)"
+                                    >保存为日常用药</el-button
+                                >
+                            </div>
+                        </template>
+                        <el-form
+                            :model="recordInfo.tempMedicines[index]"
+                            :ref="`form2-${index}`"
+                            :rules="rules2"
+                        >
+                            <el-form-item label="名称" prop="name"
+                                ><el-input
+                                    v-model="medicine.name"
+                                    placeholder="请输入药品名称"
+                                ></el-input
                             ></el-form-item>
-                            <el-form-item label="用途">
+                            <el-form-item label="用途" prop="application">
                                 <el-input
+                                    placeholder="请输入药品用途"
                                     v-model="medicine.application"
                                 ></el-input>
                             </el-form-item>
-                            <el-form-item label="剂量">
-                                <el-input v-model="medicine.dosage"></el-input>
+                            <el-form-item label="剂量" prop="dosage">
+                                <el-input
+                                    placeholder="请输入剂量(数量加单位，如2片)"
+                                    v-model="medicine.dosage"
+                                ></el-input>
                             </el-form-item>
-                            <el-form-item label="备注">
-                                <el-input v-model="medicine.remark"></el-input>
+                            <el-form-item label="备注" prop="remark">
+                                <el-input
+                                    placeholder="请添加备注"
+                                    v-model="medicine.remark"
+                                ></el-input>
                             </el-form-item>
-                            <el-form-item label="图片"></el-form-item>
+                            <el-form-item label="图片" prop="picture">
+                                <el-upload
+                                    action="/api/common/upload"
+                                    list-type="picture-card"
+                                    :file-list="fileLists[index]"
+                                    :on-success="
+                                        (file) => handleSuccess(file, index)
+                                    "
+                                    :headers="headers"
+                                    v-if="
+                                        !fileLists[index] ||
+                                        fileLists[index].length < 1
+                                    "
+                                >
+                                    <el-icon><Plus /></el-icon>
+                                </el-upload>
+                                <div class="uploadImg">
+                                    <img
+                                        v-if="medicine.picture"
+                                        class="el-upload-list__item-thumbnail"
+                                        :src="medicine.picture"
+                                        alt=""
+                                    />
+                                </div>
+                            </el-form-item>
                         </el-form>
                     </el-card>
                 </el-form-item>
@@ -154,14 +232,177 @@
                     <el-button class="addMedicine" @click="addMedicine"
                         >添加药品</el-button
                     >
-                    <el-button class="submitButton">添加记录</el-button>
+                    <el-button class="submitButton" @click="submitForm"
+                        >添加记录</el-button
+                    >
                 </el-form-item>
             </el-form>
+            <el-dialog
+                align-center
+                class="choseMedicineDialog"
+                v-model="choseVisible"
+                title="选择日常用药"
+                width="400"
+            >
+                <el-card v-for="medicine in commonMedicines">
+                    <div class="delButton">
+                        <el-popconfirm
+                            width="200"
+                            confirm-button-text="确定"
+                            cancel-button-text="取消"
+                            title="确定使用该日常用药？"
+                            @confirm="useCommonMedicine(medicine)"
+                        >
+                            <template #reference>
+                                <el-button
+                                    type="success"
+                                    icon="Select"
+                                    circle
+                                />
+                            </template>
+                        </el-popconfirm>
+                        <el-popconfirm
+                            width="200"
+                            confirm-button-text="删除"
+                            cancel-button-text="取消"
+                            title="确定删除该日常用药？"
+                            @confirm="delMedicine(medicine.id)"
+                        >
+                            <template #reference>
+                                <el-button
+                                    type="danger"
+                                    icon="CloseBold"
+                                    circle
+                                />
+                            </template>
+                        </el-popconfirm>
+                    </div>
+                    <div class="content">
+                        <h1>{{ medicine.name }}</h1>
+                        <p>剂量：{{ medicine.dosage }}</p>
+                        <p>用途：{{ medicine.application }}</p>
+                        <p>备注：{{ medicine.remark }}</p>
+                        <img :src="medicine.picture" />
+                    </div>
+                </el-card>
+            </el-dialog>
+        </el-dialog>
+        <el-dialog
+            align-center
+            class="addClockDialog"
+            v-model="addClockDialog"
+            title="添加用药提醒"
+            width="400"
+        >
+            <el-form
+                class="clockForm"
+                :model="clockInfo"
+                label-position="right"
+                label-width="auto"
+                :rules="clockRules"
+                ref="clockForm"
+            >
+                <el-form-item label="选择时间" prop="clock">
+                    <el-time-picker
+                        v-model="newClock"
+                        placeholder="选择时间"
+                        formatter="HH:mm:ss"
+                        value-format="HH:mm:ss"
+                    ></el-time-picker>
+                </el-form-item>
+                <el-form-item label="药品名称" prop="name">
+                    <el-input
+                        v-model="clockInfo.name"
+                        placeholder="请输入药品名称"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label="用途" prop="application"
+                    ><el-input
+                        v-model="clockInfo.application"
+                        placeholder="请输入药品用途"
+                    ></el-input
+                ></el-form-item>
+                <el-form-item label="剂量" prop="dosage"
+                    ><el-input
+                        v-model="clockInfo.dosage"
+                        placeholder="请输入剂量(数量加单位，如2片)"
+                    ></el-input
+                ></el-form-item>
+                <el-form-item label="备注" prop="remark"
+                    ><el-input
+                        v-model="clockInfo.remark"
+                        placeholder="请添加备注"
+                    ></el-input
+                ></el-form-item>
+                <el-form-item label="图片" prop="picture">
+                    <el-upload
+                        action="/api/common/upload"
+                        list-type="picture-card"
+                        :file-list="fileListsClock"
+                        :on-success="(file) => handleSuccessClock(file)"
+                        :headers="headers"
+                        v-if="!fileListsClock || fileListsClock.length < 1"
+                        ><el-icon><Plus /></el-icon
+                    ></el-upload>
+                    <div class="uploadImg">
+                        <img
+                            v-if="clockInfo.picture"
+                            :src="clockInfo.picture"
+                            alt=""
+                        />
+                    </div>
+                </el-form-item>
+                <el-form-item class="formButton">
+                    <el-button class="choseButton" @click="openChoseVisible2"
+                        >选择日常用药</el-button
+                    >
+                    <el-button class="submitButton" @click="submitFormClock"
+                        >添加提醒</el-button
+                    >
+                </el-form-item>
+            </el-form>
+            <el-dialog
+                align-center
+                class="choseMedicineDialog"
+                v-model="choseVisible"
+                title="选择日常用药"
+                width="400"
+            >
+                <el-card v-for="medicine in commonMedicines">
+                    <div class="delButton">
+                        <el-popconfirm
+                            width="200"
+                            confirm-button-text="确定"
+                            cancel-button-text="取消"
+                            title="确定使用该日常用药？"
+                            @confirm="useCommonMedicine2(medicine)"
+                        >
+                            <template #reference>
+                                <el-button
+                                    type="success"
+                                    icon="Select"
+                                    circle
+                                />
+                            </template>
+                        </el-popconfirm>
+                    </div>
+                    <div class="content">
+                        <h1>{{ medicine.name }}</h1>
+                        <p>剂量：{{ medicine.dosage }}</p>
+                        <p>用途：{{ medicine.application }}</p>
+                        <p>备注：{{ medicine.remark }}</p>
+                        <img :src="medicine.picture" />
+                    </div>
+                </el-card>
+            </el-dialog>
         </el-dialog>
     </div>
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
+import { getToken } from "../../../util/auth";
+import { ElMessage } from "element-plus";
+import { getInfo } from "../../../api/Login";
 import {
     setMedicineRecord,
     updateMedicineRecord,
@@ -178,6 +419,10 @@ import {
     delMedicineClock,
 } from "../../../api/healthRecord";
 
+const token = getToken();
+const headers = {
+    token: token,
+};
 // 日期格式化
 // YYYY-MM-DD
 function formatDate(date) {
@@ -205,6 +450,7 @@ const periodOrder = [
 // 获取数据并处理
 const medicineRecords = ref([]);
 const medicineClocks = ref([]);
+const user = ref({});
 function getData() {
     getMedicineRecord(recordDate.value, recordDate.value)
         .then((res) => {
@@ -243,6 +489,13 @@ function getData() {
 }
 onMounted(() => {
     getData();
+    getInfo()
+        .then((res) => {
+            user.value = res.data;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 });
 // 删除用药记录：如果所选时段标签有记录且大于1种药品，则调用修改用药记录的接口，删除药品；如果只剩一种药品，则调用删除用药记录的接口，删除该条记录
 function delRecord(record, medicineId) {
@@ -287,8 +540,8 @@ const clocks = ref([]);
 const isClock = ({ dayjs }) => {
     return clocks.value.includes(dayjs.format("YYYY-MM-DD"));
 };
-// 添加用药记录：如果所选时段标签有记录，则调用修改用药记录的接口，添加药品；如果没有记录，则调用添加用药记录的接口，添加该条记录
-const addDialogVisible = ref(true);
+
+const addDialogVisible = ref(false);
 const medicineInfo = ref({
     name: "",
     application: "",
@@ -299,17 +552,348 @@ const medicineInfo = ref({
 const recordInfo = ref({
     periodLabel: "",
     recordTime: `${recordDate.value} 12:00:00`,
-    tempMedicines: [],
+    tempMedicines: [
+        { name: "", application: "", dosage: "", remark: "", picture: "" },
+    ],
 });
+// 打开添加页面
+const openAddMedicine = () => {
+    addDialogVisible.value = true;
+    recordInfo.value = {
+        periodLabel: "",
+        recordTime: `${recordDate.value} 12:00:00`,
+        tempMedicines: [
+            { name: "", application: "", dosage: "", remark: "", picture: "" },
+        ],
+    };
+    fileLists.value = {};
+
+    form2.value[0] = ref({
+        name: "",
+        application: "",
+        dosage: "",
+        reamrk: "",
+        picture: "",
+    });
+};
+// 添加药品
 const addMedicine = () => {
+    const newIndex = recordInfo.value.tempMedicines.length;
     recordInfo.value.tempMedicines.push({
-        key: Date.now(),
         name: "",
         application: "",
         dosage: "",
         remark: "",
         picture: "",
     });
+    form2.value[newIndex] = ref({
+        name: "",
+        application: "",
+        dosage: "",
+        reamrk: "",
+        picture: "",
+    });
+};
+// 上传图片
+const fileLists = ref({});
+const handleSuccess = (file, index) => {
+    if (!fileLists.value[index]) {
+        fileLists.value[index] = [];
+    }
+    fileLists.value[index].push(file.data);
+    recordInfo.value.tempMedicines[index].picture = file.data;
+};
+// 添加用药记录：如果medicineRecords有所选时段标签记录，则调用修改用药记录的接口，添加药品；如果没有记录，则调用添加用药记录的接口，添加该条记录
+const addRecord = (periodLabel) => {
+    let data = {};
+    const record = medicineRecords.value.find(
+        (item) => item.periodLabel === periodLabel
+    );
+    if (record) {
+        data.id = record.id;
+        data.addTempMedicines = recordInfo.value.tempMedicines;
+        updateMedicineRecord(data)
+            .then((res) => {
+                console.log(res);
+                getData();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    } else {
+        data.recordTime = recordInfo.value.recordTime;
+        data.periodLabel = recordInfo.value.periodLabel;
+        data.tempMedicines = recordInfo.value.tempMedicines;
+        setMedicineRecord(data)
+            .then((res) => {
+                console.log(res);
+                getData();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+    addDialogVisible.value = false;
+};
+const submitForm = () => {
+    let flag = true;
+    form.value.validate((valid) => {
+        if (!valid) {
+            flag = false;
+            return false;
+        }
+    });
+    const hasEmptyValue = recordInfo.value.tempMedicines.every((medicine) => {
+        // Object.values(medicine) 会返回一个数组，包含 medicine 对象的所有值
+        // Array.prototype.some 方法会检查这个数组中是否有空值
+        return Object.values(medicine).some((value) => value === "");
+    });
+    if (hasEmptyValue) {
+        flag = false;
+    }
+    setTimeout(() => {
+        if (flag) {
+            addRecord(recordInfo.value.periodLabel);
+        } else {
+            ElMessage({
+                message: "请填写完整信息",
+                type: "error",
+            });
+        }
+    }, 500);
+};
+// 表单校验规则
+const form = ref({
+    periodLabel: "",
+    tempMedicines: [],
+});
+const rules = ref({
+    periodLabel: [
+        {
+            required: true,
+            message: "请选择时段标签",
+            trigger: "blur",
+        },
+    ],
+    tempMedicines: [
+        {
+            required: true,
+            message: "请至少添加一种药品",
+            trigger: "blur",
+        },
+    ],
+});
+const form2 = ref([]);
+const rules2 = ref({
+    name: [
+        {
+            required: true,
+            message: "请输入药品名称",
+            trigger: "blur",
+        },
+    ],
+    application: [
+        {
+            required: true,
+            message: "请输入药品用途",
+            trigger: "blur",
+        },
+    ],
+    dosage: [
+        {
+            required: true,
+            message: "请输入剂量",
+            trigger: "blur",
+        },
+    ],
+    remark: [
+        {
+            required: true,
+            message: "请添加备注",
+            trigger: "blur",
+        },
+    ],
+    picture: [
+        {
+            required: true,
+            message: "请上传图片",
+            trigger: "blur",
+        },
+    ],
+});
+// 添加日常用药
+const addToCommonMedicine = (medicine) => {
+    // 检测是否有空值
+    const hasEmptyValue = Object.values(medicine).some((value) => value === "");
+    if (!hasEmptyValue) {
+        let data = {
+            name: medicine.name,
+            application: medicine.application,
+            dosage: medicine.dosage,
+            remark: medicine.remark,
+            picture: medicine.picture,
+        };
+        setCommonMedicine(data)
+            .then((res) => {
+                console.log(res);
+                if (res.code === 200) {
+                    ElMessage({
+                        message: res.msg,
+                        type: "success",
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+};
+const choseVisible = ref(false);
+const choseIndex = ref(0);
+const commonMedicines = ref([]);
+// 打开选择日常用药
+const openChoseVisible = (index) => {
+    getCommonMedicineList();
+    choseIndex.value = index;
+    choseVisible.value = true;
+};
+const openChoseVisible2 = () => {
+    getCommonMedicineList();
+    choseVisible.value = true;
+};
+// 获取日常用药
+const getCommonMedicineList = () => {
+    getCommonMedicine(user.value.userId)
+        .then((res) => {
+            commonMedicines.value = res.data;
+            console.log(commonMedicines.value);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+// 删除日常用药
+const delMedicine = (id) => {
+    delCommonMedicine(id)
+        .then((res) => {
+            getCommonMedicineList();
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+// 使用日常用药
+const useCommonMedicine = (medicine) => {
+    recordInfo.value.tempMedicines[choseIndex.value] = medicine;
+    if (!fileLists.value[choseIndex.value]) {
+        fileLists.value[choseIndex.value] = [];
+    }
+    fileLists.value[choseIndex.value].push(medicine.picture);
+    choseVisible.value = false;
+};
+const useCommonMedicine2 = (medicine) => {
+    clockInfo.value = medicine;
+    if (!fileListsClock.value) {
+        fileListsClock.value = [];
+    }
+    fileListsClock.value.push(medicine.picture);
+    choseVisible.value = false;
+};
+
+const addClockDialog = ref(true);
+const clockForm = ref();
+// 获取当前时间HH:mm:ss
+const newClock = ref(new Date().toTimeString().substr(0, 8));
+const clockInfo = ref({
+    naem: "",
+    application: "",
+    picture: "",
+    dosage: "",
+    reamrk: "",
+    clock: "",
+});
+// 打开添加提醒
+const openAddClock = () => {
+    addClockDialog.value = true;
+    clockInfo.value = {
+        name: "",
+        application: "",
+        picture: "",
+        dosage: "",
+        remark: "",
+        clock: "",
+    };
+    fileListsClock.value = [];
+};
+const fileListsClock = ref([]);
+const handleSuccessClock = (file) => {
+    fileListsClock.value.push(file.data);
+    clockInfo.value.picture = file.data;
+};
+// 用药提醒表单校验规则
+const clockRules = ref({
+    name: [
+        {
+            required: true,
+            message: "请输入药品名称",
+            trigger: "blur",
+        },
+    ],
+    application: [
+        {
+            required: true,
+            message: "请输入药品用途",
+            trigger: "blur",
+        },
+    ],
+    dosage: [
+        {
+            required: true,
+            message: "请输入剂量",
+            trigger: "blur",
+        },
+    ],
+    remark: [
+        {
+            required: true,
+            message: "请添加备注",
+            trigger: "blur",
+        },
+    ],
+    picture: [
+        {
+            required: true,
+            message: "请上传图片",
+            trigger: "blur",
+        },
+    ],
+});
+const submitFormClock = () => {
+    clockForm.value.validate((valid) => {
+        if (valid) {
+            addClock();
+            addClockDialog.value = false;
+        } else {
+            return false;
+        }
+    });
+};
+const addClock = () => {
+    let data = {
+        name: clockInfo.value.name,
+        application: clockInfo.value.application,
+        dosage: clockInfo.value.dosage,
+        remark: clockInfo.value.remark,
+        picture: clockInfo.value.picture,
+        clock: `${recordDate.value} ${newClock.value}`,
+    };
+    setMedicineClock(data)
+        .then((res) => {
+            getData();
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 };
 </script>
 <style lang="less" scoped>
@@ -458,11 +1042,25 @@ const addMedicine = () => {
     }
     .addRecordDialog {
         .recordForm {
+            :deep(.el-form-item) {
+                .el-select {
+                    .el-select__wrapper {
+                        border-radius: 1vh;
+                    }
+                }
+            }
             .medicineCard {
                 border-radius: 2vh;
+                width: 80vh;
                 .el-form {
                     .el-form-item {
-                        margin-top: 1vh;
+                        margin-top: 2vh;
+                        .uploadImg {
+                            img {
+                                width: 15vh;
+                                height: 15vh;
+                            }
+                        }
                         :deep(.el-input) {
                             .el-input__wrapper {
                                 border-radius: 1vh;
@@ -487,6 +1085,87 @@ const addMedicine = () => {
                 color: #fff;
                 font-size: 1.8vh;
                 font-weight: bold;
+            }
+        }
+        .choseMedicineDialog {
+            .el-card {
+                border-radius: 5vh;
+                margin-bottom: 1vh;
+                padding-bottom: 2vh;
+                .el-card__body {
+                    padding-top: 0vh;
+                }
+                .delButton {
+                    float: right;
+                    margin-top: 2.5vh;
+                }
+                .content {
+                    float: left;
+                }
+                img {
+                    width: 10vh;
+                    height: 10vh;
+                }
+            }
+        }
+    }
+    .addClockDialog {
+        .el-form {
+            .el-form-item {
+                .el-time-picker {
+                    .el-input__wrapper {
+                        border-radius: 1vh;
+                    }
+                }
+                :deep(.el-input) {
+                    .el-input__wrapper {
+                        border-radius: 1vh;
+                    }
+                }
+                .uploadImg {
+                    img {
+                        width: 15vh;
+                        height: 15vh;
+                    }
+                }
+            }
+            .formButton {
+                padding-left: 20%;
+                .choseButton {
+                    height: 100%;
+                    border-radius: 3vh;
+                    font-size: 1.8vh;
+                    font-weight: bold;
+                }
+                .submitButton {
+                    height: 100%;
+                    border-radius: 3vh;
+                    background-color: #a4c681;
+                    color: #fff;
+                    font-size: 1.8vh;
+                    font-weight: bold;
+                }
+            }
+        }
+        .choseMedicineDialog {
+            .el-card {
+                border-radius: 5vh;
+                margin-bottom: 1vh;
+                padding-bottom: 2vh;
+                .el-card__body {
+                    padding-top: 0vh;
+                }
+                .delButton {
+                    float: right;
+                    margin-top: 2.5vh;
+                }
+                .content {
+                    float: left;
+                }
+                img {
+                    width: 10vh;
+                    height: 10vh;
+                }
             }
         }
     }
