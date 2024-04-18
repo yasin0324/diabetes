@@ -800,7 +800,7 @@ const useCommonMedicine2 = (medicine) => {
     choseVisible.value = false;
 };
 
-const addClockDialog = ref(true);
+const addClockDialog = ref(false);
 const clockForm = ref();
 // 获取当前时间HH:mm:ss
 const newClock = ref(new Date().toTimeString().substr(0, 8));

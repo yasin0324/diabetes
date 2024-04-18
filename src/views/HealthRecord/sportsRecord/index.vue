@@ -17,59 +17,65 @@
                 <div class="sportsVisible">
                     <div
                         id="sportsChart"
-                        style="width: 40vh; height: 40vh"
+                        style="width: 50vh; height: 50vh"
                     ></div>
                 </div>
-                <div class="sportTable">
-                    <div class="table">
-                        <el-table
-                            height="30vh"
-                            class="sportList"
-                            :data="sportsData"
-                            stripe
-                        >
-                            <el-table-column
-                                fixed="left"
-                                label="运动"
-                                prop="sport"
-                                width="110"
-                            ></el-table-column>
-                            <el-table-column
-                                label="时长/min"
-                                prop="time"
-                                width="100"
-                            ></el-table-column>
-                            <el-table-column
-                                label="消耗热量/kcal"
-                                prop="calorie"
-                                width="100"
-                            ></el-table-column>
-                            <el-table-column
-                                label="时段标签"
-                                prop="periodLabel"
-                                width="100"
-                            >
-                                <template #default="scope">
-                                    <el-tag>{{ scope.row.periodLabel }}</el-tag>
-                                </template>
-                            </el-table-column>
-                            <el-table-column
-                                fixed="right"
-                                label="编辑"
-                                width="96"
-                                ><template #default>
-                                    <el-button link size="small" type="primary"
-                                        >编辑</el-button
-                                    >
-                                    <el-button link size="small" type="danger">
-                                        删除
-                                    </el-button>
-                                </template></el-table-column
-                            >
-                        </el-table>
+                <div class="sportsRecord">
+                    <div class="sportRecord">
+                        <div class="picture">
+                            <img src="../../../common/image/face.png" />
+                        </div>
+                        <div class="name">散步</div>
+                        <div class="time">30分钟</div>
+                        <div class="heat">78千卡</div>
+                        <div class="type">
+                            <el-tag type="success">早晨</el-tag>
+                        </div>
+                        <div class="button">
+                            <el-button class="update">编辑</el-button>
+                            <el-button class="delete">删除</el-button>
+                        </div>
                     </div>
-                    <div class="addButton">
-                        <el-button type="primary">添加运动</el-button>
+                    <div class="sportRecord">
+                        <div class="addFace" v-if="!added">
+                            <el-button @click="added = true"
+                                >添 加 记 录</el-button
+                            >
+                        </div>
+                        <div class="addBack" v-else>
+                            <div class="sports">
+                                <el-cascader
+                                    :options="sports"
+                                    :show-all-levels="false"
+                                    placeholder="选择运动"
+                                ></el-cascader>
+                            </div>
+                            <div class="minute">
+                                <el-input-number
+                                    v-model="sportsNum"
+                                    :min="1"
+                                    controls-position="right"
+                                    step="30"
+                                />
+                            </div>
+                            <div class="periodLabel">
+                                <el-select
+                                    v-model="periodLabel"
+                                    placeholder="时段标签"
+                                >
+                                    <el-option
+                                        v-for="item in periodLabels"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                    />
+                                </el-select>
+                            </div>
+                            <div class="addButton">
+                                <el-button class="close">取消</el-button>
+                                <el-button class="confirm">确定</el-button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -103,6 +109,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import * as echarts from "echarts";
+import { getToken } from "../../../util/auth.js";
+
+const token = getToken();
+const headers = {
+    token: token,
+};
 
 // 日期格式化
 // YYYY-MM-DD HH:mm:ss
@@ -404,6 +416,56 @@ onMounted(() => {
     showSports();
     showDatesSports();
 });
+
+// 运动类别
+const sportsType = ref(["走路", "跑步"]);
+const added = ref(false);
+const sportsNum = ref(60);
+const sports = ref([
+    {
+        value: "走路",
+        label: "走路",
+        children: [
+            {
+                value: "慢走",
+                label: "慢走",
+            },
+            {
+                value: "散步",
+                label: "散步",
+            },
+        ],
+    },
+    {
+        value: "跑步",
+        label: "跑步",
+        children: [
+            {
+                value: "跑步(慢)",
+                label: "跑步(慢)",
+            },
+            {
+                value: "跑步(快)",
+                label: "跑步(快)",
+            },
+        ],
+    },
+]);
+const periodLabel = ref("");
+const periodLabels = ref([
+    {
+        value: "早晨",
+        label: "早晨",
+    },
+    {
+        value: "中午",
+        label: "中午",
+    },
+    {
+        value: "晚上",
+        label: "晚上",
+    },
+]);
 </script>
 <style lang="less" scoped>
 .main {
@@ -436,28 +498,106 @@ onMounted(() => {
             flex-direction: row;
             justify-content: space-around;
             align-items: center;
-            .sportTable {
+            .sportsRecord {
                 display: flex;
-                flex-direction: row;
-                align-items: center;
-                :deep(.table) {
-                    .el-table,
-                    .el-table th,
-                    .el-table td,
-                    .el-table tr {
-                        background-color: transparent !important;
+                flex-direction: column;
+                justify-content: start;
+                height: 50vh;
+                overflow: scroll;
+                overflow-x: none;
+                scrollbar-color: #fff #ecf0f3;
+                scrollbar-width: thin;
+                .sportRecord {
+                    flex-shrink: 0;
+                    width: 70vh;
+                    height: 10vh;
+                    background-color: #fff;
+                    border-radius: 5vh;
+                    margin-top: 1vh;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    position: relative;
+                    .picture {
+                        margin-left: 2vh;
+                        img {
+                            width: 8vh;
+                            height: 8vh;
+                            border-radius: 4vh;
+                        }
                     }
-                    .el-table--border::after,
-                    .el-table--group::after,
-                    .el-table::before {
-                        background-color: transparent !important;
+                    .name {
+                        margin-left: 2vh;
+                        font-size: 2.6vh;
+                        font-weight: bold;
                     }
-                    .sportList {
-                        background-color: transparent !important;
+                    .time {
+                        margin-left: 2vh;
+                        color: #01111abe;
                     }
-                }
-                .addButton {
-                    margin-left: 1vh;
+                    .heat {
+                        margin-left: 2vh;
+                        color: #01111abe;
+                    }
+                    .type {
+                        margin-left: 2vh;
+                        margin-top: 0.5vh;
+                    }
+                    .button {
+                        position: absolute;
+                        right: 1vh;
+                        .el-button {
+                            border-radius: 2vh;
+                            font-weight: bold;
+                        }
+                        .delete {
+                            background-color: #a4c681;
+                            color: #fff;
+                        }
+                    }
+                    .addFace {
+                        width: 100%;
+                        .el-button {
+                            margin: 0 20vh;
+                            height: 5vh;
+                            width: 30vh;
+                            border-radius: 2vh;
+                            background-color: #a4c681;
+                            color: #fff;
+                            font-weight: bold;
+                        }
+                    }
+                    .addBack {
+                        width: 100%;
+                        display: flex;
+                        flex-direction: row;
+                        position: relative;
+                        .sports {
+                            margin-left: 2vh;
+                            width: 15vh;
+                            .el-cascader {
+                                width: 15vh;
+                            }
+                        }
+                        .minute {
+                            width: 10vh;
+                            margin-left: 2vh;
+                            .el-input-number {
+                                width: 10vh;
+                            }
+                        }
+                        .periodLabel {
+                            margin-left: 2vh;
+                            width: 15vh;
+                            .el-select {
+                                width: 15vh;
+                            }
+                        }
+                        .addButton {
+                            position: absolute;
+                            right: 2vh;
+                        }
+                    }
                 }
             }
         }
