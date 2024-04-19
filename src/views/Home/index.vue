@@ -78,17 +78,7 @@
                 <p>
                     <a href="#">关于我们</a>
                     |
-                    <a href="#">使用指南</a>
-                    |
-                    <a href="#">技术支持</a>
-                    |
-                    <a href="#">隐私政策</a>
-                    |
-                    <a href="#">用户协议</a>
-                    |
-                    <a href="#">常见问题</a>
-                    |
-                    <a href="#">联系我们</a>
+                    <a href="#" @click="toAbout">反馈与公告</a>
                 </p>
                 <p>版权所有 © 控糖宝-糖尿病患者个性化血糖管理系统</p>
             </div>
@@ -145,6 +135,10 @@ function getNews() {
 // 网页跳转函数
 const toUrlnews = () =>{
     router.push("/articles")
+}
+
+const toAbout = () =>{
+    router.push("/about")
 }
 </script>
 

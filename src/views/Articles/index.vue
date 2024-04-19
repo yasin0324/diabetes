@@ -96,87 +96,95 @@
                                 </p>
                                 </el-col>
                                 <el-col :span="4" class="svgColor" v-if="showAll">
-                                    <div>
-                                        <svg 
-                                        v-bind:key="index" 
-                                        class="icon" 
-                                        viewBox="0 0 1024 1024" 
-                                        version="1.1" 
-                                        xmlns="http://www.w3.org/2000/svg" 
-                                        p-id="13687" 
-                                        width="32" 
-                                        height="32"
-                                        @click="toggleColor1(index,item)"
-                                    >
-                                        <path 
-                                        d="M534.8 100.8l118.1 239.3c3.7 7.5 10.9 12.7 19.2 13.9l264 38.4c20.9 3 29.2 28.7 14.1 43.4L759.2 622c-6 5.8-8.7 14.3-7.3 22.5l45.1 263c3.6 20.8-18.3 36.7-36.9 26.8L523.8 810.2c-7.4-3.9-16.3-3.9-23.7 0L264 934.4c-18.7 9.8-40.5-6-36.9-26.8l45.1-263c1.4-8.3-1.3-16.7-7.3-22.5L73.8 435.8c-15.1-14.7-6.8-40.4 14.1-43.4l264-38.4c8.3-1.2 15.5-6.4 19.2-13.9l118.1-239.3c9.3-18.9 36.3-18.9 45.6 0z" 
-                                        :fill="fillColor1[index].color" 
-                                        class="path"
-                                    ></path>
-                                        </svg>
-                                        {{ item.collect }}
-                                    </div>
-                                    <div>
-                                        <svg 
+                                    <div class="svgbox1">
+                                        <div style="width:100%">
+                                            <svg 
                                             v-bind:key="index" 
                                             class="icon" 
                                             viewBox="0 0 1024 1024" 
                                             version="1.1" 
                                             xmlns="http://www.w3.org/2000/svg" 
+                                            p-id="13687" 
                                             width="32" 
                                             height="32"
-                                            @click="toggleColor2(index,item)"
+                                            @click="toggleColor1(index,item)"
                                         >
                                             <path 
-                                            d="M500.736 962.048a21.568 21.568 0 0 1-15.36-6.4l-359.36-364.8C44.736 509.632 0 412.928 0 318.592 0 166.272 101.12 64 251.712 64c129.472 0 180.736 57.536 249.024 137.792C569.024 121.536 620.352 64 749.76 64c150.592 0 251.776 102.336 251.776 254.592 0 94.336-44.8 191.04-126.08 272.384L516.16 955.52a21.632 21.632 0 0 1-15.36 6.464" 
-                                            :fill="fillColor2[index].color"
+                                            d="M534.8 100.8l118.1 239.3c3.7 7.5 10.9 12.7 19.2 13.9l264 38.4c20.9 3 29.2 28.7 14.1 43.4L759.2 622c-6 5.8-8.7 14.3-7.3 22.5l45.1 263c3.6 20.8-18.3 36.7-36.9 26.8L523.8 810.2c-7.4-3.9-16.3-3.9-23.7 0L264 934.4c-18.7 9.8-40.5-6-36.9-26.8l45.1-263c1.4-8.3-1.3-16.7-7.3-22.5L73.8 435.8c-15.1-14.7-6.8-40.4 14.1-43.4l264-38.4c8.3-1.2 15.5-6.4 19.2-13.9l118.1-239.3c9.3-18.9 36.3-18.9 45.6 0z" 
+                                            :fill="fillColor1[index].color" 
                                             class="path"
                                             ></path>
-                                        </svg>
-                                        {{ item.likeNum }}
+                                            </svg>
+                                            {{ item.collect }}
+                                        </div>
+                                    </div>
+                                    <div class="svgbox2">
+                                        <div style="width:100%">
+                                            <svg 
+                                                v-bind:key="index" 
+                                                class="icon" 
+                                                viewBox="0 0 1024 1024" 
+                                                version="1.1" 
+                                                xmlns="http://www.w3.org/2000/svg" 
+                                                width="32" 
+                                                height="32"
+                                                @click="toggleColor2(index,item)"
+                                            >
+                                                <path 
+                                                d="M500.736 962.048a21.568 21.568 0 0 1-15.36-6.4l-359.36-364.8C44.736 509.632 0 412.928 0 318.592 0 166.272 101.12 64 251.712 64c129.472 0 180.736 57.536 249.024 137.792C569.024 121.536 620.352 64 749.76 64c150.592 0 251.776 102.336 251.776 254.592 0 94.336-44.8 191.04-126.08 272.384L516.16 955.52a21.632 21.632 0 0 1-15.36 6.464" 
+                                                :fill="fillColor2[index].color"
+                                                class="path"
+                                                ></path>
+                                            </svg>
+                                            {{ item.likeNum }}
+                                        </div>
                                     </div>
                                 </el-col>
                                 <el-col :span="4" class="svgColor" v-if="showLike">
-                                    <div>
-                                        <svg 
+                                    <div class="svgbox2">
+                                        <div style="width:100%">
+                                            <svg 
+                                                v-bind:key="index" 
+                                                class="icon" 
+                                                viewBox="0 0 1024 1024" 
+                                                version="1.1" 
+                                                xmlns="http://www.w3.org/2000/svg" 
+                                                width="32" 
+                                                height="32"
+                                                @click="toggleColor2(index,item)"
+                                            >
+                                                <path 
+                                                d="M500.736 962.048a21.568 21.568 0 0 1-15.36-6.4l-359.36-364.8C44.736 509.632 0 412.928 0 318.592 0 166.272 101.12 64 251.712 64c129.472 0 180.736 57.536 249.024 137.792C569.024 121.536 620.352 64 749.76 64c150.592 0 251.776 102.336 251.776 254.592 0 94.336-44.8 191.04-126.08 272.384L516.16 955.52a21.632 21.632 0 0 1-15.36 6.464" 
+                                                :fill="fillColor2[index].color"
+                                                class="path"
+                                                ></path>
+                                            </svg>
+                                            {{ item.likeNum }}
+                                        </div>
+                                    </div>
+                                </el-col>
+                                <el-col :span="4" class="svgColor" v-if="showCollect">
+                                    <div class="svgbox1">
+                                        <div style="width:100%">
+                                            <svg 
                                             v-bind:key="index" 
                                             class="icon" 
                                             viewBox="0 0 1024 1024" 
                                             version="1.1" 
                                             xmlns="http://www.w3.org/2000/svg" 
+                                            p-id="13687" 
                                             width="32" 
                                             height="32"
-                                            @click="toggleColor2(index,item)"
+                                            @click="toggleColor1(index,item)"
                                         >
                                             <path 
-                                            d="M500.736 962.048a21.568 21.568 0 0 1-15.36-6.4l-359.36-364.8C44.736 509.632 0 412.928 0 318.592 0 166.272 101.12 64 251.712 64c129.472 0 180.736 57.536 249.024 137.792C569.024 121.536 620.352 64 749.76 64c150.592 0 251.776 102.336 251.776 254.592 0 94.336-44.8 191.04-126.08 272.384L516.16 955.52a21.632 21.632 0 0 1-15.36 6.464" 
-                                            :fill="fillColor2[index].color"
+                                            d="M534.8 100.8l118.1 239.3c3.7 7.5 10.9 12.7 19.2 13.9l264 38.4c20.9 3 29.2 28.7 14.1 43.4L759.2 622c-6 5.8-8.7 14.3-7.3 22.5l45.1 263c3.6 20.8-18.3 36.7-36.9 26.8L523.8 810.2c-7.4-3.9-16.3-3.9-23.7 0L264 934.4c-18.7 9.8-40.5-6-36.9-26.8l45.1-263c1.4-8.3-1.3-16.7-7.3-22.5L73.8 435.8c-15.1-14.7-6.8-40.4 14.1-43.4l264-38.4c8.3-1.2 15.5-6.4 19.2-13.9l118.1-239.3c9.3-18.9 36.3-18.9 45.6 0z" 
+                                            :fill="fillColor1[index].color" 
                                             class="path"
-                                            ></path>
-                                        </svg>
-                                        {{ item.likeNum }}
-                                    </div>
-                                </el-col>
-                                <el-col :span="4" class="svgColor" v-if="showCollect">
-                                    <div>
-                                        <svg 
-                                        v-bind:key="index" 
-                                        class="icon" 
-                                        viewBox="0 0 1024 1024" 
-                                        version="1.1" 
-                                        xmlns="http://www.w3.org/2000/svg" 
-                                        p-id="13687" 
-                                        width="32" 
-                                        height="32"
-                                        @click="toggleColor1(index,item)"
-                                    >
-                                        <path 
-                                        d="M534.8 100.8l118.1 239.3c3.7 7.5 10.9 12.7 19.2 13.9l264 38.4c20.9 3 29.2 28.7 14.1 43.4L759.2 622c-6 5.8-8.7 14.3-7.3 22.5l45.1 263c3.6 20.8-18.3 36.7-36.9 26.8L523.8 810.2c-7.4-3.9-16.3-3.9-23.7 0L264 934.4c-18.7 9.8-40.5-6-36.9-26.8l45.1-263c1.4-8.3-1.3-16.7-7.3-22.5L73.8 435.8c-15.1-14.7-6.8-40.4 14.1-43.4l264-38.4c8.3-1.2 15.5-6.4 19.2-13.9l118.1-239.3c9.3-18.9 36.3-18.9 45.6 0z" 
-                                        :fill="fillColor1[index].color" 
-                                        class="path"
-                                    ></path>
-                                        </svg>
-                                        {{ item.collect }}
+                                        ></path>
+                                            </svg>
+                                            {{ item.collect }}
+                                        </div>
                                     </div>
                                 </el-col>
                             </el-row>
@@ -190,12 +198,12 @@
                         <ul>
                             <li style="color: #a3c576; font-size:1.5vw"> <el-icon style="padding-right:10px"><Pointer /></el-icon>文章点赞排行</li>
                             <li v-for="(item,index) in frontRight" :key="index" class="frontNews">
-                                <a href="" >
+                                <a :href="item.link" >
                                     <p style="width: 60%;">
-                                        {{ index +".  " + item.head }}
+                                        {{ (index+1) +".  " + item.title }}
                                     </p>
                                     <p style="width: 40%;">
-                                        点赞量: {{ item }}
+                                        点赞量: {{ item.likeNum }}
                                     </p>
                                 </a>
                             </li>
@@ -208,6 +216,7 @@
 </template>
 <script setup>
 import { ref,onMounted } from 'vue'
+import { getToken } from '../../util/auth'
 import { Search } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import {
@@ -217,13 +226,17 @@ import {
     UserReduceLikeNews,
     getUserCollectNews,
     UserAddCollectNews,
-    UserReduceCollectNews
+    UserReduceCollectNews,
+    getTopNews
 } from '../../api/Articles/index'
-import { data } from 'jquery'
 
 let input = ref('');
 function searchNews(){
-    getAll(input);
+    ElMessage({
+        message: '查询成功',
+        type: 'success',
+    })
+    getAll(input.value);
 }
 
 // 中心板块文章内容
@@ -248,6 +261,7 @@ onMounted(()=>{
 function getAll(data){
     getLikeNews();
     getCollectNews(data);
+    getTopAllNews();
 }
 
 // 获取文章信息
@@ -278,7 +292,7 @@ function getNews(dataType) {
                 fillColor1.value = fillColor1Array;
                 fillColor2.value = fillColor2Array;
 
-                console.log(fillColor2.value)
+                // console.log(fillColor2.value)
                 const defaultColorLike = '#ff0000';
                 const defaultColorCollect = '#FFA500';
                 fillLike.value.forEach((item1, index1) => {
@@ -325,7 +339,7 @@ function getNews(dataType) {
                 fillColor1.value = fillColor1Array;
                 fillColor2.value = fillColor2Array;
 
-                console.log(fillColor2.value)
+                // console.log(fillColor2.value)
                 const defaultColorLike = '#ff0000';
                 const defaultColorCollect = '#FFA500';
                 fillLike.value.forEach((item1, index1) => {
@@ -381,7 +395,6 @@ const activeIndexLeft = ref(-1)
 const activeIndexHead = ref(0)
 
 function highlightItemLeft(index,item) {
-    // console.log(item)
     activeIndexLeft.value = index;
     activeIndexHead.value = -1;
     if(item === "我的收藏"){
@@ -458,9 +471,17 @@ function highlightItemHead(index,item) {
 }
 
 function toggleColor1(index,item) {
+  if(!getToken){
+    return;
+  }
+  const svgWidth = document.querySelector(".svgbox1 div");
+  svgWidth.style.width = "10%";
+  setTimeout(() => {
+        // 将宽度放大到原始宽度
+        svgWidth.style.width = "100%";
+    }, 500);
   fillColor1.value[index].color = fillColor1.value[index].color === '#dbdbdb' ? '#FFA500' : '#dbdbdb'
   activeIndex.value = index
-//   console.log(item)
   if(fillColor1.value[index].color === "#FFA500"){
     item.collect++;
     UserAddCollectNews(item.id)
@@ -469,7 +490,6 @@ function toggleColor1(index,item) {
             message: '收藏成功',
             type: 'success',
         })
-        // console.log(res)
     })
     .catch((error) =>{
         console.log(error)
@@ -482,7 +502,6 @@ function toggleColor1(index,item) {
             message: '取消收藏成功',
             type: 'warning',
         })
-        // console.log(res)
     })
     .catch((error) =>{
         console.log(error)
@@ -491,6 +510,16 @@ function toggleColor1(index,item) {
 }
 
 function toggleColor2(index,item) {
+  if(!getToken){
+    return;
+  }
+  const svgWidth = document.querySelector(".svgbox2 div");
+  svgWidth.style.width = "10%";
+  setTimeout(() => {
+        // 将宽度放大到原始宽度
+        svgWidth.style.width = "100%";
+    }, 500);
+//   svgWidth.style.width = "45%"
   fillColor2.value[index].color = fillColor2.value[index].color === '#dbdbdb' ? '#ff0000' : '#dbdbdb'
   activeIndex.value = index
   if(fillColor2.value[index].color === "#ff0000"){
@@ -523,30 +552,22 @@ function toggleColor2(index,item) {
 }
 
 // 右侧排行榜单
-let frontRight = ref([
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-    {head:"原神启动！！！！！！！！！！！！！！!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"},
-    {head:"原神启动！！！！！！！！！！！！！！"},
-])
+let frontRight = ref('')
+
+function getTopAllNews(){
+    getTopNews()
+    .then(res =>{
+        // console.log(res)
+        frontRight.value = res.data
+        console.log(frontRight)
+    })
+    .catch(error=>{
+        console.log(error)
+    })
+}
+
 </script>
+
 <style lang="less" scoped>
 .header {
     width: 100%;
@@ -660,8 +681,26 @@ let frontRight = ref([
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    .svgbox1{
+                        width: 55%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        div{
+                            transition: width 0.2s ease;
+                        }
+                        
+                    }
+                    .svgbox2{
+                        width: 45%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        div{
+                            transition: width 0.2s ease;
+                        }
+                    }
                     div{
-                        width: 50%;
                         padding: 5px;
                         font-size: 1vw;
                         text-align: center;
@@ -716,7 +755,6 @@ let frontRight = ref([
                     p:hover{
                         color: #a3c57d;
                         background-color: #f3f3f3;
-                        border-bottom: 1px solid #a3c57d;
                         box-sizing: border-box;
                         transition: color 0.3s ease;
                     }

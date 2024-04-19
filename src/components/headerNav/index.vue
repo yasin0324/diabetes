@@ -54,9 +54,9 @@
 </template>
 <script setup>
 import { useRouter } from "vue-router";
-import service from "../../util/request";
 import { getInfo, logout } from "../../api/Login";
 import { onMounted, ref, computed } from "vue";
+import { getToken, removeToken,setToken } from "../../util/auth";
 
 const router = useRouter();
 const token = localStorage.getItem("token");
@@ -67,7 +67,7 @@ const routerArr = [
     { name: "健康记录", path: "health" },
     { name: "工具栏", path: "tool" },
     { name: "文章推荐", path: "articles" },
-    { name: "商城", path: "store" },
+    { name: "关于", path: "about" },
 ];
 
 const defaultPage = computed(() => {
@@ -81,6 +81,7 @@ const toLogin = () => {
 
 // 登出
 const toLogout = () => {
+    removeToken();
     logout()
         .then((res) => {
             console.log(res);
