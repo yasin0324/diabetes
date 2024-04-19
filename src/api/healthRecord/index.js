@@ -370,3 +370,130 @@ export function delMedicineClock(id) {
     });
 }
 // -----------------------------------------
+
+// 运动记录----------------------------------
+// 新增记录
+export function setSportsRecord(data) {
+    return request({
+        method: "post",
+        url: "/customer/sport/record/save",
+        headers: {
+            token: token,
+        },
+        data: {
+            periodLabel: data.periodLabel,
+            recordTime: data.recordTime,
+            remark: data.remark,
+            sportDetailAndRecords: data.sportDetailAndRecords,
+            // sportDetailAndRecords: {
+            //     sportId,
+            //     time,
+            // },
+        },
+    });
+}
+// 修改记录
+export function updateSportsRecord(data) {
+    return request({
+        method: "put",
+        url: "/customer/sport/record/update",
+        headers: {
+            token: token,
+        },
+        data: {
+            id: data.id,
+            periodLabel: data.periodLabel,
+            recordTime: data.recordTime,
+            remark: data.remark,
+            addSportDetailAndRecords: data.addSportDetailAndRecords,
+            removeSportDetailAndRecords: data.removeSportDetailAndRecords,
+        },
+    });
+}
+// 查询记录
+export function getSportsRecord(begin, end) {
+    return request({
+        method: "get",
+        url: "/sport/record/list",
+        headers: {
+            token: token,
+        },
+        params: {
+            begin: begin,
+            end: end,
+        },
+    });
+}
+// 删除记录
+export function delSportsRecord(id) {
+    return request({
+        method: "delete",
+        url: `/customer/sport/record/delete/${id}`,
+        headers: {
+            token: token,
+        },
+    });
+}
+// 根据运动信息id获取运动信息
+export function getSportsInfo(id) {
+    return request({
+        method: "get",
+        url: `/sport/detail/list/${id}`,
+        headers: {
+            token: token,
+        },
+    });
+}
+// 根据运动类别获取运动信息
+export function getSportsList(type) {
+    return request({
+        method: "get",
+        url: "/sport/detail/list/type",
+        headers: {
+            token: token,
+        },
+        params: {
+            type: type,
+        },
+    });
+}
+// 根据运动名称获取运动信息
+export function getSportsByName(name) {
+    return request({
+        method: "get",
+        url: "/sport/detail/list/name",
+        headers: {
+            token: token,
+        },
+        params: {
+            name: name,
+        },
+    });
+}
+// 获取所有运动类别
+export function getAllSportsType() {
+    return request({
+        method: "get",
+        url: "/list/sport/detail/type",
+        headers: {
+            token: token,
+        },
+    });
+}
+// -----------------------------------------
+
+// 生成excel表格
+export function createExcel(begin, end) {
+    return request({
+        method: "get",
+        url: "/customer/report",
+        responseType: "blob",
+        headers: {
+            token: token,
+        },
+        params: {
+            begin: begin,
+            end: end,
+        },
+    });
+}
