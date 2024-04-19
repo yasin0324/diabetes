@@ -109,7 +109,7 @@ export function updateDietRecord(data) {
             recordTime: data.recordTime,
             remark: data.remark,
             addFoodAndDiets: data.addFoodAndDiets,
-            delFoodAndDiets: data.delFoodAndDiets,
+            removeFoodAndDietIds: data.removeFoodAndDietIds,
         },
     });
 }

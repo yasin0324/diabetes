@@ -244,12 +244,70 @@
                                         width="96"
                                         label="编辑"
                                         ><template #default="scope">
-                                            <el-button
-                                                link
-                                                size="small"
-                                                type="primary"
-                                                >编辑</el-button
+                                            <el-popover
+                                                placement="left"
+                                                trigger="click"
+                                                title="重量/克"
+                                                :visible="
+                                                    breakfastPopoverVisible[
+                                                        scope.row.id
+                                                    ]
+                                                "
                                             >
+                                                <template #reference>
+                                                    <el-button
+                                                        link
+                                                        size="small"
+                                                        type="primary"
+                                                        @click="
+                                                            breakfastPopoverVisible[
+                                                                scope.row.id
+                                                            ] = true
+                                                        "
+                                                        >编辑</el-button
+                                                    >
+                                                </template>
+                                                <template #default>
+                                                    <div class="number">
+                                                        <el-input-number
+                                                            v-model="
+                                                                scope.row
+                                                                    .foodNum
+                                                            "
+                                                            :step="50"
+                                                            size="small"
+                                                        ></el-input-number>
+                                                    </div>
+                                                    <div
+                                                        class="buttonFooter"
+                                                        style="margin-left: 1vh"
+                                                    >
+                                                        <el-button
+                                                            size="small"
+                                                            @click="
+                                                                breakfastPopoverVisible[
+                                                                    scope.row.id
+                                                                ] = false
+                                                            "
+                                                            >取消</el-button
+                                                        >
+                                                        <el-button
+                                                            size="small"
+                                                            @click="
+                                                                updateFood(
+                                                                    '早餐',
+                                                                    scope.row
+                                                                ),
+                                                                    (breakfastPopoverVisible[
+                                                                        scope.row.id
+                                                                    ] = false)
+                                                            "
+                                                            >确定</el-button
+                                                        >
+                                                    </div>
+                                                </template>
+                                            </el-popover>
+
                                             <el-button
                                                 link
                                                 size="small"
@@ -373,7 +431,6 @@
                                             </div>
                                         </template>
                                     </el-table-column>
-
                                     <el-table-column
                                         label="GI(升糖指数)"
                                         prop="gi"
@@ -389,12 +446,70 @@
                                         width="96"
                                         label="编辑"
                                         ><template #default="scope">
-                                            <el-button
-                                                link
-                                                size="small"
-                                                type="primary"
-                                                >编辑</el-button
+                                            <el-popover
+                                                placement="left"
+                                                trigger="click"
+                                                title="重量/克"
+                                                :visible="
+                                                    lunchPopoverVisible[
+                                                        scope.row.id
+                                                    ]
+                                                "
                                             >
+                                                <template #reference>
+                                                    <el-button
+                                                        link
+                                                        size="small"
+                                                        type="primary"
+                                                        @click="
+                                                            lunchPopoverVisible[
+                                                                scope.row.id
+                                                            ] = true
+                                                        "
+                                                        >编辑</el-button
+                                                    >
+                                                </template>
+                                                <template #default>
+                                                    <div class="number">
+                                                        <el-input-number
+                                                            v-model="
+                                                                scope.row
+                                                                    .foodNum
+                                                            "
+                                                            :step="50"
+                                                            size="small"
+                                                        ></el-input-number>
+                                                    </div>
+                                                    <div
+                                                        class="buttonFooter"
+                                                        style="margin-left: 1vh"
+                                                    >
+                                                        <el-button
+                                                            size="small"
+                                                            @click="
+                                                                lunchPopoverVisible[
+                                                                    scope.row.id
+                                                                ] = false
+                                                            "
+                                                            >取消</el-button
+                                                        >
+                                                        <el-button
+                                                            size="small"
+                                                            @click="
+                                                                updateFood(
+                                                                    '午餐',
+                                                                    scope.row
+                                                                ),
+                                                                    (lunchPopoverVisible[
+                                                                        scope.row.id
+                                                                    ] = false)
+                                                            "
+                                                            >确定</el-button
+                                                        >
+                                                    </div>
+                                                </template>
+                                            </el-popover>
+
                                             <el-button
                                                 link
                                                 size="small"
@@ -534,12 +649,70 @@
                                         width="96"
                                         label="编辑"
                                         ><template #default="scope">
-                                            <el-button
-                                                link
-                                                size="small"
-                                                type="primary"
-                                                >编辑</el-button
+                                            <el-popover
+                                                placement="left"
+                                                trigger="click"
+                                                title="重量/克"
+                                                :visible="
+                                                    dinnerPopoverVisible[
+                                                        scope.row.id
+                                                    ]
+                                                "
                                             >
+                                                <template #reference>
+                                                    <el-button
+                                                        link
+                                                        size="small"
+                                                        type="primary"
+                                                        @click="
+                                                            dinnerPopoverVisible[
+                                                                scope.row.id
+                                                            ] = true
+                                                        "
+                                                        >编辑</el-button
+                                                    >
+                                                </template>
+                                                <template #default>
+                                                    <div class="number">
+                                                        <el-input-number
+                                                            v-model="
+                                                                scope.row
+                                                                    .foodNum
+                                                            "
+                                                            :step="50"
+                                                            size="small"
+                                                        ></el-input-number>
+                                                    </div>
+                                                    <div
+                                                        class="buttonFooter"
+                                                        style="margin-left: 1vh"
+                                                    >
+                                                        <el-button
+                                                            size="small"
+                                                            @click="
+                                                                dinnerPopoverVisible[
+                                                                    scope.row.id
+                                                                ] = false
+                                                            "
+                                                            >取消</el-button
+                                                        >
+                                                        <el-button
+                                                            size="small"
+                                                            @click="
+                                                                updateFood(
+                                                                    '晚餐',
+                                                                    scope.row
+                                                                ),
+                                                                    (dinnerPopoverVisible[
+                                                                        scope.row.id
+                                                                    ] = false)
+                                                            "
+                                                            >确定</el-button
+                                                        >
+                                                    </div>
+                                                </template>
+                                            </el-popover>
+
                                             <el-button
                                                 link
                                                 size="small"
@@ -679,12 +852,70 @@
                                         width="96"
                                         label="编辑"
                                         ><template #default="scope">
-                                            <el-button
-                                                link
-                                                size="small"
-                                                type="primary"
-                                                >编辑</el-button
+                                            <el-popover
+                                                placement="left"
+                                                trigger="click"
+                                                title="重量/克"
+                                                :visible="
+                                                    moreEatPopoverVisible[
+                                                        scope.row.id
+                                                    ]
+                                                "
                                             >
+                                                <template #reference>
+                                                    <el-button
+                                                        link
+                                                        size="small"
+                                                        type="primary"
+                                                        @click="
+                                                            moreEatPopoverVisible[
+                                                                scope.row.id
+                                                            ] = true
+                                                        "
+                                                        >编辑</el-button
+                                                    >
+                                                </template>
+                                                <template #default>
+                                                    <div class="number">
+                                                        <el-input-number
+                                                            v-model="
+                                                                scope.row
+                                                                    .foodNum
+                                                            "
+                                                            :step="50"
+                                                            size="small"
+                                                        ></el-input-number>
+                                                    </div>
+                                                    <div
+                                                        class="buttonFooter"
+                                                        style="margin-left: 1vh"
+                                                    >
+                                                        <el-button
+                                                            size="small"
+                                                            @click="
+                                                                moreEatPopoverVisible[
+                                                                    scope.row.id
+                                                                ] = false
+                                                            "
+                                                            >取消</el-button
+                                                        >
+                                                        <el-button
+                                                            size="small"
+                                                            @click="
+                                                                updateFood(
+                                                                    '加餐',
+                                                                    scope.row
+                                                                ),
+                                                                    (moreEatPopoverVisible[
+                                                                        scope.row.id
+                                                                    ] = false)
+                                                            "
+                                                            >确定</el-button
+                                                        >
+                                                    </div>
+                                                </template>
+                                            </el-popover>
+
                                             <el-button
                                                 link
                                                 size="small"
@@ -990,6 +1221,10 @@ const allHeat = ref(0);
 const allportein = ref(0);
 const allfat = ref(0);
 const allcarbohydrate = ref(0);
+const breakfastPopoverVisible = ref([]);
+const lunchPopoverVisible = ref([]);
+const dinnerPopoverVisible = ref([]);
+const moreEatPopoverVisible = ref([]);
 // 关闭dialog
 function handleClose(done) {
     clearData();
@@ -1035,6 +1270,9 @@ function getDietRecord() {
 // 处理数据并绘制图形
 function handleDataShow() {
     if (breakfast.value.length !== 0) {
+        breakfast.value[0].foodDetailVOS.forEach((item) => {
+            breakfastPopoverVisible.value[item.id] = false;
+        });
         let data = breakfast.value[0].foodDetailVOS;
         let result = data.flatMap((food) => {
             return [
@@ -1073,6 +1311,9 @@ function handleDataShow() {
         drawPieChart("breakfastChart", mergedResult, "早餐");
     }
     if (lunch.value.length !== 0) {
+        lunch.value[0].foodDetailVOS.forEach((item) => {
+            lunchPopoverVisible.value[item.id] = false;
+        });
         let data = lunch.value[0].foodDetailVOS;
         let result = data.flatMap((food) => {
             return [
@@ -1110,6 +1351,9 @@ function handleDataShow() {
         drawPieChart("lunchChart", mergedResult, "午餐");
     }
     if (dinner.value.length !== 0) {
+        dinner.value[0].foodDetailVOS.forEach((item) => {
+            dinnerPopoverVisible.value[item.id] = false;
+        });
         let data = dinner.value[0].foodDetailVOS;
         let result = data.flatMap((food) => {
             return [
@@ -1147,6 +1391,9 @@ function handleDataShow() {
         drawPieChart("dinnerChart", mergedResult, "晚餐");
     }
     if (moreEat.value.length !== 0) {
+        moreEat.value[0].foodDetailVOS.forEach((item) => {
+            moreEatPopoverVisible.value[item.id] = false;
+        });
         let data = moreEat.value[0].foodDetailVOS;
         let result = data.flatMap((food) => {
             return [
@@ -1225,7 +1472,6 @@ function updateRecord() {
     else if (periodLabel.value === "午餐") item = lunch.value[0];
     else if (periodLabel.value === "晚餐") item = dinner.value[0];
     else item = moreEat.value[0];
-    console.log(item);
     const data = {
         id: item.id,
         periodLabel: periodLabel.value,
@@ -1253,15 +1499,28 @@ function delRecord(time, e) {
     else item = moreEat.value[0];
     let data = {
         id: item.id,
-        delFoodAndDiets: [e.id],
+        removeFoodAndDietIds: [e.id],
     };
-    updateDietRecord(data)
-        .then((res) => {
-            console.log(res), getDietRecord();
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+    // 如果只剩一条饮食，则直接删除记录
+    if (item.foodDetailVOS.length <= 1) {
+        delDietRecord(item.id)
+            .then((res) => {
+                console.log(res);
+                getDietRecord();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    } else {
+        updateDietRecord(data)
+            .then((res) => {
+                console.log(res);
+                getDietRecord();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
 }
 // 添加食物
 const popoverVisible = ref([]);
@@ -1336,6 +1595,41 @@ function refreshSearch() {
 function resetAddFood() {
     foodsList.value = [];
     foodsListData.value = [];
+}
+// 修改食物重量
+function updateFood(label, item) {
+    let record = {};
+    if (label === "早餐") record = breakfast.value[0];
+    else if (label === "午餐") record = lunch.value[0];
+    else if (label === "晚餐") record = dinner.value[0];
+    else record = moreEat.value[0];
+    let data1 = {
+        id: record.id,
+        removeFoodAndDietIds: [item.id],
+    };
+    let data2 = {
+        id: record.id,
+        addFoodAndDiets: [
+            {
+                foodId: item.id,
+                foodNum: item.foodNum,
+            },
+        ],
+    };
+    updateDietRecord(data1)
+        .then((res) => {
+            updateDietRecord(data2)
+                .then((res) => {
+                    console.log(res);
+                    getDietRecord();
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 }
 
 // 模糊搜索
