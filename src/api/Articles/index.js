@@ -7,9 +7,6 @@ export function getTextNews(data) {
     return request({
         method: "get",
         url: "/article/list",
-        headers: {
-            token: getToken(),
-        },
         params:{
             title: data.title,
             author: data.author,
