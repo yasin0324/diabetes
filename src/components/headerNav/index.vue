@@ -57,6 +57,7 @@ import { useRouter } from "vue-router";
 import service from "../../util/request";
 import { getInfo, logout } from "../../api/Login";
 import { onMounted, ref, computed } from "vue";
+import { ElMessage } from "element-plus";
 
 const router = useRouter();
 const token = localStorage.getItem("token");
@@ -95,8 +96,12 @@ const userInfo = ref({});
 const getUserInfo = () => {
     getInfo()
         .then((res) => {
-            console.log(res.data);
             userInfo.value = res.data;
+            if (res.code === 401) {
+                localStorage.removeItem("token");
+                ElMessage.error("登录过期，请重新登录");
+                router.push("/login");
+            }
         })
         .catch((err) => {
             console.log(err);
