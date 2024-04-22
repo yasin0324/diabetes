@@ -41,8 +41,7 @@ service.interceptors.response.use(
         if (code == 401) {
             return res.data;
         } else if (code == 500) {
-            ElMessage.error("服务器异常");
-            return Promise.reject(new Error(msg));
+            return Promise.reject(new Error(res.data.msg));
         } else {
             return res.data;
         }
