@@ -13,6 +13,11 @@ const routes = [
                 component: () => import("../views/Home/index.vue"),
             },
             {
+                path:"feed_back",
+                name:"feed_back",
+                component:() => import("../views/Home/feed_back.vue")
+            },
+            {
                 path: "health",
                 name: "health",
                 redirect: "/health/blood",
@@ -76,7 +81,12 @@ const routes = [
             {
                 path: "editpaddMobile",
                 name: "editpaddMobile",
-                component: () => import("../views/User/editpassMobile.vue")
+                component: () => import("../views/User/editpassMobile.vue"),
+            },
+            {
+                path: "Addassociated",
+                name: "Addassociated",
+                component: () => import("../views/User/Addassociated.vue")
             }
         ],
     },

@@ -4,7 +4,14 @@
             <div class="logoImg">
                 <img src="./logo/logo.png" alt="" />
             </div>
-            <div class="time"></div>
+            <div class="time">
+                <span>
+                    当前日期为：{{ currentDate }}
+                </span>
+                <span>
+                    当前时间为：{{ currentTime }}
+                </span>
+            </div>
             <el-menu
                 mode="horizontal"
                 router
@@ -61,13 +68,35 @@ import { getToken, removeToken,setToken } from "../../util/auth";
 const router = useRouter();
 const token = localStorage.getItem("token");
 
+const currentTime = ref('');
+const currentDate = ref('');
+// 在组件挂载后获取当前时间，并更新 currentTime 数据
+onMounted(() => {
+    updateDateTime();
+    // 每秒更新一次时间
+    setInterval(updateDateTime, 1000);
+});
+// 更新当前日期和时间
+function updateDateTime() {
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}-${padZero(now.getMonth() + 1)}-${padZero(now.getDate())}`;
+    const formattedTime = `${padZero(now.getHours())}:${padZero(now.getMinutes())}:${padZero(now.getSeconds())}`;
+    currentDate.value = formattedDate;
+    currentTime.value = formattedTime;
+}
+
+// 辅助函数，用于补零
+function padZero(num) {
+    return num.toString().padStart(2, '0');
+}
+
 // 路由数组
 const routerArr = [
     { name: "首页", path: "home" },
     { name: "健康记录", path: "health" },
     { name: "工具栏", path: "tool" },
     { name: "文章推荐", path: "articles" },
-    { name: "关于", path: "about" },
+    { name: "公告", path: "about" },
 ];
 
 const defaultPage = computed(() => {
@@ -133,10 +162,20 @@ onMounted(() => {
         }
     }
     .time {
-        border: 1px solid #409eff;
+        font-size: 1.2vw;
         height: 100%;
         width: 50vh;
-        background-color: #409eff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: bold; /* 加粗 */
+        color: #333; /* 字体颜色 */
+        span{
+            width: 100%;
+            display: inline-block;
+        }
     }
     .el-menu-demo {
         height: 100%;

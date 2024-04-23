@@ -195,11 +195,24 @@
                 </el-descriptions>
             </div>
         </div>
-
-        <div class="Banner" >
+        <!-- 关联账户信息 -->
+        <div class="BannerAllUser" >
             <div class="userNews">
+                <h1>已关联账号<el-icon><CopyDocument /></el-icon></h1>
                 <div class="margin-top" >
-
+                    <el-button type="success" plain style="float:right" @click="toAddassociated">新增关联账号</el-button>
+                    <el-row>
+                        <el-col :span="6" v-for="(item,index) in AllUserValue" :key="index">
+                            <el-card>
+                                <div class="avatar">
+                                    <el-avatar :src="item.avatar" />
+                                </div>
+                                <span>昵称：{{item.nickName}}</span>
+                                <el-button type="success" size="small" style="width:100%; margin-top:1vh" plain @click="LookassociatedUser(item)">查看详细信息</el-button>
+                                <el-button type="success" size="small" style="width:100%; margin-top:1vh; margin-left:0%" plain @click="ToggleLogin">切换登录</el-button>
+                            </el-card>
+                        </el-col>
+                    </el-row>
                 </div>
             </div>
         </div>
@@ -340,12 +353,113 @@
             </div>
             </template>
         </el-dialog>
+
+        <!-- 展示关联用户详细信息 -->
+        <el-dialog v-model="dialogassociatedUser" width="600">
+            <div class="AssociatedUser">
+                <el-descriptions
+                    title="关联用户详细信息"
+                    :column="3"
+                    size="large"
+                    border
+                >
+                    <el-descriptions-item>
+                        <template #label>
+                            <div class="cell-item">
+                            <el-icon>
+                                <user />
+                            </el-icon>
+                            账号：
+                            </div>
+                        </template>
+                    {{ AssociatedUserValue.userName }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                    <template #label>
+                        <div class="cell-item">
+                        <el-icon>
+                            <user />
+                        </el-icon>
+                        昵称：
+                        </div>
+                    </template>
+                    {{ AssociatedUserValue.nickName }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                    <template #label>
+                        <div class="cell-item">
+                        <el-icon>
+                            <user />
+                        </el-icon>
+                        姓名
+                        </div>
+                    </template>
+                    {{ AssociatedUserValue.name }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                    <template #label>
+                        <div class="cell-item">
+                        <el-icon >
+                            <iphone />
+                        </el-icon>
+                        手机号
+                        </div>
+                    </template>
+                    {{ AssociatedUserValue.mobile }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                        <template #label>
+                            <div class="cell-item">
+                                <el-icon>
+                                    <Female />
+                                </el-icon>
+                                性别
+                            </div>
+                        </template>
+                        {{ AssociatedUserValue.gender }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                        <template #label>
+                            <div class="cell-item">
+                                <el-icon><Avatar /></el-icon>
+                                年龄
+                            </div>
+                        </template>
+                        {{ AssociatedUserValue.age }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                    <template #label>
+                        <div class="cell-item">
+                        <el-icon >
+                            <tickets />
+                        </el-icon>
+                        生日
+                        </div>
+                    </template>
+                    {{ AssociatedUserValue.birthday }}
+                    </el-descriptions-item>
+                    <el-descriptions-item>
+                    <template #label>
+                        <div class="cell-item">
+                        <el-icon >
+                            <office-building />
+                        </el-icon>
+                        地址
+                        </div>
+                    </template>
+                    {{ AssociatedUserValue.address }}
+                    </el-descriptions-item>
+                </el-descriptions>
+            </div>
+            
+        </el-dialog>
     </div>
 </template>
 <script setup>
 import {
     getUserName,
-    putUserName
+    putUserName,
+    getOneUser
 } from '../../api/User/index'
 import { ref,onMounted,computed ,reactive,onBeforeUnmount} from 'vue'
 import { getToken } from '../../util/auth';
@@ -363,12 +477,23 @@ const token = {token:getToken()}
 let dialogUserIntro = ref(false)
 let dialogUserValue = ref(false)
 let dialogUserBody = ref(false)
+let dialogassociatedUser = ref(false)
+
+// 查看关联用户详细信息
+const AssociatedUserValue = ref()
+function LookassociatedUser(item){
+    dialogassociatedUser.value = true;
+    AssociatedUserValue.value = item;
+}
+
+// 切换登录
+function ToggleLogin(){
+
+}
 
 // 头像上传成功处理函数
 const handleAvatarSuccess = (response, uploadFile) => {
-    // console.log(uploadFile)
     UserNews.value.avatar = response.data;
-    // console.log(response)
 };
 
 // 头像上传前的校验函数
@@ -456,6 +581,10 @@ const resetForm = () => {
 const toeditpassMobile = () =>{
     router.push(`/editpaddMobile`)
 }
+// 去新增关联账号
+const toAddassociated = () =>{
+    router.push('/Addassociated')
+}
 
 onMounted(()=>{
     getUserValue();
@@ -475,7 +604,6 @@ const UserNewsValue = ref({})
 function getUserValue(){
     getUserName()
     .then(res=>{
-        // console.log(res);
         UserNews.value = res.data;
         for (let key in UserNews.value) {
             if (!UserNews.value[key]||UserNews.value[key] === '') {
@@ -484,9 +612,25 @@ function getUserValue(){
         }
         calculateBMI();
         UserNewsValue.value = UserNews.value;
+        getAllUserValue();
+        console.log(AllUserValue.value)
     })
     .catch(error =>{
         console.log(error);
+    })
+}
+
+// 获取所有用户信息
+const AllUserValue = ref([])
+function getAllUserValue(){
+    UserNews.value.associatedIds.forEach((userId,index) =>{
+        getOneUser(userId)
+        .then(res=>{
+            AllUserValue.value.push(res.data)
+        })
+        .catch(error =>{
+            console.log(error);
+        })
     })
 }
 
@@ -609,12 +753,13 @@ function calculateBMI() {
     flex-direction: column; /* 垂直排列 */
     justify-content: center; 
     align-items: center; 
-    background-image: url(../../common/image/login.png);
+    background-color: #f3f3f3;
     background-repeat: repeat;
     background-size: cover;
     min-height: 90vh;
     .head{
         width: 80%;
+        margin-top:2vh;
         margin-bottom:2vh;
         background-color: #fcf6f3;
         border-radius: 5vh;
@@ -659,9 +804,6 @@ function calculateBMI() {
                         margin-top: 1%;
                         margin-bottom: 1%;
                         font-size: 1vw;
-                        // white-space: nowrap;
-                        // overflow: hidden;
-                        // text-overflow: ellipsis;
                     }
                 }
             }
@@ -691,6 +833,70 @@ function calculateBMI() {
                 margin-top: 1%;
                 margin-bottom: 1%;
                 box-sizing: border-box;
+                .el-col{
+                    margin: 1vw;
+                    font-size: 1.2vw;
+                    text-align: center;
+                    .avatar{
+                        width: 100%;
+                        .el-avatar{
+                            width:10vw;
+                            height:10vw;
+                        }
+                    }
+                    
+                }
+            }
+        }
+    }
+    .BannerAllUser{
+        width: 80%;
+        margin-bottom:2vh;
+        background-color: #fcf6f3;
+        border-radius: 5vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: -3px 3px 5px rgba(0, 0, 0, 0.1), 3px 3px 5px rgba(0, 0, 0, 0.1), 0 3px 5px rgba(0, 0, 0, 0.1);
+        .userNews{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            h1{
+                font-size: 2.5vw;
+                margin-top: 1vh;
+                margin-bottom: 1vh;
+                color: #b79f74;
+                .el-icon{
+                    line-height:100%;
+                    font-size: 2vw;
+                    margin-left: 0.5vw;
+                }
+            }
+            .margin-top{
+                width: 90%;
+                border-radius: 3vh;
+                background-color: #fff;
+                padding: 2%;
+                margin-top: 1%;
+                margin-bottom: 1%;
+                box-sizing: border-box;
+                .el-col{
+                    margin: 1vw;
+                    font-size: 1.2vw;
+                    text-align: center;
+                    .avatar{
+                        width: 100%;
+                        .el-avatar{
+                            width:8vw;
+                            height:8vw;
+                        }
+                    }
+                    
+                }
             }
         }
     }

@@ -71,3 +71,41 @@ export function smsCodeGet(data) {
         },
     });
 }
+
+// 获取所有用户信息
+export function getallUser(data) {
+    return request({
+        method: "get",
+        url: "/admin/page/customer",
+        headers: {
+            token: getToken(),
+        },
+        params: {
+            page:data.page,
+            pageSize:data.pageSize
+        },
+    });
+}
+
+// 关联账号
+export function putassociatedUser(data) {
+    return request({
+        method: "put",
+        url: "/customer/associated_id/update",
+        headers: {
+            token: getToken(),
+        },
+        data:data
+    });
+}
+
+// 查询单个用户信息
+export function getOneUser(userId){
+    return request({
+        method: "get",
+        url: `/customer/list/${userId}`,
+        headers: {
+            token: getToken(),
+        },
+    })
+}
