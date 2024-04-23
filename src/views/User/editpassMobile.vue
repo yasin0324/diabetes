@@ -339,7 +339,6 @@ const submitmobileForm = async () => {
     flex-direction: column; 
     justify-content: center; 
     align-items: center; 
-    background-image: url(../../common/image/login.png);
     background-repeat: repeat;
     background-size: cover;
     min-height: 90vh;

@@ -768,6 +768,7 @@ function calculateBMI() {
         align-items: center;
         box-shadow: -3px 3px 5px rgba(0, 0, 0, 0.1), 3px 3px 5px rgba(0, 0, 0, 0.1), 0 3px 5px rgba(0, 0, 0, 0.1);
         .el-row{
+            padding: 1%;
             width: 100%;
             height: 100%;
             .el-col{
