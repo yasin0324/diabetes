@@ -1106,11 +1106,6 @@
                 >
             </div>
         </el-dialog>
-        <div class="guidance">
-            <div class="guidanceHeader">
-                <div class="title"><h1>饮食指导</h1></div>
-            </div>
-        </div>
         <div class="dietary">
             <div class="dietaryHeader">
                 <div class="title"><h1>推荐食谱</h1></div>
@@ -1825,8 +1820,13 @@ const searchName = ref("");
                         width: 20%;
                     }
                     .content {
-                        width: 70%;
+                        width: 80%;
+                        height: 60vh;
+                        overflow: scroll;
+                        overflow-x: hidden;
                         position: relative;
+                        scrollbar-color: #fff #ecf0f3;
+                        scrollbar-width: thin;
                         .foodList {
                             .food {
                                 margin: 1vh;
