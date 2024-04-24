@@ -445,6 +445,7 @@ import {
 } from "../../../api/healthRecord";
 import { CloseBold } from "@element-plus/icons-vue";
 import * as echarts from "echarts";
+
 // 血糖记录日期
 const recordDate = ref(formatDate(new Date()));
 // 添加记录

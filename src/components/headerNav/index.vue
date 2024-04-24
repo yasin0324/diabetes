@@ -4,7 +4,46 @@
             <div class="logoImg">
                 <img src="./logo/logo.png" alt="" />
             </div>
-            <div class="time"></div>
+            <div class="time">
+                 <!-- <span>
+                    当前日期为：{{ currentDate }}
+                </span>
+                <span>
+                    当前时间为：{{ currentTime }}
+                </span> -->
+                <el-row>
+                    <el-col :span="6">
+                        <span class="title">
+                            {{ weather.city }}
+                        </span>
+                        <span>
+                            天气：{{ weather.weather }}
+                        </span>
+                    </el-col>
+                    <el-col :span="14">
+                        <span>
+                            风向：{{ weather.winddirection }},
+                            风力：{{ weather.windpower }}
+                        </span>
+                        <span>
+                            温度：{{ weather.temperature }}，
+                            湿度：{{ weather.humidity }}
+                        </span>
+                        <span>
+                            最近一次更新时间：{{ weather.reporttime }}
+                        </span>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-icon size="50px" color="#a3c576" v-if="weather.weather === '晴' "><Sunny /></el-icon>
+                        <el-icon size="50px" color="#a3c576" v-if="weather.weather === '' "><MostlyCloudy /></el-icon>
+                        <el-icon size="50px" color="#a3c576" v-if="weather.weather === '' "><PartlyCloudy /></el-icon>
+                        <el-icon size="50px" color="#a3c576" v-if="weather.weather === '小雨' "><Drizzling /></el-icon>
+                        <el-icon size="50px" color="#a3c576" v-if="weather.weather === '大雨' "><Pouring /></el-icon>
+                        <el-icon size="50px" color="#a3c576" v-if="weather.weather === '多云' "><Cloudy /></el-icon>
+                        <el-icon size="50px" color="#a3c576" v-if="weather.weather === '' "><Lightning /></el-icon>
+                    </el-col>
+                </el-row>
+            </div>
             <el-menu
                 mode="horizontal"
                 router
@@ -54,13 +93,57 @@
 </template>
 <script setup>
 import { useRouter } from "vue-router";
-import service from "../../util/request";
-import { getInfo, logout } from "../../api/Login";
+import { getInfo, logout,getIP,getIPCity } from "../../api/Login";
 import { onMounted, ref, computed } from "vue";
+import { getToken, removeToken,setToken } from "../../util/auth";
 import { ElMessage } from "element-plus";
 
 const router = useRouter();
 const token = localStorage.getItem("token");
+
+const currentTime = ref('');
+const currentDate = ref('');
+// 在组件挂载后获取当前时间，并更新 currentTime 数据
+onMounted(() => {
+    updateDateTime();
+    // 每秒更新一次时间
+    setInterval(updateDateTime, 1000);
+    getUserIP();
+});
+
+// 获取当前ip
+const weather = ref('')
+function getUserIP(){
+    getIP()
+    .then(res =>{
+        // console.log(res)
+        getIPCity(res.city)
+        .then(res =>{
+            // console.log(res)
+            weather.value = res.lives[0];
+        })
+        .catch(error =>{
+            console.log(error)
+        })
+    })
+    .catch(error =>{
+        console.log(error)
+    })
+}
+
+// 更新当前日期和时间
+function updateDateTime() {
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}-${padZero(now.getMonth() + 1)}-${padZero(now.getDate())}`;
+    const formattedTime = `${padZero(now.getHours())}:${padZero(now.getMinutes())}:${padZero(now.getSeconds())}`;
+    currentDate.value = formattedDate;
+    currentTime.value = formattedTime;
+}
+
+// 辅助函数，用于补零
+function padZero(num) {
+    return num.toString().padStart(2, '0');
+}
 
 // 路由数组
 const routerArr = [
@@ -68,7 +151,7 @@ const routerArr = [
     { name: "健康记录", path: "health" },
     { name: "工具栏", path: "tool" },
     { name: "文章推荐", path: "articles" },
-    { name: "商城", path: "store" },
+    { name: "公告", path: "about" },
 ];
 
 const defaultPage = computed(() => {
@@ -82,6 +165,7 @@ const toLogin = () => {
 
 // 登出
 const toLogout = () => {
+    removeToken();
     logout()
         .then((res) => {
             console.log(res);
@@ -137,10 +221,29 @@ onMounted(() => {
         }
     }
     .time {
-        border: 1px solid #409eff;
         height: 100%;
         width: 50vh;
-        background-color: #409eff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        .el-col{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            .title{
+                font-weight: bold; /* 加粗 */
+                color: #333; /* 字体颜色 */
+                font-size: 1.3vw;
+            }
+            span{
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                width: 100%;
+                display: inline-block;
+                font-size: 0.9vw;
+            }
+        }
     }
     .el-menu-demo {
         height: 100%;

@@ -13,6 +13,11 @@ const routes = [
                 component: () => import("../views/Home/index.vue"),
             },
             {
+                path:"feed_back",
+                name:"feed_back",
+                component:() => import("../views/Home/feed_back.vue")
+            },
+            {
                 path: "health",
                 name: "health",
                 redirect: "/health/blood",
@@ -63,9 +68,9 @@ const routes = [
                 component: () => import("../views/Articles/index.vue"),
             },
             {
-                path: "store",
-                name: "store",
-                component: () => import("../views/store/index.vue"),
+                path: "about",
+                name: "about",
+                component: () => import("../views/about/index.vue"),
             },
             // 动态路由，根据用户id显示不同的用户主页
             {
@@ -73,6 +78,16 @@ const routes = [
                 name: "user",
                 component: () => import("../views/User/index.vue"),
             },
+            {
+                path: "editpaddMobile",
+                name: "editpaddMobile",
+                component: () => import("../views/User/editpassMobile.vue"),
+            },
+            {
+                path: "Addassociated",
+                name: "Addassociated",
+                component: () => import("../views/User/Addassociated.vue")
+            }
         ],
     },
     {

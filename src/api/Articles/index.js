@@ -3,7 +3,6 @@ import { getToken, removeToken } from "../../util/auth";
 
 // 获取用户个性化文章
 export function getTextNews(data) {
-    console.log(data)
     return request({
         method: "get",
         url: "/article/list",
@@ -27,7 +26,6 @@ export function getUserLikeNews(){
 }
 // 新增点赞
 export function UserAddLikeNews(data) {
-    // console.log(data)
     return request({
         method: "post",
         url: `/customer/like/article/save/${data}`,
@@ -38,7 +36,6 @@ export function UserAddLikeNews(data) {
 }
 // 减少点赞
 export function UserReduceLikeNews(data) {
-    // console.log(data)
     return request({
         method: "post",
         url: `/customer/like/article/delete/${data}`,
@@ -79,5 +76,13 @@ export function UserReduceCollectNews(data){
         headers: {
             token: getToken(),
         },
+    });
+}
+
+// 获取文章点赞排行
+export function getTopNews(){
+    return request({
+        method: "get",
+        url: `/article/list/Top10`,
     });
 }
