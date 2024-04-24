@@ -55,12 +55,14 @@
                         <el-table-column label="反馈时间" width="180" prop="createTime" />
                         <el-table-column fixed="right" label="操作">
                         <template #default="scope">
-                            <el-button size="small" type="success" @click="handleLook(scope.$index, scope.row)">
+                            <el-button size="small" type="success" color="#84d21e" round plain @click="handleLook(scope.$index, scope.row)">
                                 查看详细信息
                             </el-button>
                             <el-button
                             size="small"
                             type="danger"
+                            round 
+                            plain
                             @click="handleDelete(scope.$index, scope.row)"
                             >
                             删除反馈
@@ -156,7 +158,7 @@
                 </el-descriptions-item>
             </el-descriptions>
         </el-dialog>
-        
+
         <el-dialog v-model="dialogonDelFeed">
             <span>确定删除该反馈吗？</span>
             <template #footer>
@@ -456,6 +458,7 @@ const submitFeedForm = async () => {
                 :deep(.el-pagination){
                     li.is-active {
                         background-color: #a3c576;
+                        // background-color: #84d21e;
                         color: var(--el-color-white);
                     }
                     li:hover{

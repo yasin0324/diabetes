@@ -76,3 +76,27 @@ export function getInfo() {
         },
     });
 }
+
+// 获取本机ip
+export function getIP() {
+    return request({
+        method: "get",
+        url: "https://restapi.amap.com/v3/ip",
+        params:{
+            key:"a97860fb4b6caa184ab1d5c6034a8163"
+        }
+    });
+}
+
+
+// 获取本机ip所在城市天气
+export function getIPCity(city) {
+    return request({
+        method: "get",
+        url: `https://restapi.amap.com/v3/weather/weatherInfo`,
+        params:{
+            key: "a97860fb4b6caa184ab1d5c6034a8163",
+            city:city
+        }
+    });
+}

@@ -247,10 +247,6 @@ const UserPass = ref({
 const UserPassForm = ref()
 const submitPassForm = async () => {
     if (!UserPassForm.value){
-        // ElMessage({
-        //     message:"请先填写密码",
-        //     type:"error"
-        // })
         return
     } ;
     await UserPassForm.value.validate((valid) => {
