@@ -463,11 +463,12 @@ const submitForm = () => [
             }
         }
         .reportData {
-            width: 100vh;
+            width: 104vh;
             height: 30vh;
             background-image: url("../../common/image/excelTable.jpg");
             background-size: 60% 100%;
             border-radius: 3vh;
+            box-shadow: 1vh 1vh 1vh #d1d9e6;
             display: flex;
             flex-direction: column;
             align-items: end;
@@ -549,6 +550,8 @@ const submitForm = () => [
             height: 57vh;
             background-color: #ecf0f3;
             border-radius: 3vh;
+            box-shadow: 1vh 1vh 1vh #d1d9e6;
+            padding: 2vh;
             .main {
                 display: flex;
                 flex-direction: row;
@@ -666,6 +669,7 @@ const submitForm = () => [
             display: flex;
             flex-direction: column;
             align-items: center;
+            box-shadow: 1vh 1vh 1vh #d1d9e6;
             .main {
                 width: 80vh;
                 margin: 0 auto;
