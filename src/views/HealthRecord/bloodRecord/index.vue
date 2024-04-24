@@ -10,6 +10,7 @@
                         placeholder="选 择 日 期"
                         format="YYYY-MM-DD"
                         value-format="YYYY-MM-DD"
+                        @change="getRecordOne"
                     ></el-date-picker>
                 </div>
             </div>
@@ -27,48 +28,42 @@
                         </div>
                         <div class="cardFooter">{{ record.periodLabel }}</div>
                         <div class="cardRemark" v-if="record.remark">
-                            <div
-                                class="remarkContent"
-                                style="
-                                    width: 20vh;
-                                    height: 5vh;
-                                    font-size: 1.4vh;
-                                    color: #606266;
-                                    word-wrap: break-word;
-                                "
-                            >
+                            <div class="remarkContent">
                                 {{ record.remark }}
                             </div>
                         </div>
-                        <el-button
-                            @click="startUpdate(index)"
-                            style="
-                                margin-top: 1vh;
-                                border-radius: 2vh;
-                                background-color: #4cb5ab;
-                                color: #fff;
-                            "
-                            >编辑</el-button
-                        >
-                        <el-popconfirm
-                            width="200"
-                            confirm-button-text="删除"
-                            cancel-button-text="取消"
-                            title="确定删除该记录？"
-                        >
-                            <template #reference>
-                                <el-button
-                                    type="danger"
-                                    :icon="CloseBold"
-                                    circle
-                                    style="
-                                        padding: 0;
-                                        margin-left: 0;
-                                        margin-top: 1vh;
-                                    "
-                                />
-                            </template>
-                        </el-popconfirm>
+                        <div class="cardButtonRecord">
+                            <el-button
+                                @click="startUpdate(index)"
+                                style="
+                                    margin-top: 1vh;
+                                    border-radius: 2vh;
+                                    background-color: #4cb5ab;
+                                    color: #fff;
+                                "
+                                >编辑</el-button
+                            >
+                            <el-popconfirm
+                                width="200"
+                                confirm-button-text="删除"
+                                cancel-button-text="取消"
+                                title="确定删除该记录？"
+                                @confirm="delRecord(record.id)"
+                            >
+                                <template #reference>
+                                    <el-button
+                                        type="danger"
+                                        :icon="CloseBold"
+                                        circle
+                                        style="
+                                            padding: 0;
+                                            margin-left: 0;
+                                            margin-top: 1vh;
+                                        "
+                                    />
+                                </template>
+                            </el-popconfirm>
+                        </div>
                     </div>
                     <div class="updateInfo" v-show="updateOpen[index]">
                         <div class="recordForm">
@@ -149,7 +144,9 @@
                             <el-button @click="updateOpen[index] = false"
                                 >取消</el-button
                             >
-                            <el-button type="primary" @click="updateRecord"
+                            <el-button
+                                type="primary"
+                                @click="updateRecord(index)"
                                 >修改</el-button
                             >
                         </div>
@@ -257,7 +254,7 @@
         </div>
         <div class="bloodVisible">
             <div class="visibleHeader">
-                <div class="title"><h1>血糖可视化</h1></div>
+                <div class="title"><h1>血糖图表</h1></div>
                 <div class="datePicker">
                     <el-date-picker
                         v-model="visibleDate"
@@ -269,6 +266,7 @@
                         format="YYYY-MM-DD"
                         value-format="YYYY-MM-DD"
                         :disabled-date="(time) => time.getTime() > Date.now()"
+                        @change="getRecordMore"
                     ></el-date-picker>
                 </div>
             </div>
@@ -283,14 +281,157 @@
             <div class="analyseHeader">
                 <div class="title"><h1>血糖分析</h1></div>
                 <div class="datePicker">
-                    <el-radio-group v-model="analyseDate">
-                        <el-radio value="recent7days">近7天</el-radio>
-                        <el-radio value="recent15days">近15天</el-radio>
-                        <el-radio value="recent30days">近30天</el-radio>
+                    <el-radio-group
+                        v-model="analyseDate"
+                        @change="changeRecently"
+                    >
+                        <el-radio value="7">近7天</el-radio>
+                        <el-radio value="15">近15天</el-radio>
+                        <el-radio value="30">近30天</el-radio>
                     </el-radio-group>
                 </div>
             </div>
-            <div class="analyseMain" style="height: 50vh"></div>
+            <div class="analyseMain" style="height: 50vh">
+                <div id="chart1"></div>
+                <div id="chart2">
+                    <div class="oneBlood">
+                        <div class="BloodHeader">空腹血糖</div>
+                        <div class="BloodMain">
+                            <div class="left">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ stats["空腹"].total }}次
+                                    </div>
+                                    <div class="end">总测量次数</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (stats["空腹"].normal /
+                                                    stats["空腹"].total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">达标率</div>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ stats["空腹"].high }}次
+                                    </div>
+                                    <div class="end">空腹血糖偏高</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (stats["空腹"].high /
+                                                    stats["空腹"].total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">占比</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="twoBlood">
+                        <div class="BloodHeader">餐前血糖</div>
+                        <div class="BloodMain">
+                            <div class="left">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ beforeMeal.total }}次
+                                    </div>
+                                    <div class="end">总测量次数</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (beforeMeal.normal /
+                                                    beforeMeal.total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">达标率</div>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ beforeMeal.high }}次
+                                    </div>
+                                    <div class="end">餐前血糖偏高</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (beforeMeal.high /
+                                                    beforeMeal.total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">占比</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="threeBlood">
+                        <div class="BloodHeader">餐后血糖</div>
+                        <div class="BloodMain">
+                            <div class="left">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ afterMeal.total }}次
+                                    </div>
+                                    <div class="end">总测量次数</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (afterMeal.normal /
+                                                    afterMeal.total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">达标率</div>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="one">
+                                    <div class="top">
+                                        {{ afterMeal.high }}次
+                                    </div>
+                                    <div class="end">餐后血糖偏高</div>
+                                </div>
+                                <div class="one">
+                                    <div class="top">
+                                        {{
+                                            Math.round(
+                                                (afterMeal.high /
+                                                    afterMeal.total) *
+                                                    100
+                                            )
+                                        }}%
+                                    </div>
+                                    <div class="end">占比</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="chart3"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -354,7 +495,7 @@ const addRecord = () => {
     setBloodRecord(data.value)
         .then((res) => {
             console.log(res);
-            records.value.push(data.value);
+            getRecordOne();
             addRecordData.value = {
                 bloodNum: 0,
                 timeTag: "",
@@ -372,68 +513,17 @@ const visibleDate = ref([
     formatDate(new Date()),
 ]);
 // 血糖记录可视化
-function showBloodVisible() {
+function showBloodVisible(chartData) {
     const chartDom = document.getElementById("bloodVisibleChart");
     chartDom?.removeAttribute("_echarts_instance_");
     const myChart = echarts.init(chartDom);
 
-    const data = [
-        ["2000-06-05", 116],
-        ["2000-06-06", 129],
-        ["2000-06-07", 135],
-        ["2000-06-08", 86],
-        ["2000-06-09", 73],
-        ["2000-06-10", 85],
-        ["2000-06-11", 73],
-        ["2000-06-12", 68],
-        ["2000-06-13", 92],
-        ["2000-06-14", 130],
-        ["2000-06-15", 245],
-        ["2000-06-16", 139],
-        ["2000-06-17", 115],
-        ["2000-06-18", 111],
-        ["2000-06-19", 309],
-        ["2000-06-20", 206],
-        ["2000-06-21", 137],
-        ["2000-06-22", 128],
-        ["2000-06-23", 85],
-        ["2000-06-24", 94],
-        ["2000-06-25", 71],
-        ["2000-06-26", 106],
-        ["2000-06-27", 84],
-        ["2000-06-28", 93],
-        ["2000-06-29", 85],
-        ["2000-06-30", 73],
-        ["2000-07-01", 83],
-        ["2000-07-02", 125],
-        ["2000-07-03", 107],
-        ["2000-07-04", 82],
-        ["2000-07-05", 44],
-        ["2000-07-06", 72],
-        ["2000-07-07", 106],
-        ["2000-07-08", 107],
-        ["2000-07-09", 66],
-        ["2000-07-10", 91],
-        ["2000-07-11", 92],
-        ["2000-07-12", 113],
-        ["2000-07-13", 107],
-        ["2000-07-14", 131],
-        ["2000-07-15", 111],
-        ["2000-07-16", 64],
-        ["2000-07-17", 69],
-        ["2000-07-18", 88],
-        ["2000-07-19", 77],
-        ["2000-07-20", 83],
-        ["2000-07-21", 111],
-        ["2000-07-22", 57],
-        ["2000-07-23", 55],
-        ["2000-07-24", 60],
-    ];
-    const dateList = data.map(function (item) {
-        return item[0];
+    const dateList = chartData.value.map(function (item) {
+        const [date, periodLabel] = item.name.split(" ");
+        return `${date}\n${periodLabel}`;
     });
-    const valueList = data.map(function (item) {
-        return item[1];
+    const valueList = chartData.value.map(function (item) {
+        return item.value;
     });
     const option = {
         visualMap: [
@@ -442,24 +532,52 @@ function showBloodVisible() {
                 type: "continuous",
                 seriesIndex: 0,
                 min: 0,
-                max: 400,
-            },
-        ],
-        title: [
-            {
-                left: "center",
-                text: "Gradient along the y axis",
+                max: 14,
+                inRange: {
+                    color: ["#fecc59", "#56e1b8", "#f6756e"],
+                },
             },
         ],
         tooltip: {
             trigger: "axis",
+            formatter: function (params) {
+                return params[0].name + "<br>" + params[0].value + " mmol/L";
+            },
+            borderColor: "#4cb5ab",
+            textStyle: {
+                color: "#3d4a51",
+            },
         },
         xAxis: [
             {
                 data: dateList,
+                axisLabel: {
+                    interval: 0,
+                },
+                axisTick: {
+                    alignWithLabel: true,
+                },
             },
         ],
         yAxis: [{}],
+        dataZoom: {
+            xAxisIndex: 0,
+            show: true,
+            type: "slider",
+            brushSelect: false,
+            moveHandleSize: 0,
+            startValue: 0,
+            endValue: 10,
+            bottom: 10,
+            zoomLock: true,
+            handleSize: 0,
+            borderColor: "#4cb5ab",
+            fillerColor: "#4cb5ab",
+            height: 10,
+            maxValueSpan: 10,
+            minValueSpan: 10,
+            throttle: 0,
+        },
         series: [
             {
                 type: "line",
@@ -471,7 +589,7 @@ function showBloodVisible() {
     myChart.setOption(option);
 }
 // 血糖分析日期
-const analyseDate = ref("recent7days");
+const analyseDate = ref("7");
 
 // 血糖记录
 const records = ref([]);
@@ -484,6 +602,7 @@ const startUpdate = (index) => {
 };
 // 修改记录
 const updateRecord = (index) => {
+    console.log(records.value[index]);
     const data = {
         id: records.value[index].id,
         glucoseLevel: records.value[index].glucoseLevel,
@@ -494,15 +613,408 @@ const updateRecord = (index) => {
     updateBloodRecord(data)
         .then((res) => {
             console.log(res);
+            getRecordOne();
             updateOpen.value[index] = false;
         })
         .catch((err) => {
             console.log(err);
         });
 };
+// 时段标签的顺序
+const periodOrder = [
+    "空腹",
+    "早餐后",
+    "午餐前",
+    "午餐后",
+    "晚餐前",
+    "晚餐后",
+    "睡前",
+    "夜间",
+];
+// 查看记录
+const getRecordOne = () => {
+    BloodRecordList(recordDate.value, recordDate.value)
+        .then((res) => {
+            records.value = res.data.bloodGlucoseRecordsList[0].sort(
+                (a, b) =>
+                    periodOrder.indexOf(a.periodLabel) -
+                    periodOrder.indexOf(b.periodLabel)
+            );
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+// 删除记录
+const delRecord = (id) => {
+    delBloodRecord(id)
+        .then((res) => {
+            console.log(res);
+            getRecordOne();
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
+// 获取多日记录（用于可视化）
+const getRecordMore = () => {
+    BloodRecordList(visibleDate.value[0], visibleDate.value[1])
+        .then((res) => {
+            console.log(res);
+            const chartData = ref([]);
+            // 遍历每一天的血糖记录
+            for (let i = 0; i < res.data.localDateList.length; i++) {
+                const date = res.data.localDateList[i];
+                const records = res.data.bloodGlucoseRecordsList[i];
+
+                // 按照时段标签的顺序排序记录
+                records.sort(
+                    (a, b) =>
+                        periodOrder.indexOf(a.periodLabel) -
+                        periodOrder.indexOf(b.periodLabel)
+                );
+
+                // 遍历每个记录，生成echarts图表的数据
+                for (const record of records) {
+                    chartData.value.push({
+                        // 横坐标显示记录日期及其时段标签
+                        name: `${date} ${record.periodLabel}`,
+                        // 纵坐标为血糖水平
+                        value: record.glucoseLevel,
+                    });
+                }
+            }
+            console.log(chartData.value);
+            showBloodVisible(chartData);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
+// 初始化统计结果
+const stats = ref({
+    空腹: { total: 0, normal: 0, high: 0, low: 0 },
+    午餐前: { total: 0, normal: 0, high: 0, low: 0 },
+    晚餐前: { total: 0, normal: 0, high: 0, low: 0 },
+    早餐后: { total: 0, normal: 0, high: 0, low: 0 },
+    午餐后: { total: 0, normal: 0, high: 0, low: 0 },
+    晚餐后: { total: 0, normal: 0, high: 0, low: 0 },
+    睡前: { total: 0, normal: 0, high: 0, low: 0 },
+    夜间: { total: 0, normal: 0, high: 0, low: 0 },
+});
+// 餐前血糖记录统计
+const beforeMeal = ref({
+    total: 0,
+    normal: 0,
+    high: 0,
+    normalRate: 0,
+});
+// 餐后血糖记录统计
+const afterMeal = ref({
+    total: 0,
+    normal: 0,
+    high: 0,
+    normalRate: 0,
+});
+// 所有血糖记录统计
+const allTotal = ref({
+    total: 0,
+    normal: 0,
+    high: 0,
+    low: 0,
+    normalRate: 0,
+});
+// 血糖波动统计
+const fluctuation = ref({
+    早餐: { low: 0, normal: 0, high: 0 },
+    午餐: { low: 0, normal: 0, high: 0 },
+    晚餐: { low: 0, normal: 0, high: 0 },
+});
+// 数据初始化
+function resetData() {
+    stats.value = {
+        空腹: { total: 0, normal: 0, high: 0, low: 0 },
+        午餐前: { total: 0, normal: 0, high: 0, low: 0 },
+        晚餐前: { total: 0, normal: 0, high: 0, low: 0 },
+        早餐后: { total: 0, normal: 0, high: 0, low: 0 },
+        午餐后: { total: 0, normal: 0, high: 0, low: 0 },
+        晚餐后: { total: 0, normal: 0, high: 0, low: 0 },
+        睡前: { total: 0, normal: 0, high: 0, low: 0 },
+        夜间: { total: 0, normal: 0, high: 0, low: 0 },
+    };
+    beforeMeal.value = { total: 0, normal: 0, high: 0, normalRate: 0 };
+    afterMeal.value = { total: 0, normal: 0, high: 0, normalRate: 0 };
+    allTotal.value = { total: 0, normal: 0, high: 0, low: 0, normalRate: 0 };
+    fluctuation.value = {
+        早餐: { low: 0, normal: 0, high: 0 },
+        午餐: { low: 0, normal: 0, high: 0 },
+        晚餐: { low: 0, normal: 0, high: 0 },
+    };
+}
+// 获取近些天数据
+const getRecordRecently = (days) => {
+    const begin = formatDate(
+        new Date(new Date().setDate(new Date().getDate() - days))
+    );
+    const end = formatDate(new Date());
+    BloodRecordList(begin, end)
+        .then((res) => {
+            const data = res.data;
+            const ranges = {
+                空腹: [4.4, 6.1],
+                午餐前: [5.0, 7.8],
+                晚餐前: [5.0, 7.8],
+                早餐后: [5.0, 9.4],
+                午餐后: [5.0, 9.4],
+                晚餐后: [5.0, 9.4],
+                睡前: [4.4, 8.3],
+                夜间: [3.9, 6.1],
+            };
+            resetData();
+            // 记录血糖次数统计
+            for (let day of data.bloodGlucoseRecordsList) {
+                for (let record of day) {
+                    let period = record.periodLabel;
+                    let level = record.glucoseLevel;
+                    stats.value[period].total++;
+                    if (level < ranges[period][0]) {
+                        stats.value[period].low++;
+                    } else if (level > ranges[period][1]) {
+                        stats.value[period].high++;
+                    } else {
+                        stats.value[period].normal++;
+                    }
+                }
+            }
+            // 统计餐前血糖记录总次数，正常次数，偏高次数
+            // 统计餐后血糖记录总次数，正常次数，偏高次数
+            for (let period in stats.value) {
+                if (period === "午餐前" || period === "晚餐前") {
+                    beforeMeal.value.total += stats.value[period].total;
+                    beforeMeal.value.normal += stats.value[period].normal;
+                    beforeMeal.value.high += stats.value[period].high;
+                } else if (
+                    period === "早餐后" ||
+                    period === "午餐后" ||
+                    period === "晚餐后"
+                ) {
+                    afterMeal.value.total += stats.value[period].total;
+                    afterMeal.value.normal += stats.value[period].normal;
+                    afterMeal.value.high += stats.value[period].high;
+                }
+            }
+            // 统计血糖记录总次数，正常次数，偏高次数，偏低次数，达标占比（正常次数/总次数），不达标占比（1-达标占比）
+            for (let period in stats.value) {
+                allTotal.value.total += stats.value[period].total;
+                allTotal.value.normal += stats.value[period].normal;
+                allTotal.value.high += stats.value[period].high;
+                allTotal.value.low += stats.value[period].low;
+            }
+            allTotal.value.normalRate = (
+                (allTotal.value.normal / allTotal.value.total) *
+                100
+            ).toFixed(0);
+            // 计算同一天的血糖餐前餐后血糖波动，及餐前餐后血糖差值（早餐后-空腹，午餐后-午餐前，晚餐后-晚餐前），统计所选日期区间中 早餐、午餐、晚餐前后血糖差值在0-2.2之前的次数，在2.3-4.4之间的次数，差值>=4.5的次数
+            for (let day of data.bloodGlucoseRecordsList) {
+                let beforeMeal = day.find(
+                    (record) => record.periodLabel === "空腹"
+                );
+                let afterMeal = day.find(
+                    (record) => record.periodLabel === "早餐后"
+                );
+                if (beforeMeal && afterMeal) {
+                    let diff = afterMeal.glucoseLevel - beforeMeal.glucoseLevel;
+                    if (0 <= diff < 2.3) {
+                        fluctuation.value["早餐"].low++;
+                    } else if (diff < 4.5) {
+                        fluctuation.value["早餐"].normal++;
+                    } else {
+                        fluctuation.value["早餐"].high++;
+                    }
+                }
+                beforeMeal = day.find(
+                    (record) => record.periodLabel === "午餐前"
+                );
+                afterMeal = day.find(
+                    (record) => record.periodLabel === "午餐后"
+                );
+                if (beforeMeal && afterMeal) {
+                    let diff = afterMeal.glucoseLevel - beforeMeal.glucoseLevel;
+                    if (diff < 2.3) {
+                        fluctuation.value["午餐"].low++;
+                    } else if (diff < 4.5) {
+                        fluctuation.value["午餐"].normal++;
+                    } else {
+                        fluctuation.value["午餐"].high++;
+                    }
+                }
+                beforeMeal = day.find(
+                    (record) => record.periodLabel === "晚餐前"
+                );
+                afterMeal = day.find(
+                    (record) => record.periodLabel === "晚餐后"
+                );
+                if (beforeMeal && afterMeal) {
+                    let diff = afterMeal.glucoseLevel - beforeMeal.glucoseLevel;
+                    if (diff < 2.3) {
+                        fluctuation.value["晚餐"].low++;
+                    } else if (diff < 4.5) {
+                        fluctuation.value["晚餐"].normal++;
+                    } else {
+                        fluctuation.value["晚餐"].high++;
+                    }
+                }
+            }
+            showChart1();
+            showChart3();
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+// 切换近些天数据
+const changeRecently = () => {
+    getRecordRecently(parseInt(analyseDate.value));
+};
+// 血糖统计图表
+function showChart1() {
+    const chartDom = document.getElementById("chart1");
+    chartDom?.removeAttribute("_echarts_instance_");
+    const myChart = echarts.init(chartDom);
+    const option = {
+        tooltip: {
+            trigger: "item",
+            formatter: "{b}: {c}次 ({d}%)",
+        },
+        title: {
+            text: `${allTotal.value.total}`,
+            subtext: "总次数",
+            left: "center",
+            top: "middle",
+            textStyle: {
+                color: "#009688",
+                fontSize: 40,
+                fontWeight: "bold",
+            },
+        },
+        series: [
+            {
+                type: "pie",
+                radius: ["50%", "90%"],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: "#fff",
+                    borderWidth: 2,
+                },
+                label: {
+                    position: "inside",
+                },
+                labelLine: {
+                    show: false,
+                },
+                data: [
+                    { value: allTotal.value.normal, name: "正常" },
+                    { value: allTotal.value.high, name: "偏高" },
+                    { value: allTotal.value.low, name: "偏低" },
+                ],
+            },
+        ],
+    };
+    myChart.setOption(option);
+}
+function showChart3() {
+    console.log(fluctuation.value);
+    const chartDom = document.getElementById("chart3");
+    chartDom?.removeAttribute("_echarts_instance_");
+    const myChart = echarts.init(chartDom);
+    const option = {
+        title: {
+            text: "餐前餐后血糖波动",
+            subtext: "每餐餐前餐后差值不宜超过：2.2mmol/L",
+            left: "center",
+        },
+        grid: {
+            bottom: 40,
+        },
+        tooltip: {
+            trigger: "item",
+            formatter: "{a}<br>{b}：{c}次",
+        },
+        legend: {
+            data: ["早餐", "午餐", "晚餐"],
+            orient: "vertical",
+            top: "middle",
+            right: 0,
+        },
+        xAxis: {
+            type: "category",
+            data: ["差值0-2.2", "差值2.3-4.4", "差值≥4.5"],
+        },
+        yAxis: {
+            type: "value",
+            name: "次数",
+        },
+        series: [
+            {
+                type: "bar",
+                name: "早餐",
+                data: [
+                    fluctuation.value["早餐"].low,
+                    fluctuation.value["早餐"].normal,
+                    fluctuation.value["早餐"].high,
+                ],
+                itemStyle: {
+                    borderRadius: [20, 20, 0, 0],
+                },
+                label: {
+                    show: true,
+                    position: "top",
+                },
+            },
+            {
+                type: "bar",
+                name: "午餐",
+                data: [
+                    fluctuation.value["午餐"].low,
+                    fluctuation.value["午餐"].normal,
+                    fluctuation.value["午餐"].high,
+                ],
+                itemStyle: {
+                    borderRadius: [20, 20, 0, 0],
+                },
+                label: {
+                    show: true,
+                    position: "top",
+                },
+            },
+            {
+                type: "bar",
+                name: "晚餐",
+                data: [
+                    fluctuation.value["晚餐"].low,
+                    fluctuation.value["晚餐"].normal,
+                    fluctuation.value["晚餐"].high,
+                ],
+                itemStyle: {
+                    borderRadius: [20, 20, 0, 0],
+                },
+                label: {
+                    show: true,
+                    position: "top",
+                },
+            },
+        ],
+    };
+    myChart.setOption(option);
+}
 
 onMounted(() => {
-    showBloodVisible();
+    getRecordOne();
+    getRecordMore();
+    changeRecently();
 });
 </script>
 <style lang="less" scoped>
@@ -540,14 +1052,15 @@ onMounted(() => {
                 margin: 3vh 1vh 2vh 5vh;
                 background-color: #fff;
                 width: 25vh;
-                height: 30vh;
+                height: 35vh;
                 border-radius: 5vh;
                 .cardMain {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
+                    position: relative;
+                    height: 100%;
                     .cardContent {
-                        margin-top: 3vh;
                         display: flex;
                         flex-direction: row;
                         align-items: end;
@@ -566,8 +1079,23 @@ onMounted(() => {
                             font-weight: bold;
                         }
                     }
+                    .cardRemark {
+                        .remarkContent {
+                            margin-top: 0.5vh;
+                            width: 20vh;
+                            height: 3vh;
+                            text-align: center;
+                            font-size: 1.4vh;
+                            color: #606266;
+                            word-wrap: break-word;
+                        }
+                    }
                     .cardFooter {
                         font-size: 2.5vh;
+                    }
+                    .cardButtonRecord {
+                        position: absolute;
+                        bottom: 2vh;
                     }
                 }
                 .buttonAll {
@@ -594,6 +1122,7 @@ onMounted(() => {
                         background-color: rgba(0, 150, 136, 0.7);
                     }
                     .buttonText {
+                        margin-top: 3vh;
                         font-size: 2.5vh;
                         font-weight: bold;
                     }
@@ -704,6 +1233,78 @@ onMounted(() => {
                 .el-radio-group {
                     margin-left: 3vh;
                 }
+            }
+        }
+        .analyseMain {
+            display: flex;
+            flex-direction: row;
+            #chart1 {
+                height: 50vh;
+                width: 40vh;
+            }
+            #chart2 {
+                height: 45vh;
+                width: 40vh;
+                margin: auto 0;
+                background: #fff;
+                border-radius: 3vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                .oneBlood,
+                .twoBlood,
+                .threeBlood {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    height: 13vh;
+                    .BloodHeader {
+                        padding-left: 1vh;
+                        font-size: 2.5vh;
+                        font-weight: bold;
+                        color: #01111abe;
+                    }
+                    .BloodMain {
+                        height: 10vh;
+                        width: 39vh;
+                        margin: 0 auto;
+                        border-radius: 3vh;
+                        background-color: #ecf0f3;
+                        display: flex;
+                        flex-direction: row;
+                        .left,
+                        .right {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: flex-end;
+                            justify-content: space-around;
+                            width: 19vh;
+                            padding-bottom: 2.5vh;
+                            .one {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                .top {
+                                    font-size: 2.5vh;
+                                    color: #01111abe;
+                                    font-weight: bold;
+                                }
+                                .end {
+                                    font-size: 1.6vh;
+                                    color: #6d7073;
+                                    font-weight: bold;
+                                }
+                            }
+                        }
+                        .left {
+                            border-right: 1px solid #e6e6e6;
+                        }
+                    }
+                }
+            }
+            #chart3 {
+                height: 50vh;
+                width: 50vh;
             }
         }
     }
