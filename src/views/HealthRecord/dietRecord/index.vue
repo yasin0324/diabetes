@@ -1159,7 +1159,7 @@ function formatDate(date) {
 }
 
 // 推荐摄入热量
-const recommendHeat = ref(2000);
+const recommendHeat = ref(0);
 // 推荐摄入碳水
 const recommendCarbohydrate = ref(297);
 // 推荐摄入蛋白质
@@ -1212,22 +1212,22 @@ function drawPieChart(id, data, time) {
 const recipes = ref({});
 const foodData = ref({});
 const getRecommondRecipes = () => {
-    // recommendRecipes(user.value.userId)
-    //     .then((res) => {
-    //         recipes.value = res.data;
-    //         console.log(recipes.value);
-    //         for (const id in recipes.value) {
-    //             getFoodInfo(id).then((res) => {
-    //                 foodData.value[id] = {
-    //                     weight: recipes.value[id],
-    //                     info: res.data,
-    //                 };
-    //             });
-    //         }
-    //     })
-    //     .then((err) => {
-    //         console.log(err);
-    //     });
+    recommendRecipes(user.value.userId)
+        .then((res) => {
+            recipes.value = res.data.recommendRecipes;
+            recommendHeat.value = res.data.heat.toFixed(0);
+            // for (const id in recipes.value) {
+            //     getFoodInfo(id).then((res) => {
+            //         foodData.value[id] = {
+            //             weight: recipes.value[id],
+            //             info: res.data,
+            //         };
+            //     });
+            // }
+        })
+        .then((err) => {
+            console.log(err);
+        });
     showRecipes();
 };
 

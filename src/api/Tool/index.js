@@ -48,3 +48,23 @@ export function predictDiabetes(data) {
         },
     });
 }
+// 获取与聊天用户的聊天消息
+export function getChats(id) {
+    return request({
+        method: "get",
+        url: `/chat/list/chatMsg/${id}`,
+        headers: {
+            token: token,
+        },
+    });
+}
+// 修改消息已读
+export function updatemsg(id) {
+    return request({
+        method: 'put',
+        url: `/chat/update/chatMsgIsRead/${id}`,
+        headers: {
+            token: token,
+        },
+    })
+}

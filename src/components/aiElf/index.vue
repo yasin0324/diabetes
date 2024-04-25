@@ -206,16 +206,196 @@
             </el-popover>
         </div>
         <div class="service">
-            <el-popover trigger="click" placement="left-end">
+            <el-popover trigger="click" placement="left-end" :width="400">
                 <template #reference>
                     <el-button
                         type="success"
                         size="large"
                         circle
                         icon="service"
+                        @click="openChat"
                     ></el-button>
                 </template>
-                <template #default> </template>
+                <template #default>
+                    <div
+                        class="chatWindow"
+                        style="height: 50vh; position: relative"
+                    >
+                        <div
+                            calss="chatHeader"
+                            style="
+                                height: 4vh;
+                                width: 100%;
+                                line-height: 4vh;
+                                text-align: center;
+                                font-weight: bold;
+                                border-bottom: 1px solid #d8d8d8;
+                                display: flex;
+                                flex-direction: row;
+                                justify-content: center;
+                                align-items: center;
+                            "
+                        >
+                            <div
+                                class="status"
+                                :style="
+                                    serviceStatus
+                                        ? {
+                                              width: '1vh',
+                                              height: '1vh',
+                                              borderRadius: '50%',
+                                              backgroundColor: '#00ff00',
+                                              marginRight: '1vh',
+                                          }
+                                        : {
+                                              width: '1vh',
+                                              height: '1vh',
+                                              borderRadius: '50%',
+                                              backgroundColor: '#a0a5a8',
+                                              marginRight: '1vh',
+                                          }
+                                "
+                            ></div>
+                            <div class="content">在线客服</div>
+                        </div>
+                        <div
+                            class="chatMain"
+                            ref="chatContent1"
+                            style="
+                                overflow: scroll;
+                                overflow-x: hidden;
+                                scrollbar-color: #fff #ecf0f3;
+                                scrollbar-width: thin;
+                                height: 33vh;
+                            "
+                        >
+                            <div
+                                v-for="(item, index) in allChats"
+                                :key="index"
+                                :class="
+                                    item.sendId === user.userId
+                                        ? 'chatRight'
+                                        : 'chatLeft'
+                                "
+                                :style="
+                                    item.sendId === user.userId
+                                        ? {
+                                              marginTop: '1vh',
+                                              display: 'flex',
+                                              flexDirection: 'row-reverse',
+                                              alignItems: 'start',
+                                              marginRight: '1vh',
+                                          }
+                                        : {
+                                              marginTop: '1vh',
+                                              display: 'flex',
+                                              flexDirection: 'row',
+                                              alignItems: 'start',
+                                              marginLeft: '1vh',
+                                          }
+                                "
+                            >
+                                <div class="avatar">
+                                    <img
+                                        :src="
+                                            item.sendId === user.userId
+                                                ? user.avatar
+                                                : img2
+                                        "
+                                        style="width: 5vh; border-radius: 50%"
+                                    />
+                                </div>
+                                <div
+                                    class="msg_outer"
+                                    :style="
+                                        item.sendId === user.userId
+                                            ? {
+                                                  marginTop: '1vh',
+                                                  marginRight: '1vh',
+                                              }
+                                            : {
+                                                  marginTop: '1vh',
+                                                  marginLeft: '1vh',
+                                              }
+                                    "
+                                >
+                                    <div
+                                        class="msg_inner"
+                                        :style="
+                                            item.sendId === user.userId
+                                                ? {
+                                                      wordWrap: 'break-word',
+                                                      backgroundColor:
+                                                          '#ecf0f3',
+                                                      padding: '1vh',
+                                                      borderTopLeftRadius:
+                                                          '2vh',
+                                                      borderBottomRightRadius:
+                                                          '2vh',
+                                                      borderBottomLeftRadius:
+                                                          '2vh',
+                                                      marginBottom: '1vh',
+                                                  }
+                                                : {
+                                                      wordWrap: 'break-word',
+                                                      backgroundColor:
+                                                          '#ecf0f3',
+                                                      padding: '1vh',
+                                                      borderTopRightRadius:
+                                                          '2vh',
+                                                      borderBottomRightRadius:
+                                                          '2vh',
+                                                      borderBottomLeftRadius:
+                                                          '2vh',
+                                                      width: '80%',
+                                                      marginBottom: '1vh',
+                                                  }
+                                        "
+                                    >
+                                        {{ item.msg }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="chatFooter"
+                            style="
+                                height: 13vh;
+                                border-top: 1px solid #d8d8d8;
+                                display: flex;
+                                flex-direction: column;
+                                position: absolute;
+                                bottom: 0;
+                                width: 100%;
+                            "
+                        >
+                            <el-input
+                                v-model="msg"
+                                maxlength="100"
+                                show-word-limit
+                                type="textarea"
+                                resize="none"
+                                :autosize="{ minRows: 3, maxRows: 3 }"
+                                :disabled="!serviceStatus"
+                            >
+                            </el-input>
+                            <div class="footer">
+                                <el-button
+                                    type="primary"
+                                    round
+                                    @click="sendMsg"
+                                    style="
+                                        position: absolute;
+                                        right: 0;
+                                        bottom: 0;
+                                    "
+                                    :disabled="!serviceStatus"
+                                    >发 送</el-button
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </template>
             </el-popover>
         </div>
     </div>
@@ -224,7 +404,9 @@
 import { ref, onMounted, watch, nextTick } from "vue";
 import img1 from "../../common/image/user.png";
 import img2 from "../../common/image/face.png";
-import { aiElf } from "../../api/Tool/index.js";
+import { aiElf, getChats, updatemsg } from "../../api/Tool/index.js";
+import { getInfo } from "../../api/Login/index";
+import { all } from "axios";
 
 const messageLists = ref([]);
 const message = ref();
@@ -272,6 +454,101 @@ watch(
 const scrollBottom = () => {
     chatContent.value.scrollTop = chatContent.value.scrollHeight;
 };
+
+const websocket = ref(null);
+const user = ref();
+const userId = ref();
+const getUserInfo = () => {
+    getInfo()
+        .then((res) => {
+            user.value = res.data;
+            userId.value = res.data.userId;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
+const close = () => {
+    websocket.value.close();
+};
+
+// 获取聊天记录
+const allChats = ref([]);
+const getChatMsg = (id) => {
+    getChats(id)
+        .then((res) => {
+            allChats.value = res.data.reverse();
+            res.data.map((item) => {
+                updatemsg(item.id);
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+// 发送信息
+const msg = ref("");
+const sendMsg = () => {
+    let data = {
+        msg: msg.value,
+        receiveId: 9,
+    };
+    websocket.value.send(JSON.stringify(data));
+    msg.value = "";
+    getChatMsg(9);
+};
+const chatContent1 = ref(null);
+watch(
+    () => allChats.value.length,
+    () => {
+        nextTick(() => {
+            scrollBottom1();
+        });
+    }
+);
+const scrollBottom1 = () => {
+    chatContent1.value.scrollTop = chatContent1.value.scrollHeight;
+};
+const serviceStatus = ref(true);
+const openChat = () => {
+    serviceStatus.value = true;
+    websocket.value = new WebSocket(
+        "ws://124.221.104.7:12007/ws/" + userId.value
+    );
+    websocket.value.onerror = function () {
+        console.log("连接失败");
+    };
+
+    websocket.value.onopen = function () {
+        console.log("连接成功");
+    };
+
+    websocket.value.onmessage = function (event) {
+        console.log(event.data);
+        if (event.data === "发送失败，接收者已下线！") {
+            serviceStatus.value = false;
+        }
+        getChatMsg(9);
+    };
+
+    websocket.value.onclose = function () {
+        console.log("连接关闭");
+    };
+
+    let data = {
+        msg: "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MTQwNDkzNzAsInVzZXJJZCI6IjkifQ.wDyeTdDkki-dDG_NsqZ126e4X8FVNJ3axCDLrFGcTe0123",
+        receiveId: 9,
+    };
+    setTimeout(() => {
+        websocket.value.send(JSON.stringify(data));
+    }, 500);
+    getChatMsg(9);
+};
+
+onMounted(() => {
+    getUserInfo();
+});
 </script>
 <style lang="less" scoped>
 .main {
