@@ -182,6 +182,12 @@
                             </el-input>
                             <div class="footer">
                                 <el-button
+                                    circle
+                                    icon="Refresh"
+                                    @click="refreshAi"
+                                    :disabled="refreshDisabled"
+                                ></el-button>
+                                <el-button
                                     type="primary"
                                     round
                                     @click="send"
@@ -223,8 +229,10 @@ import { aiElf } from "../../api/Tool/index.js";
 const messageLists = ref([]);
 const message = ref();
 const sendDisabled = ref(false);
+const refreshDisabled = ref(false);
 const send = () => {
     sendDisabled.value = true;
+    refreshDisabled.value = true;
     let msg = {
         message: message.value,
         type: "send",
@@ -240,12 +248,16 @@ const send = () => {
                 avatar: img2,
             };
             sendDisabled.value = false;
+            refreshDisabled.value = false;
             messageLists.value.push(reply);
         })
         .catch((err) => {
             console.log(err);
         });
     message.value = "";
+};
+const refreshAi = () => {
+    messageLists.value = [];
 };
 
 const chatContent = ref(null);
