@@ -11,6 +11,8 @@ import captchaSlider from "./components/captchaSlider.vue";
 import headerNav from "./components/headerNav/index.vue";
 // 健康记录导航栏组件
 import healthHeader from "./components/healthRecord/healthHeader.vue";
+// ai助手
+import chatAi from "./components/aiElf/index.vue";
 
 // vue实例
 const app = createApp(App);
@@ -24,5 +26,6 @@ app.use(elementIcons);
 app.component("captcha-slider", captchaSlider);
 app.component("header-nav", headerNav);
 app.component("health-header", healthHeader);
+app.component("chat-ai", chatAi);
 
 app.mount("#app");
