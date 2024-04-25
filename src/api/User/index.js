@@ -1,5 +1,7 @@
-import request from '../../util/request'
+import request from "../../util/request";
 import { getToken, removeToken } from "../../util/auth";
+
+const token = getToken();
 
 // 获取用户信息
 export function getUserName() {
@@ -7,7 +9,7 @@ export function getUserName() {
         method: "get",
         url: "/customer/list",
         headers: {
-            token: getToken(),
+            token: token,
         },
     });
 }
@@ -18,9 +20,9 @@ export function putUserName(dataValue) {
         method: "put",
         url: "/customer/update",
         headers: {
-            token: getToken(),
+            token: token,
         },
-        data:dataValue
+        data: dataValue,
     });
 }
 
@@ -30,9 +32,9 @@ export function putAddUserConnection(dataValue) {
         method: "put",
         url: "/customer/associated/addByUserName",
         headers: {
-            token: getToken(),
+            token: token,
         },
-        data:dataValue
+        data: dataValue,
     });
 }
 
@@ -42,9 +44,9 @@ export function putAddMobileConnection(dataValue) {
         method: "put",
         url: "/customer/associated/addByMobile",
         headers: {
-            token: getToken(),
-            mobile:dataValue.mobile,
-            smsCode:dataValue.smsCode
+            token: token,
+            mobile: dataValue.mobile,
+            smsCode: dataValue.smsCode,
         },
     });
 }
@@ -55,7 +57,7 @@ export function putDelUserConnection(user2Id) {
         method: "put",
         url: `/customer/associated/delete/${user2Id}`,
         headers: {
-            token: getToken(),
+            token: token,
         },
     });
 }
@@ -66,7 +68,7 @@ export function postUserConnection(associatedAccount) {
         method: "post",
         url: `/customer/associated/exchange/${associatedAccount}`,
         headers: {
-            token: getToken(),
+            token: token,
         },
     });
 }
@@ -77,9 +79,9 @@ export function putUserpass(dataValue) {
         method: "put",
         url: "/user/password/update2",
         headers: {
-            token: getToken(),
+            token: token,
         },
-        data:dataValue
+        data: dataValue,
     });
 }
 
@@ -89,9 +91,9 @@ export function putUsermobile(dataValue) {
         method: "put",
         url: "/user/mobile/update",
         headers: {
-            token: getToken(),
+            token: token,
             mobile: dataValue.mobile,
-            smsCode :dataValue.smsCode
+            smsCode: dataValue.smsCode,
         },
     });
 }
@@ -113,24 +115,24 @@ export function getallUser(data) {
         method: "get",
         url: "/admin/page/customer",
         headers: {
-            token: getToken(),
+            token: token,
         },
         params: {
-            page:data.page,
-            pageSize:data.pageSize
+            page: data.page,
+            pageSize: data.pageSize,
         },
     });
 }
 
 // 查询单个用户信息
-export function getOneUser(userId){
+export function getOneUser(userId) {
     return request({
         method: "get",
         url: `/customer/list/${userId}`,
         headers: {
-            token: getToken(),
+            token: token,
         },
-    })
+    });
 }
 
 // 手机号验证码登录

@@ -1110,6 +1110,14 @@
             <div class="dietaryHeader">
                 <div class="title"><h1>推荐食谱</h1></div>
             </div>
+            <div class="dietaryMain" style="height: 50vh">
+                <div class="visible">
+                    <div
+                        id="recommendChart"
+                        style="height: 50vh; width: 50%"
+                    ></div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -1126,7 +1134,17 @@ import {
     getFoodByType,
     getAllType,
 } from "../../../api/healthRecord";
+import { recommendRecipes } from "../../../api/Tool";
+import { getUserName } from "../../../api/User";
 import { get } from "jquery";
+
+const user = ref({});
+const getUser = () => {
+    getUserName().then((res) => {
+        user.value = res.data;
+        getRecommondRecipes();
+    });
+};
 
 // 日期选择
 const recordDate = ref(formatDate(new Date()));
@@ -1190,9 +1208,78 @@ function drawPieChart(id, data, time) {
     myChart.setOption(option);
 }
 
+// 获取推荐食谱
+const recipes = ref({});
+const foodData = ref({});
+const getRecommondRecipes = () => {
+    // recommendRecipes(user.value.userId)
+    //     .then((res) => {
+    //         recipes.value = res.data;
+    //         console.log(recipes.value);
+    //         for (const id in recipes.value) {
+    //             getFoodInfo(id).then((res) => {
+    //                 foodData.value[id] = {
+    //                     weight: recipes.value[id],
+    //                     info: res.data,
+    //                 };
+    //             });
+    //         }
+    //     })
+    //     .then((err) => {
+    //         console.log(err);
+    //     });
+    showRecipes();
+};
+
+// 推荐食谱营养分析
+const showRecipes = () => {
+    const chartDom = document.getElementById("recommendChart");
+    chartDom?.removeAttribute("_echarts_instance_");
+    const myChart = echarts.init(chartDom);
+
+    const option = {
+        legend: {
+            orient: "vertical",
+            left: "left",
+        },
+        title: {
+            text: "2123",
+            subtext: "千卡",
+            left: "center",
+            top: "middle",
+            textStyle: {
+                fontSize: 40,
+                fontWeight: "bold",
+            },
+        },
+        series: [
+            {
+                name: "Access From",
+                type: "pie",
+                radius: ["40%", "70%"],
+                avoidLabelOverlap: false,
+                label: {
+                    show: false,
+                    position: "center",
+                },
+                labelLine: {
+                    show: false,
+                },
+                data: [
+                    { value: 1048, name: "Search Engine" },
+                    { value: 735, name: "Direct" },
+                    { value: 580, name: "Email" },
+                ],
+            },
+        ],
+    };
+    myChart.setOption(option);
+};
+
 onMounted(() => {
     getFoodType();
     getDietRecord();
+    getUser();
 });
 
 const dialogVisible = ref(false);
