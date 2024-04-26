@@ -23,6 +23,16 @@
                     </el-timeline>
                 </div>
             </div>
+            <el-backtop 
+            :right="100" 
+            style="
+                background-color: var(--el-bg-color-overlay);
+                box-shadow: var(--el-box-shadow-lighter);
+                text-align: center;
+                line-height: 40px;
+                color: #a3c576;
+            " 
+            :bottom="100" />
         </div>
     </div>
 </template>

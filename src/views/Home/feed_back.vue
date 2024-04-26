@@ -1,53 +1,20 @@
 <template>
     <div class="main">
-        <div class="BannerFeed">
+        <!-- <div class="BannerFeed">
             <div class="userNews">
                 <h1>提交反馈<el-icon><CopyDocument /></el-icon></h1>
-                <div class="margin-top">
-                    <el-form
-                        ref="UserFeedForm"
-                        style="max-width: 800px;min-width: 500px"
-                        :model="UserFeed_back"
-                        status-icon
-                        :rules="UserFeedrules"
-                        label-width="auto"
-                        class="demo-ruleForm"
-                    >
-                        <el-form-item label="手机号" prop="mobile">
-                        <el-input v-model="UserFeed_back.mobile" autocomplete="off" placeholder="请输入手机号" />
-                        </el-form-item>
-                        <el-form-item label="类型" prop="type">
-                        <el-input v-model="UserFeed_back.type" autocomplete="off" placeholder="请输入类型" />
-                        </el-form-item>
-                        <el-form-item label="内容" prop="word">
-                        <el-input
-                            v-model="UserFeed_back.word"
-                            autocomplete="off"
-                            type="textarea"
-                        />
-                        </el-form-item>
-                        <el-upload 
-                        v-model:file-list="selectedFiles"
-                        action="#"
-                        :on-change="handleChange"
-                        accept="image/jpeg, image/png, image/gif"
-                        list-type="picture-card"
-                        :on-remove="handleRemove"
-                        :on-preview="handlePictureCardPreview"
-                        :auto-upload="false">
-                            <el-icon><Plus /></el-icon>
-                        </el-upload>
-                        <div>
-                            <el-button type="success" plain size="large" style="float: right;" :loading="loading" @click="submitFeedForm">确认</el-button>
-                        </div>
-                    </el-form>
-                </div>
+                
             </div>
-        </div>
+        </div> -->
         <div class="BannerFeed">
             <div class="userNews">
                 <h1>我的反馈记录<el-icon><CopyDocument /></el-icon></h1>
                 <div class="margin-top2">
+                    <div class="head">
+                         <el-button type="success" style="float: right;" plain @click="dialogAddFeed = true" >
+                            新增反馈
+                        </el-button>
+                    </div>
                     <el-table :data="UserFeedValue" style="width: 100%">
                         <el-table-column label="id" width="100" prop="id"/>
                         <el-table-column label="反馈类型" width="150" prop="type"/>
@@ -159,6 +126,49 @@
             </el-descriptions>
         </el-dialog>
 
+        <!-- 提交反馈 -->
+        <el-dialog v-model="dialogAddFeed" width="800" heig title="提交反馈">
+            <el-form
+                ref="UserFeedForm"
+                style="width: 100%;"
+                :model="UserFeed_back"
+                status-icon
+                :rules="UserFeedrules"
+                label-width="auto"
+                class="demo-ruleForm"
+            >
+                <el-form-item label="手机号" prop="mobile">
+                <el-input v-model="UserFeed_back.mobile" autocomplete="off" placeholder="请输入手机号" />
+                </el-form-item>
+                <el-form-item label="类型" prop="type">
+                <el-input v-model="UserFeed_back.type" autocomplete="off" placeholder="请输入类型" />
+                </el-form-item>
+                <el-form-item label="内容" prop="word">
+                <el-input
+                    v-model="UserFeed_back.word"
+                    autocomplete="off"
+                    type="textarea"
+                />
+                </el-form-item>
+                
+            </el-form>
+            <el-upload 
+            v-model:file-list="selectedFiles"
+            action="#"
+            :on-change="handleChange"
+            accept="image/jpeg, image/png, image/gif"
+            list-type="picture-card"
+            :on-remove="handleRemove"
+            :on-preview="handlePictureCardPreview"
+            :auto-upload="false"
+            style="margin-bottom: 8%;">
+                <el-icon><Plus /></el-icon>
+            </el-upload>
+            <div class="button">
+                <el-button type="success" plain size="large" :loading="loading" @click="submitFeedForm">确认</el-button>
+            </div>
+        </el-dialog>
+
         <el-dialog v-model="dialogonDelFeed">
             <span>确定删除该反馈吗？</span>
             <template #footer>
@@ -191,6 +201,7 @@ onMounted(()=>{
 })
 
 // 选择需要反馈的图片
+const dialogAddFeed = ref(false)
 const selectedFiles = ref([])
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
@@ -383,6 +394,7 @@ const submitFeedForm = async () => {
         if (valid) {
             loading.value = true
             postUserFeed();
+            dialogAddFeed.value = false;
         } else {
             return false;
         }
@@ -455,6 +467,10 @@ const submitFeedForm = async () => {
                 justify-content: center;
                 align-items: center;
                 flex-direction: column;
+                .head{
+                    width: 100%;
+                    height: 10%;
+                }
                 :deep(.el-pagination){
                     li.is-active {
                         background-color: #a3c576;
@@ -470,8 +486,26 @@ const submitFeedForm = async () => {
         }
     }
     :deep(.el-dialog){
+        display: flex;
+        flex-direction: column;
+        justify-content: center; 
+        align-items: center;
         border-radius:2vw;
         padding: 2%;
+        position: relative;
+        .el-dialog__body{
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;
+            .button{
+                height: 10%;
+                position: absolute;
+                right: 5%;
+                bottom: 1%;
+            }
+        }
         .cell-item {
             display: flex;
             align-items: center;

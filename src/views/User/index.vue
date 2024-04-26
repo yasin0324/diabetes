@@ -1421,6 +1421,7 @@ function putUserValue(data){
             type: 'success',
         })
         UserNewsValue.value = UserNews.value;
+        getUserValue();
     })
     .catch(error =>{
         console.log(error);
@@ -1443,7 +1444,6 @@ const submitIntroForm = async () => {
             // console.log(UserFormValue.value)
             dialogUserIntro.value = false;
             putUserValue(UserFormValue.value)
-            getUserValue();
         } else {
             return false;
         }
@@ -1477,7 +1477,6 @@ const submitUserForm = async () => {
             // console.log(UserFormValue.value)
             dialogUserValue.value = false;
             putUserValue(UserFormValue.value)
-            getUserValue();
         } else {
             return false;
         }
@@ -1497,7 +1496,6 @@ const submitaBodyForm = async () => {
             // console.log(UserFormValue.value)
             dialogUserBody.value = false;
             putUserValue(UserFormValue.value)
-            getUserValue();
         } else {
             return false;
         }
@@ -1627,12 +1625,14 @@ let warnValue = ref('正常')
 function calculateBMI() {
     const height = parseFloat(UserNews.value.height) / 100;
     const weight = parseFloat(UserNews.value.weight);
-    const bmi = weight / (height * height);
+    let bmi = weight / (height * height);
     if (isNaN(bmi)) {
         BMI.value = "暂无信息";
         warnValue.value = "";
         return;
     }
+
+    bmi = bmi.toFixed(2); // 保留两位小数
 
     if (bmi < 18.5) {
         warn.value = 'warning'; // 偏瘦
