@@ -144,6 +144,9 @@
                                 </el-select>
                             </div>
                             <div class="addButton">
+                                <el-button class="diySport" @click="openDIY"
+                                    >自定义运动</el-button
+                                >
                                 <el-button class="close" @click="added = false"
                                     >取消</el-button
                                 >
@@ -183,6 +186,69 @@
                 ></div>
             </div>
         </div>
+        <el-dialog
+            align-center
+            class="DIYsport"
+            v-model="DIYvisible"
+            title="添加自定义运动"
+            width="400"
+        >
+            <el-form
+                class="addSportForm"
+                :model="sportInfo"
+                label-position="right"
+                label-width="auto"
+                :rules="sportRules"
+                ref="sportForm"
+                ><el-form-item label="运动名称" prop="name"
+                    ><el-input
+                        v-model="sportInfo.name"
+                        placeholder="请输入运动名称"
+                    ></el-input
+                ></el-form-item>
+                <el-form-item label="运动类型" prop="type">
+                    <el-input
+                        v-model="sportInfo.type"
+                        placeholder="请输入运动类别"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label="运动消耗" prop="consumption">
+                    <el-input
+                        v-model="sportInfo.consumption"
+                        placeholder="请输入运动消耗 （60分钟）/千卡"
+                    >
+                    </el-input>
+                </el-form-item>
+                <el-form-item
+                    label="运动图片"
+                    prop="picture"
+                    class="picture-item"
+                >
+                    <el-upload
+                        action="/api/common/upload"
+                        list-type="picture-card"
+                        :file-list="sportFileLists"
+                        :on-success="(file) => handleSuccess(file)"
+                        :headers="headers"
+                    >
+                        <el-icon class="food-uploader-icon"><Plus /></el-icon>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item
+                    ><el-button
+                        style="
+                            margin: 0 auto;
+                            width: 80%;
+                            background-color: #f0f2fd;
+                            color: #70708c;
+                            font-weight: bold;
+                        "
+                        @click="submitAddForm"
+                        >添 加 运 动</el-button
+                    ></el-form-item
+                ></el-form
+            >
+        </el-dialog>
     </div>
 </template>
 <script setup>
@@ -198,7 +264,9 @@ import {
     getSportsList,
     getSportsByName,
     getAllSportsType,
+    addSportInfo,
 } from "../../../api/healthRecord";
+import { ElMessage } from "element-plus";
 import { get } from "jquery";
 import { all } from "axios";
 
@@ -612,6 +680,79 @@ const periodLabels = ref([
         label: "晚上",
     },
 ]);
+
+// 打开自定义运动窗口
+const DIYvisible = ref(false);
+const openDIY = () => {
+    DIYvisible.value = true;
+    sportInfo.value = {
+        name: "",
+        type: "",
+        picture: "",
+        consumption: "",
+    };
+    imgUrl.value = "";
+    sportFileLists.value = [];
+};
+const sportInfo = ref({
+    name: "",
+    type: "",
+    picture: "",
+    consumption: "",
+});
+// 表单校验规则
+const sportRules = {
+    name: [{ required: true, message: "请输入运动名称", trigger: "blur" }],
+    type: [{ required: true, message: "请输入运动类别", trigger: "blur" }],
+    picture: [{ required: true, message: "请上传运动图片", trigger: "blur" }],
+    consumption: [
+        {
+            required: true,
+            message: "请填写运动消耗",
+            trigger: "blur",
+        },
+    ],
+};
+// 运动图片上传
+const sportFileLists = ref([]);
+const imgUrl = ref("");
+const handleSuccess = (file) => {
+    imgUrl.value = file.data;
+    sportInfo.value.picture = file.data;
+};
+// 提交运动表单
+const sportForm = ref(null);
+const submitAddForm = () => {
+    sportForm.value.validate((valid) => {
+        if (valid) {
+            addNewSport();
+            DIYvisible.value = false;
+        } else {
+            return false;
+        }
+    });
+};
+// 新增运动
+const addNewSport = () => {
+    let data = {
+        name: sportInfo.value.name,
+        type: sportInfo.value.type,
+        picture: sportInfo.value.picture,
+        consumption: sportInfo.value.consumption,
+    };
+    addSportInfo(data).then((res) => {
+        if (res.code === 200) {
+            ElMessage.warning("提交成功，请等待审核");
+        }
+    });
+};
+// 运动图片预览
+const pictureDialogVisible = ref(false);
+const dialogImageUrl = ref("");
+const handlePictureCardPreview = async (file) => {
+    dialogImageUrl.value = file.url;
+    pictureDialogVisible.value = true;
+};
 </script>
 <style lang="less" scoped>
 .main {
@@ -655,7 +796,7 @@ const periodLabels = ref([
                 overflow-x: hidden;
                 .sportRecord {
                     flex-shrink: 0;
-                    width: 80vh;
+                    width: 85vh;
                     height: 10vh;
                     background-color: #fff;
                     border-radius: 5vh;
@@ -872,5 +1013,20 @@ const periodLabels = ref([
             }
         }
     }
+}
+:deep(.el-input) {
+    .el-input__wrapper {
+        border-radius: 2vh;
+    }
+}
+:deep(.el-button) {
+    border-radius: 2vh;
+}
+.picture-item {
+    height: 19vh;
+    overflow: hidden;
+}
+:deep(.el-dialog) {
+    --el-dialog-border-radius: 3vh;
 }
 </style>

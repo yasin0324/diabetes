@@ -502,6 +502,22 @@ export function getAllSportsType() {
         },
     });
 }
+// 新增自定义运动
+export function addSportInfo(data) {
+    return request({
+        method: "post",
+        url: "/sport/detail/save",
+        headers: {
+            token: token,
+        },
+        data: {
+            name: data.name,
+            type: data.type,
+            picture: data.picture,
+            consumption: data.consumption,
+        },
+    });
+}
 // -----------------------------------------
 
 // 生成excel表格

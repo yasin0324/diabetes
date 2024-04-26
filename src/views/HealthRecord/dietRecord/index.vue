@@ -1882,7 +1882,7 @@ const foodRules = {
     picture: [{ required: true, message: "请上传食物图片", trigger: "blur" }],
 };
 // 食物图片上传
-const foodFIleLists = ref([]);
+const foodFileLists = ref([]);
 const imgUrl = ref("");
 const handleSuccess = (file) => {
     imgUrl.value = file.data;
