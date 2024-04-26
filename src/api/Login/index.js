@@ -59,7 +59,7 @@ export function loginMobile(data) {
 export function logout() {
     return request({
         method: "post",
-        url: "/user/logout",
+        url: "/user/logout1",
         headers: {
             token: getToken(),
         },
