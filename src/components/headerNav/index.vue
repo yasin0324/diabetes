@@ -241,7 +241,7 @@ onMounted(() => {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 width: 100%;
                 display: inline-block;
-                font-size: 0.9vw;
+                font-size: 0.8vw;
             }
         }
     }
