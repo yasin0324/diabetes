@@ -421,7 +421,6 @@ const rules = ref({
 // 提交表单
 const loading = ref(true);
 const submitForm = () => [
-
     ruleFormRef.value.validate((valid) => {
         if (valid) {
             loading.value = true;
@@ -450,15 +449,23 @@ const submitForm = () => [
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #f3f3f3;
     .tool1 {
         margin-top: 5vh;
         margin-bottom: 3vh;
-        height: 40vh;
+        width: 70%;
+        background: #fff;
+        border-radius: 3vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 2vh;
+        padding-bottom: 5vh;
         .topTitle {
+            margin-bottom: 1vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 1vh;
             .title {
                 font-size: 4vh;
                 font-weight: bold;
@@ -472,7 +479,7 @@ const submitForm = () => [
             }
         }
         .reportData {
-            width: 104vh;
+            width: 100vh;
             height: 30vh;
             background-image: url("../../common/image/excelTable.jpg");
             background-size: 60% 100%;
@@ -537,6 +544,14 @@ const submitForm = () => [
     }
     .tool2 {
         margin-bottom: 3vh;
+        background: #fff;
+        border-radius: 3vh;
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 2vh;
+        padding-bottom: 5vh;
         .topTitle {
             display: flex;
             flex-direction: column;
@@ -653,6 +668,14 @@ const submitForm = () => [
     }
     .tool3 {
         margin-bottom: 3vh;
+        background: #fff;
+        border-radius: 3vh;
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 2vh;
+        padding-bottom: 5vh;
         .topTitle {
             display: flex;
             flex-direction: column;
