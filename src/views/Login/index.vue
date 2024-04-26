@@ -184,6 +184,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { setToken } from "../../util/auth";
+import { ElMessage } from "element-plus";
 import {
     smsCodeGet,
     registerUser,
@@ -384,17 +385,24 @@ function loginBySelectedMethod() {
     loginType.value === "userName"
         ? loginUsername(login.value)
               .then((res) => {
-                  console.log(res);
-                  setToken(res.data.token);
-                  router.push("/home");
+                  if (res.data.roles === "普通用户") {
+                      setToken(res.data.token);
+                      router.push("/home");
+                  } else {
+                      ElMessage.error("您不是普通用户，无法登录");
+                  }
               })
               .catch((err) => {
                   console.log(err);
               })
         : loginMobile(login.value)
               .then((res) => {
-                  console.log(res);
-                  router.replace("/home");
+                  if (res.data.roles === "普通用户") {
+                      setToken(res.data.token);
+                      router.push("/home");
+                  } else {
+                      ElMessage.error("您不是普通用户，无法登录");
+                  }
               })
               .catch((err) => {
                   console.log(err);
