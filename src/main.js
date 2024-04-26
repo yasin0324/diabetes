@@ -28,4 +28,15 @@ app.component("header-nav", headerNav);
 app.component("health-header", healthHeader);
 app.component("chat-ai", chatAi);
 
+// 路由守卫
+router.beforeEach((to, from, next) => {
+    // 验证token，只有存在token的时候，才能跳转到内容页
+    const token = localStorage.getItem("token");
+    if (token || to.path === "/login") {
+        next();
+    } else {
+        next("/login");
+    }
+});
+
 app.mount("#app");
