@@ -172,6 +172,28 @@ export function getAllType() {
         },
     });
 }
+// 新增自定义食物
+export function addFoodInfo(data) {
+    return request({
+        method: "post",
+        url: "/food/save",
+        headers: {
+            token: token,
+        },
+        data: {
+            name: data.name,
+            type: data.type,
+            picture: data.picture,
+            GI: data.GI,
+            GL: data.GL,
+            protein: data.protein,
+            glucose: data.glucose,
+            heat: data.heat,
+            fat: data.fat,
+            carbohydrate: data.carbohydrate,
+        },
+    });
+}
 // -----------------------------------------
 
 // 用药记录----------------------------------

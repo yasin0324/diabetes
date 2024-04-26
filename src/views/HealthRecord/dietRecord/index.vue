@@ -984,7 +984,7 @@
                                 v-for="(item, index) in foodType"
                                 :key="index"
                                 :index="index.toString()"
-                                @click="getFoodsByType(item)"
+                                @click="getFoodsByType(item, index)"
                                 >{{ item }}</el-menu-item
                             >
                         </el-menu>
@@ -1074,6 +1074,9 @@
                 </div>
             </div>
             <div class="footer">
+                <el-button class="diyFood" @click="openDIY">
+                    自定义食物
+                </el-button>
                 <el-popover placement="top" trigger="hover" :width="410">
                     <template #reference
                         ><el-button class="left">已添加</el-button>
@@ -1106,6 +1109,106 @@
                 >
             </div>
         </el-dialog>
+        <el-dialog
+            align-center
+            class="DIYfood"
+            v-model="DIYvisible"
+            title="添加自定义食物"
+            width="400"
+        >
+            <el-form
+                class="DIYFoodForm"
+                :model="foodInfo"
+                label-position="right"
+                label-width="auto"
+                :rules="foodRules"
+                ref="foodForm"
+            >
+                <el-form-item label="食物名称" prop="name">
+                    <el-input
+                        v-model="foodInfo.name"
+                        placeholder="请输入食物名称"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label="食物类别" prop="type">
+                    <el-input
+                        v-model="foodInfo.type"
+                        placeholder="请输入食物类别"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label="含糖量" prop="glucose">
+                    <el-input
+                        v-model="foodInfo.glucose"
+                        placeholder="请输入含糖量（g/100g）"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label="升糖指数" prop="GI">
+                    <el-input
+                        v-model="foodInfo.GI"
+                        placeholder="请输入食物的升糖指数"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label="升糖负荷" prop="GL">
+                    <el-input
+                        v-model="foodInfo.GL"
+                        placeholder="请输入食物的升糖负荷"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label="热量" prop="heat">
+                    <el-input
+                        v-model="foodInfo.heat"
+                        placeholder="请输入食物热量（kacl/100g）"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label="蛋白质" prop="protein">
+                    <el-input
+                        v-model="foodInfo.protein"
+                        placeholder="请输入食物蛋白质含量（g/100g）"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label="脂肪" prop="fat">
+                    <el-input
+                        v-model="foodInfo.fat"
+                        placeholder="请输入食物脂肪含量（g/100g）"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item label="碳水化合物" prop="carbohydrate">
+                    <el-input
+                        v-model="foodInfo.carbohydrate"
+                        placeholder="请输入食物碳水化合物含量（g/100g）"
+                    ></el-input>
+                </el-form-item>
+                <el-form-item
+                    label="食物图片"
+                    prop="picture"
+                    class="picture-item"
+                >
+                    <el-upload
+                        action="/api/common/upload"
+                        list-type="picture-card"
+                        :file-list="foodFileLists"
+                        :on-success="(file) => handleSuccess(file)"
+                        :headers="headers"
+                        :on-preview="handlePictureCardPreview"
+                    >
+                        <el-icon class="food-uploader-icon"><Plus /></el-icon>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item>
+                    <el-button
+                        style="
+                            margin: 0 auto;
+                            width: 80%;
+                            background-color: #f0f2fd;
+                            color: #70708c;
+                            font-weight: bold;
+                        "
+                        @click="submitForm"
+                        >添 加 食 物</el-button
+                    >
+                </el-form-item>
+            </el-form>
+        </el-dialog>
         <div class="dietary">
             <div class="dietaryHeader">
                 <div class="title"><h1>推荐食谱</h1></div>
@@ -1120,6 +1223,12 @@
             </div>
         </div>
     </div>
+    <el-dialog
+        style="display: flex; justify-content: center"
+        v-model="pictureDialogVisible"
+    >
+        <img :src="dialogImageUrl" alt="" />
+    </el-dialog>
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
@@ -1133,10 +1242,17 @@ import {
     searchFood,
     getFoodByType,
     getAllType,
+    addFoodInfo,
 } from "../../../api/healthRecord";
 import { recommendRecipes } from "../../../api/Tool";
 import { getUserName } from "../../../api/User";
+import { ElMessage } from "element-plus";
 import { get } from "jquery";
+
+const token = localStorage.getItem("token");
+const headers = {
+    token: token,
+};
 
 const user = ref({});
 const getUser = () => {
@@ -1631,11 +1747,12 @@ function getFoodType() {
         });
 }
 // 根据食物类型查询食物
-function getFoodsByType(type) {
+function getFoodsByType(type, index) {
     getFoodByType(type)
         .then((res) => {
             console.log(res);
             getFoodsList.value = res.data;
+            activeIndex.value = index;
         })
         .catch((err) => {
             console.log(err);
@@ -1643,11 +1760,12 @@ function getFoodsByType(type) {
 }
 // 模糊查询食物
 function searchFoods() {
+    activeIndex.value = "-10";
     searchFood(searchName.value)
         .then((res) => {
             console.log(res);
             getFoodsList.value = res.data;
-            activeIndex.value = "-1";
+            activeIndex.value = "-10";
         })
         .catch((err) => {
             console.log(err);
@@ -1670,7 +1788,7 @@ function getAllFoods() {
 // 搜索重置
 function refreshSearch() {
     searchName.value = "";
-    activeIndex.value = "-1";
+    activeIndex.value = "-10";
     getAllFoods();
 }
 // 重置添加食物()
@@ -1716,6 +1834,99 @@ function updateFood(label, item) {
 
 // 模糊搜索
 const searchName = ref("");
+
+const DIYvisible = ref(false);
+// 打开自定义食物窗口
+const openDIY = () => {
+    DIYvisible.value = true;
+    foodInfo.value = {
+        name: "",
+        picture: "",
+        type: "",
+        GI: "",
+        GL: "",
+        glucose: "",
+        heat: "",
+        protein: "",
+        fat: "",
+        carbohydrate: "",
+    };
+    imgUrl.value = "";
+    foodFileLists.value = [];
+};
+const foodInfo = ref({
+    name: "",
+    picture: "",
+    type: "",
+    GI: "",
+    GL: "",
+    glucose: "",
+    heat: "",
+    protein: "",
+    fat: "",
+    carbohydrate: "",
+});
+// 表单校验规则
+const foodRules = {
+    name: [{ required: true, message: "请填写食物名称", trigger: "blur" }],
+    type: [{ required: true, message: "请填写食物类别", trigger: "blur" }],
+    glucose: [{ required: true, message: "请填写含糖量", trigger: "blur" }],
+    GI: [{ required: true, message: "请填写升糖指数", trigger: "blur" }],
+    GL: [{ required: true, message: "请填写升糖负荷", trigger: "blur" }],
+    heat: [{ required: true, message: "请填写热量", trigger: "blur" }],
+    protein: [{ required: true, message: "请填写蛋白质含量", trigger: "blur" }],
+    fat: [{ required: true, message: "请填写脂肪含量", trigger: "blur" }],
+    carbohydrate: [
+        { required: true, message: "请填写碳水化合物含量", trigger: "blur" },
+    ],
+    picture: [{ required: true, message: "请上传食物图片", trigger: "blur" }],
+};
+// 食物图片上传
+const foodFIleLists = ref([]);
+const imgUrl = ref("");
+const handleSuccess = (file) => {
+    imgUrl.value = file.data;
+    foodInfo.value.picture = file.data;
+};
+// 提交食物表单
+const foodForm = ref(null);
+const submitForm = () => {
+    foodForm.value.validate((valid) => {
+        if (valid) {
+            addNewFood();
+            DIYvisible.value = false;
+        } else {
+            return false;
+        }
+    });
+};
+// 新增食物
+const addNewFood = () => {
+    let data = {
+        name: foodInfo.value.name,
+        picture: foodInfo.value.picture,
+        type: foodInfo.value.type,
+        GI: foodInfo.value.GI,
+        GL: foodInfo.value.GL,
+        glucose: foodInfo.value.glucose,
+        heat: foodInfo.value.heat,
+        protein: foodInfo.value.protein,
+        fat: foodInfo.value.fat,
+        carbohydrate: foodInfo.value.carbohydrate,
+    };
+    addFoodInfo(data).then((res) => {
+        if (res.code === 200) {
+            ElMessage.warning("提交成功，请等待审核");
+        }
+    });
+};
+// 食物图片预览
+const pictureDialogVisible = ref(false);
+const dialogImageUrl = ref("");
+const handlePictureCardPreview = async (file) => {
+    dialogImageUrl.value = file.url;
+    pictureDialogVisible.value = true;
+};
 </script>
 <style lang="less" scoped>
 .main {
@@ -1904,7 +2115,7 @@ const searchName = ref("");
                     display: flex;
                     flex-direction: row;
                     .menu {
-                        width: 20%;
+                        width: 25%;
                     }
                     .content {
                         width: 80%;
@@ -1951,6 +2162,9 @@ const searchName = ref("");
                 position: absolute;
                 bottom: 2vh;
                 right: 5vh;
+                .diyFood {
+                    border-radius: 3vh;
+                }
                 .left {
                     border-radius: 3vh;
                 }
@@ -1997,5 +2211,17 @@ const searchName = ref("");
             }
         }
     }
+}
+:deep(.el-input) {
+    .el-input__wrapper {
+        border-radius: 2vh;
+    }
+}
+:deep(.el-button) {
+    border-radius: 2vh;
+}
+.picture-item {
+    height: 19vh;
+    overflow: hidden;
 }
 </style>
