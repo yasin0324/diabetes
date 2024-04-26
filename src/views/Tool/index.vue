@@ -253,7 +253,11 @@
                         >清 空</el-button
                     >
                 </div>
-                <div class="result" v-if="predictScore !== 0">
+                <div
+                    class="result"
+                    v-loading="loading"
+                    v-if="predictScore !== 0"
+                >
                     <div class="low" v-if="predictScore < 0.4">
                         <div class="content1">
                             评估结果：{{ predictScore * 100 }}分
@@ -415,9 +419,13 @@ const rules = ref({
     age: [{ required: true, message: "请输入年龄", trigger: "change" }],
 });
 // 提交表单
+const loading = ref(true);
 const submitForm = () => [
+
     ruleFormRef.value.validate((valid) => {
         if (valid) {
+            loading.value = true;
+            predictScore.value = -1;
             let data = ruleForm.value;
             data.familyMedicalHistory = parseInt(
                 ruleForm.value.familyMedicalHistory
@@ -425,6 +433,7 @@ const submitForm = () => [
             predictDiabetes(data)
                 .then((res) => {
                     predictScore.value = res.data;
+                    loading.value = false;
                 })
                 .catch((err) => {
                     console.log(err);

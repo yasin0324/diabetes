@@ -977,7 +977,7 @@
                         </el-menu>
                     </div>
                     <div class="content">
-                        <ul class="foodList" v-infinite-scroll="load">
+                        <ul class="foodList">
                             <li
                                 class="food"
                                 v-for="(item, index) in getFoodsList"
@@ -1199,6 +1199,9 @@
         <div class="dietary">
             <div class="dietaryHeader">
                 <div class="title"><h1>推荐食谱</h1></div>
+                <el-button @click="getRecommondRecipes" class="recommendButton"
+                    >重新推荐</el-button
+                >
             </div>
             <div
                 class="dietaryMain"
@@ -1354,6 +1357,8 @@ const totalPortein = ref(0);
 const totalFat = ref(0);
 const totalCarbohydrate = ref(0);
 const getRecommondRecipes = () => {
+    loading.value = true;
+    foodData.value = {};
     recommendRecipes(user.value.userId)
         .then((res) => {
             recipes.value = res.data.recommendRecipes;
@@ -2269,6 +2274,13 @@ const handlePictureCardPreview = async (file) => {
             .title {
                 color: #01111abe;
             }
+            .recommendButton {
+                margin-left: 3vh;
+                margin-top: 1vh;
+                background-color: #67c23a;
+                color: #fff;
+                font-weight: bold;
+            }
         }
         .dietaryMain {
             width: 100%;
@@ -2299,7 +2311,7 @@ const handlePictureCardPreview = async (file) => {
                     align-items: center;
                     .foodName {
                         height: 4vh;
-                        font-size: 2.5vh;
+                        font-size: 2.3vh;
                         color: #333333;
                         font-weight: bold;
                     }
