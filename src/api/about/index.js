@@ -5,7 +5,7 @@ import { getToken, removeToken } from "../../util/auth";
 export function getNotice() {
     return request({
         method: "get",
-        url: `/notice/list`,
+        url: `/customer/notice/list`,
         headers: {
             token: getToken(),
         },
