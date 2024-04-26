@@ -397,7 +397,7 @@ function loginBySelectedMethod() {
               })
         : loginMobile(login.value)
               .then((res) => {
-                  if (res.data.roles === "普通用户") {
+                  if (res.data.role === "普通用户") {
                       setToken(res.data.token);
                       router.push("/home");
                   } else {
