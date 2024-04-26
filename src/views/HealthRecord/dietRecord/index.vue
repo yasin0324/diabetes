@@ -1213,12 +1213,47 @@
             <div class="dietaryHeader">
                 <div class="title"><h1>推荐食谱</h1></div>
             </div>
-            <div class="dietaryMain" style="height: 50vh">
+            <div class="dietaryMain">
                 <div class="visible">
                     <div
                         id="recommendChart"
-                        style="height: 50vh; width: 50%"
+                        style="height: 100%; width: 100%"
                     ></div>
+                </div>
+                <div class="foodList">
+                    <div
+                        class="foodCard"
+                        v-for="(item, index) in foodData"
+                        :key="index"
+                    >
+                        <div class="foodName">
+                            {{ item.info.name }}
+                            {{ item.weight.toFixed(0) }}克
+                        </div>
+                        <div class="cardImg">
+                            <img :src="item.info.picture" />
+                        </div>
+                        <div class="foodInfo">
+                            <div class="heat">
+                                热量：{{ item.info.heat }}千卡/100克
+                            </div>
+                            <div class="protein">
+                                蛋白质：{{ item.info.protein }}克/100克
+                            </div>
+                            <div class="fat">
+                                脂肪：{{ item.info.fat }}克/100克
+                            </div>
+                            <div class="carbohydrate">
+                                碳水化合物：{{ item.info.carbohydrate }}克/100克
+                            </div>
+                            <div class="gi">
+                                升糖指数(GI)：{{ item.info.gi }}
+                            </div>
+                            <div class="gl">
+                                升糖负荷(GL)：{{ item.info.gl }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1327,24 +1362,40 @@ function drawPieChart(id, data, time) {
 // 获取推荐食谱
 const recipes = ref({});
 const foodData = ref({});
+const totalHeat = ref(0);
+const totalPortein = ref(0);
+const totalFat = ref(0);
+const totalCarbohydrate = ref(0);
 const getRecommondRecipes = () => {
     recommendRecipes(user.value.userId)
         .then((res) => {
             recipes.value = res.data.recommendRecipes;
             recommendHeat.value = res.data.heat.toFixed(0);
-            // for (const id in recipes.value) {
-            //     getFoodInfo(id).then((res) => {
-            //         foodData.value[id] = {
-            //             weight: recipes.value[id],
-            //             info: res.data,
-            //         };
-            //     });
-            // }
+            for (const id in res.data.recommendRecipes) {
+                getFoodInfo(id).then((res2) => {
+                    foodData.value[id] = {
+                        weight: res.data.recommendRecipes[id],
+                        info: res2.data,
+                    };
+                    total.value +=
+                        res2.data.heat * (res.data.recommendRecipes[id] / 100);
+                    totalPortein.value +=
+                        res2.data.protein *
+                        (res.data.recommendRecipes[id] / 100);
+                    totalFat.value +=
+                        res2.data.fat * (res.data.recommendRecipes[id] / 100);
+                    totalCarbohydrate.value +=
+                        res2.data.carbohydrate *
+                        (res.data.recommendRecipes[id] / 100);
+                });
+            }
+            setTimeout(() => {
+                showRecipes();
+            }, 1000);
         })
         .then((err) => {
             console.log(err);
         });
-    showRecipes();
 };
 
 // 推荐食谱营养分析
@@ -1359,7 +1410,7 @@ const showRecipes = () => {
             left: "left",
         },
         title: {
-            text: "2123",
+            text: totalHeat.value.toFixed(0),
             subtext: "千卡",
             left: "center",
             top: "middle",
@@ -1382,8 +1433,8 @@ const showRecipes = () => {
                     show: false,
                 },
                 data: [
-                    { value: 1048, name: "Search Engine" },
-                    { value: 735, name: "Direct" },
+                    { value: totalPortein.value.toFixed(0), name: "Search Engine" },
+                    { value: total, name: "Direct" },
                     { value: 580, name: "Email" },
                 ],
             },
@@ -2208,6 +2259,58 @@ const handlePictureCardPreview = async (file) => {
             padding-left: 3vh;
             .title {
                 color: #01111abe;
+            }
+        }
+        .dietaryMain {
+            width: 100%;
+            height: 70vh;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            .visible {
+                height: 100%;
+                width: 40%;
+            }
+            .foodList {
+                height: 100%;
+                width: 60%;
+                margin-top: 1vh;
+                margin-right: 1vh;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                .foodCard {
+                    width: 33%;
+                    height: 45%;
+                    background-color: #fff;
+                    border-radius: 3vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    .foodName {
+                        font-size: 2.5vh;
+                        color: #333333;
+                        font-weight: bold;
+                    }
+                    .cardImg {
+                        width: 80%;
+                        height: 30%;
+                        display: flex;
+                        justify-content: center;
+                        padding: 1vh;
+                        img {
+                            height: 90%;
+                            width: 50%;
+                            border-radius: 2vh;
+                        }
+                    }
+                    .foodInfo {
+                        font-size: 2vh;
+                        color: #606266;
+                        font-weight: bold;
+                    }
+                }
             }
         }
     }
