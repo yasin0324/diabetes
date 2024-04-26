@@ -43,7 +43,6 @@
 import { 
     getUserName,
     getallUser,
-    putassociatedUser
  } from "../../api/User";
 import { ref,onMounted,watchEffect} from 'vue'
 import { ElMessage } from 'element-plus'
