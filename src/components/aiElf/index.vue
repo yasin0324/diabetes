@@ -112,10 +112,12 @@
                                     :style="
                                         item.type === 'send'
                                             ? {
+                                                  maxWidth: '80%',
                                                   marginTop: '1vh',
                                                   marginRight: '1vh',
                                               }
                                             : {
+                                                  maxWidth: '80%',
                                                   marginTop: '1vh',
                                                   marginLeft: '1vh',
                                               }
@@ -149,7 +151,6 @@
                                                           '2vh',
                                                       borderBottomLeftRadius:
                                                           '2vh',
-                                                      width: '80%',
                                                       marginBottom: '1vh',
                                                   }
                                         "
@@ -406,7 +407,6 @@ import img1 from "../../common/image/user.png";
 import img2 from "../../common/image/face.png";
 import { aiElf, getChats, updatemsg } from "../../api/Tool/index.js";
 import { getInfo } from "../../api/Login/index";
-import { all } from "axios";
 
 const messageLists = ref([]);
 const message = ref();
@@ -418,24 +418,66 @@ const send = () => {
     let msg = {
         message: message.value,
         type: "send",
-        avatar: img1,
+        avatar: user.value.avatar,
     };
     // 将message加入messageLists中
     messageLists.value.push(msg);
-    aiElf(message.value)
+
+    // aiElf(message.value)
+    //     .then((res) => {
+    //         let reply = {
+    //             message: res.data,
+    //             type: "receive",
+    //             avatar: img2,
+    //         };
+    //         sendDisabled.value = false;
+    //         refreshDisabled.value = false;
+    //         messageLists.value.push(reply);
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //     });
+    let reply = {
+        message: "",
+        type: "receive",
+        avatar: img2,
+    };
+    messageLists.value.push(reply);
+
+    fetch(`/api/tool/aiElf?question=${encodeURIComponent(message.value)}`, {
+        method: "get",
+        headers: {
+            token: localStorage.getItem("token"),
+        },
+    })
         .then((res) => {
-            let reply = {
-                message: res.data,
-                type: "receive",
-                avatar: img2,
-            };
-            sendDisabled.value = false;
-            refreshDisabled.value = false;
-            messageLists.value.push(reply);
+            const reader = res.body.getReader();
+            return new ReadableStream({
+                start(controller) {
+                    function push() {
+                        reader.read().then(({ done, value }) => {
+                            if (done) {
+                                controller.close();
+                                return;
+                            }
+                            reply.message += new TextDecoder("utf-8").decode(
+                                value
+                            );
+                            controller.enqueue(value);
+                            push();
+
+                            messageLists.value[messageLists.value.length - 1] =
+                                { ...reply };
+                        });
+                    }
+                    push();
+                },
+            });
         })
         .catch((err) => {
             console.log(err);
         });
+
     message.value = "";
 };
 const refreshAi = () => {
