@@ -15,7 +15,11 @@
                 </div>
             </div>
             <div class="recordMain">
-                <div class="recordMainTop">
+                <div
+                    class="recordMainTop"
+                    v-loading="loading"
+                    element-loading-background="#ecf0f3"
+                >
                     <div class="heat">
                         <el-progress
                             type="circle"
@@ -71,19 +75,15 @@
                                     :percentage="
                                         Math.round(
                                             (allcarbohydrate /
-                                                recommendCarbohydrate) *
+                                                totalCarbohydrate) *
                                                 100
                                         )
                                     "
                                     ><span style="color: #3d4a51"
-                                        >{{
-                                            Math.round(
-                                                (allcarbohydrate /
-                                                    recommendCarbohydrate) *
-                                                    100
-                                            )
-                                        }}
-                                        / {{ recommendCarbohydrate }}克</span
+                                        >{{ allcarbohydrate.toFixed(0) }} /
+                                        {{
+                                            totalCarbohydrate.toFixed(0)
+                                        }}克</span
                                     ></el-progress
                                 >
                             </div>
@@ -95,20 +95,13 @@
                                     style="max-width: 90%"
                                     :percentage="
                                         Math.round(
-                                            (allportein / recommendPortein) *
-                                                100
+                                            (allportein / totalPortein) * 100
                                         )
                                     "
                                     color="#f3d19e"
                                     ><span style="color: #3d4a51"
-                                        >{{
-                                            Math.round(
-                                                (allportein /
-                                                    recommendPortein) *
-                                                    100
-                                            )
-                                        }}
-                                        / {{ recommendPortein }}克</span
+                                        >{{ allportein.toFixed(0) }} /
+                                        {{ totalPortein.toFixed(0) }}克</span
                                     ></el-progress
                                 >
                             </div>
@@ -119,18 +112,12 @@
                                     :stroke-width="24"
                                     style="max-width: 90%"
                                     :percentage="
-                                        Math.round(
-                                            (allfat / recommendFat) * 100
-                                        )
+                                        Math.round((allfat / totalFat) * 100)
                                     "
                                     color="#b3e19d"
                                     ><span style="color: #3d4a51"
-                                        >{{
-                                            Math.round(
-                                                (allfat / recommendFat) * 100
-                                            )
-                                        }}
-                                        / {{ recommendFat }}克</span
+                                        >{{ allfat.toFixed(0) }} /
+                                        {{ totalFat.toFixed(0) }}克</span
                                     ></el-progress
                                 >
                             </div>
@@ -1213,7 +1200,11 @@
             <div class="dietaryHeader">
                 <div class="title"><h1>推荐食谱</h1></div>
             </div>
-            <div class="dietaryMain">
+            <div
+                class="dietaryMain"
+                v-loading="loading"
+                element-loading-background="#ecf0f3"
+            >
                 <div class="visible">
                     <div
                         id="recommendChart"
@@ -1297,6 +1288,8 @@ const getUser = () => {
     });
 };
 
+const loading = ref(true);
+
 // 日期选择
 const recordDate = ref(formatDate(new Date()));
 
@@ -1311,12 +1304,6 @@ function formatDate(date) {
 
 // 推荐摄入热量
 const recommendHeat = ref(0);
-// 推荐摄入碳水
-const recommendCarbohydrate = ref(297);
-// 推荐摄入蛋白质
-const recommendPortein = ref(85);
-// 推荐摄入脂肪
-const recommendFat = ref(66);
 
 // 饼图
 function drawPieChart(id, data, time) {
@@ -1371,29 +1358,43 @@ const getRecommondRecipes = () => {
         .then((res) => {
             recipes.value = res.data.recommendRecipes;
             recommendHeat.value = res.data.heat.toFixed(0);
+            totalHeat.value = 0;
+            totalPortein.value = 0;
+            totalFat.value = 0;
+            totalCarbohydrate.value = 0;
+            let promises = [];
             for (const id in res.data.recommendRecipes) {
-                getFoodInfo(id).then((res2) => {
-                    foodData.value[id] = {
-                        weight: res.data.recommendRecipes[id],
-                        info: res2.data,
-                    };
-                    total.value +=
-                        res2.data.heat * (res.data.recommendRecipes[id] / 100);
-                    totalPortein.value +=
-                        res2.data.protein *
-                        (res.data.recommendRecipes[id] / 100);
-                    totalFat.value +=
-                        res2.data.fat * (res.data.recommendRecipes[id] / 100);
-                    totalCarbohydrate.value +=
-                        res2.data.carbohydrate *
-                        (res.data.recommendRecipes[id] / 100);
-                });
+                let promise = getFoodInfo(id)
+                    .then((res2) => {
+                        foodData.value[id] = {
+                            weight: res.data.recommendRecipes[id],
+                            info: res2.data,
+                        };
+                        totalHeat.value +=
+                            res2.data.heat *
+                            (res.data.recommendRecipes[id] / 100);
+                        totalPortein.value +=
+                            res2.data.protein *
+                            (res.data.recommendRecipes[id] / 100);
+                        totalFat.value +=
+                            res2.data.fat *
+                            (res.data.recommendRecipes[id] / 100);
+                        totalCarbohydrate.value +=
+                            res2.data.carbohydrate *
+                            (res.data.recommendRecipes[id] / 100);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+                promises.push(promise);
             }
-            setTimeout(() => {
-                showRecipes();
-            }, 1000);
+            return Promise.all(promises);
         })
-        .then((err) => {
+        .then(() => {
+            loading.value = false;
+            showRecipes();
+        })
+        .catch((err) => {
             console.log(err);
         });
 };
@@ -1405,9 +1406,14 @@ const showRecipes = () => {
     const myChart = echarts.init(chartDom);
 
     const option = {
+        tooltip: {
+            trigger: "item",
+            formatter: "{a} <br/>{b}: {c}克 ({d}%)",
+        },
         legend: {
             orient: "vertical",
             left: "left",
+            top: 60,
         },
         title: {
             text: totalHeat.value.toFixed(0),
@@ -1421,7 +1427,7 @@ const showRecipes = () => {
         },
         series: [
             {
-                name: "Access From",
+                name: "营养含量",
                 type: "pie",
                 radius: ["40%", "70%"],
                 avoidLabelOverlap: false,
@@ -1433,9 +1439,12 @@ const showRecipes = () => {
                     show: false,
                 },
                 data: [
-                    { value: totalPortein.value.toFixed(0), name: "Search Engine" },
-                    { value: total, name: "Direct" },
-                    { value: 580, name: "Email" },
+                    { value: totalPortein.value.toFixed(0), name: "蛋白质" },
+                    { value: totalFat.value.toFixed(0), name: "脂肪" },
+                    {
+                        value: totalCarbohydrate.value.toFixed(0),
+                        name: "碳水化合物",
+                    },
                 ],
             },
         ],
@@ -2281,14 +2290,15 @@ const handlePictureCardPreview = async (file) => {
                 justify-content: space-around;
                 flex-wrap: wrap;
                 .foodCard {
-                    width: 33%;
+                    width: 32%;
                     height: 45%;
                     background-color: #fff;
-                    border-radius: 3vh;
+                    border-radius: 2vh;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
                     .foodName {
+                        height: 4vh;
                         font-size: 2.5vh;
                         color: #333333;
                         font-weight: bold;
