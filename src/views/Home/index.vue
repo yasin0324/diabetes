@@ -39,7 +39,10 @@
             <div class="moreNews">
                 <h2>热门信息文章</h2>
                 <div >
-                    <span @click="toUrlnews">更多文章信息</span>
+                    <el-button type="primary" plain color="#a3c576" style="font-size: 1.4vw;" @click="toUrlnews">
+                        更多文章信息
+                    </el-button>
+                    <!-- <span  ></span> -->
                 </div>
             </div>
             <ul>
@@ -84,8 +87,35 @@
                 </div>
             </div>
         </div>
-        <el-dialog v-model="dialogaboutMy">
+        <el-dialog v-model="dialogaboutMy" width="1000">
+            <!-- <img src="placeholder1.jpg" alt="Placeholder Image 1">
+            <img src="placeholder2.jpg" alt="Placeholder Image 2">
+            <img src="placeholder3.jpg" alt="Placeholder Image 3"> -->
 
+            <h2 style="color:red">控糖宝：您健康生活的智慧管家</h2>
+            <el-divider />
+            <p>&emsp;&emsp;控糖宝是一款专为糖尿病患者打造的全方位健康管理平台。我们汇聚了一支充满激情和创意的团队，致力于为用户提供个性化、便捷、安全的健康管理服务。让我们来更深入地了解控糖宝的功能和特点吧！</p>
+            <h3>1. 用户信息管理</h3>
+            <p>&emsp;&emsp;控糖宝为您提供了完善的用户信息管理功能，您可以轻松管理您的个人资料、偏好设置以及安全设置，确保您的账号安全和信息隐私。</p>
+            <h3>2. 血糖管理</h3>
+            <p>&emsp;&emsp;血糖管理是控糖宝的核心功能之一。我们提供了便捷的血糖记录功能，您可以随时记录您的血糖值，并根据记录的数据进行分析和个性化建议，助您实现血糖控制的目标。</p>
+            <h3>3. 饮食管理</h3>
+            <p>&emsp;&emsp;饮食是影响血糖的重要因素之一。控糖宝的饮食管理功能涵盖了食品管理、饮食记录、饮食分析和个性化建议，帮助您科学合理地安排饮食，控制血糖。</p>
+            <h3>4. 用药管理</h3>
+            <p>&emsp;&emsp;用药管理功能可以帮助您记录用药情况、设置用药提醒，并提供用药数据可视化展示，助您规律用药，提高治疗效果。</p>
+            <h3>5. 运动管理</h3>
+            <p>&emsp;&emsp;运动对于控制血糖有着重要的作用。控糖宝提供了运动记录、运动数据可视化展示以及运动状况分析与建议等功能，帮助您制定合适的运动计划，改善体质，提升健康水平。</p>
+            <h3>6. 健康数据管理</h3>
+            <p>&emsp;&emsp;通过控糖宝的健康数据管理功能，您可以对血糖、饮食、运动等数据进行可视化分析，全面了解自己的健康状况，及时调整生活方式，保持健康。</p>
+            <h3>7. 工具栏</h3>
+            <p>&emsp;&emsp;我们的工具栏包括了AI问答小助手、糖尿病预测助手、血糖换算助手等实用工具，为您提供更多的健康信息和服务，让您的健康管理之路更加轻松便捷。</p>
+            <h3>8. 文章管理和公告管理</h3>
+            <p>&emsp;&emsp;控糖宝还提供了丰富的文章内容和及时的公告信息，为您提供健康知识和最新资讯，让您时刻关注健康动态。</p>
+            <el-divider />
+            <p >&emsp;&emsp;控糖宝，让您的健康生活更美好！我们致力于为您提供最优质的健康管理服务，与您共同守护健康，共享幸福生活！</p>
+            <h3 style="color:red">创作团队：
+                王涵，郭远信，江煜铭，李智杰
+            </h3>
         </el-dialog>
     </div>
 </template>
@@ -119,7 +149,7 @@ onMounted(()=>{
     getNews();
 })
 
-let News = ref('')
+let News = ref([])
 function getNews() {
     let data = {
         title:"",
@@ -128,8 +158,12 @@ function getNews() {
     }
     getTextNews(data)
         .then((res) => {
-            console.log(res);
-            News.value = res.data;
+            // console.log(res);
+            // News.value = res.data;
+            for(let i=0;i<12;i++){
+                News.value.push(res.data[i])
+            }
+            
         })
         .catch((err) => {
             console.log(err);
@@ -189,6 +223,9 @@ const toFeed_back = () =>{
         height: 30vh;
         margin-top: 2vw;
         text-align: center;
+        h2{
+            font-size: 2vw;
+        }
         .el-row {
             margin-left: 15vw;
             margin-right: 15vw;
@@ -225,12 +262,15 @@ const toFeed_back = () =>{
         .moreNews {
             min-height: 20px;
             height: 5vh;
-            div {
+            h2{
+                font-size: 2.3vw;
+            }
+            div{
                 cursor: pointer;
-                span {
+                .el-button{
                     position: absolute;
                     top: 2vh;
-                    right: 5vw;
+                    right: 3vw;
                     min-height: 20px;
                     font-size: 12px;
                     text-align: center;
@@ -346,19 +386,25 @@ const toFeed_back = () =>{
         justify-content: center; 
         align-items: center;
         border-radius:2vw;
-        padding: 2%;
         position: relative;
         .el-dialog__body{
-            width: 60%;
+            width: 80%;
             display: flex;
             flex-direction: column;
             justify-content: center; 
             align-items: center;
-            .button{
-                height: 10%;
-                position: absolute;
-                right: 5%;
-                bottom: 1%;
+            h2{
+                font-size: 3vw;
+                margin-top: 1vh;
+                margin-bottom: 1vh;
+            }
+            h3{
+                font-size: 2.5vw;
+                margin-top: 1vh;
+                margin-bottom: 1vh;
+            }
+            p{
+                font-size: 1.5vw;
             }
         }
         .cell-item {

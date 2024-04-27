@@ -561,6 +561,7 @@ import {
   Edit
 } from '@element-plus/icons-vue'
 import {getIP } from "../../api/Login";
+import axios from "axios";
 
 const router = useRouter();
 
@@ -1356,7 +1357,6 @@ function finishCheck() {
     }else if(isSwitched.value === 4){
         postUserConnection(toggleLoginID.value)
         .then(res =>{
-            // console.log(res)
             removeToken();
             setToken(res.data.token)
             ElMessage({
@@ -1364,7 +1364,23 @@ function finishCheck() {
                 type:"success"
             })
             toggleLoginID.value = '';
-            getUserValue();
+            axios.get("/api/customer/list",{
+                    headers: {
+                        token:res.data.token
+                    }
+                }).then(res =>{
+                    console.log(res)
+                    UserNews.value = res.data.data;
+                    UserNewsValue.value = UserNews.value;
+                    AllUserValue.value = [];
+                    getAllUserValue();
+                }).catch(error =>{
+                    console.log(error)
+                }
+            )
+            // setTimeout(() => {
+            //     getUserValue();
+            // }, 1000);
         })
         .catch(error =>{
             console.log(error)
@@ -1379,6 +1395,7 @@ function getUserValue(){
     getUserName()
     .then(res=>{
         UserNews.value = res.data;
+        console.log(UserNews.value)
         for (let key in UserNews.value) {
             if (!UserNews.value[key]||UserNews.value[key] === '') {
                 UserNews.value[key] = '暂无信息';

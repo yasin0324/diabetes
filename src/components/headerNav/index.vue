@@ -49,7 +49,7 @@
                         <el-icon
                             size="50px"
                             color="#a3c576"
-                            v-if="weather.weather === ''"
+                            v-if="weather.weather === '多云'"
                             ><PartlyCloudy
                         /></el-icon>
                         <el-icon
@@ -67,7 +67,7 @@
                         <el-icon
                             size="50px"
                             color="#a3c576"
-                            v-if="weather.weather === '多云'"
+                            v-if="weather.weather === '阴'"
                             ><Cloudy
                         /></el-icon>
                         <el-icon
