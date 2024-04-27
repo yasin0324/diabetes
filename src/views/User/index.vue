@@ -1349,6 +1349,7 @@ function finishCheck() {
                 message: '取消关联成功',
                 type: 'success',
             })
+            location.reload();
             getUserValue();
         })
         .catch(error =>{
@@ -1369,7 +1370,7 @@ function finishCheck() {
                         token:res.data.token
                     }
                 }).then(res =>{
-                    console.log(res)
+                    // console.log(res)
                     UserNews.value = res.data.data;
                     UserNewsValue.value = UserNews.value;
                     AllUserValue.value = [];
@@ -1438,6 +1439,7 @@ function putUserValue(data){
             type: 'success',
         })
         UserNewsValue.value = UserNews.value;
+        location.reload();
         getUserValue();
     })
     .catch(error =>{
@@ -1529,6 +1531,7 @@ function putAddassociatedUser(data){
             message: '添加关联成功',
             type: 'success',
         })
+        location.reload();
         getUserValue();
     })
     .catch(error =>{
@@ -1592,6 +1595,7 @@ const postAddmobile = () =>{
             message: '添加关联成功',
             type: 'success',
         })
+        location.reload();
         getUserValue();
     })
     UserNamePassLogin.value = {
