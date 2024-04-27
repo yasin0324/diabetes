@@ -506,7 +506,7 @@ function delRecord(record, medicineId) {
         };
         updateMedicineRecord(data)
             .then((res) => {
-                console.log(res);
+                ElMessage.success(res.msg);
                 getData();
             })
             .catch((err) => {
@@ -515,7 +515,7 @@ function delRecord(record, medicineId) {
     } else {
         delMedicineRecord(record.id)
             .then((res) => {
-                console.log(res);
+                ElMessage.success(res.msg);
                 getData();
             })
             .catch((err) => {
@@ -527,7 +527,7 @@ function delRecord(record, medicineId) {
 function delClock(clockId) {
     delMedicineClock(clockId)
         .then((res) => {
-            console.log(res);
+            ElMessage.success(res.msg);
             getData();
         })
         .catch((err) => {
@@ -614,7 +614,7 @@ const addRecord = (periodLabel) => {
         data.addTempMedicines = recordInfo.value.tempMedicines;
         updateMedicineRecord(data)
             .then((res) => {
-                console.log(res);
+                ElMessage.success(res.msg);
                 getData();
             })
             .catch((err) => {
@@ -626,7 +626,7 @@ const addRecord = (periodLabel) => {
         data.tempMedicines = recordInfo.value.tempMedicines;
         setMedicineRecord(data)
             .then((res) => {
-                console.log(res);
+                ElMessage.success(res.msg);
                 getData();
             })
             .catch((err) => {
@@ -735,7 +735,7 @@ const addToCommonMedicine = (medicine) => {
         };
         setCommonMedicine(data)
             .then((res) => {
-                console.log(res);
+                ElMessage.success(res.msg);
                 if (res.code === 200) {
                     ElMessage({
                         message: res.msg,
@@ -766,7 +766,6 @@ const getCommonMedicineList = () => {
     getCommonMedicine(user.value.userId)
         .then((res) => {
             commonMedicines.value = res.data;
-            console.log(commonMedicines.value);
         })
         .catch((err) => {
             console.log(err);
@@ -776,6 +775,7 @@ const getCommonMedicineList = () => {
 const delMedicine = (id) => {
     delCommonMedicine(id)
         .then((res) => {
+            ElMessage.success(res.msg);
             getCommonMedicineList();
         })
         .catch((err) => {
@@ -889,6 +889,7 @@ const addClock = () => {
     };
     setMedicineClock(data)
         .then((res) => {
+            ElMessage.success(res.msg);
             getData();
         })
         .catch((err) => {

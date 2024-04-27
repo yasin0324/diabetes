@@ -6,7 +6,7 @@
                     <div class="image-container">
                         <img ref="image1" src="./img/head1.png" alt="控糖宝" />
                         <div ref="text1" class="overlay-text">
-                            控糖宝，带给你不一样的人生
+                            控糖宝，带给你不一样的人生!
                         </div>
                     </div>
                 </el-col>

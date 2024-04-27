@@ -262,7 +262,7 @@
                         <div class="content1">
                             评估结果：{{ predictScore * 100 }}分
                         </div>
-                        <div class="content2">很好，请继续保持</div>
+                        <div class="content2">很好，请继续保持!</div>
                     </div>
                     <div
                         class="medium"
@@ -271,13 +271,13 @@
                         <div class="content1">
                             评估结果：{{ predictScore * 100 }}分
                         </div>
-                        <div class="content2">较为健康，请继续保持</div>
+                        <div class="content2">较为健康，请继续保持!</div>
                     </div>
                     <div class="high" v-if="predictScore > 0.7">
                         <div class="content1">
                             评估结果：{{ predictScore * 100 }}分
                         </div>
-                        <div class="content2">糖尿病高危人群，请进一步检查</div>
+                        <div class="content2">糖尿病高危人群，请进一步检查!</div>
                     </div>
                 </div>
             </div>
@@ -723,10 +723,9 @@ const submitForm = () => [
                 }
             }
             .result {
-                border: 1vh dotted #a4c681;
                 border-radius: 2vh;
                 width: 40vh;
-                height: 10vh;
+                height: 12vh;
                 margin-top: 1vh;
                 font-weight: bold;
                 margin-bottom: 2vh;
@@ -740,12 +739,15 @@ const submitForm = () => [
                 }
                 .high {
                     color: #b60000;
+                    border: 1vh dotted #b60000;
                 }
                 .medium {
-                    color: #3aaaff;
+                    color: #ffc456;
+                    border: 1vh dotted #ffc456;
                 }
                 .low {
                     color: #a4c681;
+                    border: 1vh dotted #a4c681;
                 }
             }
         }

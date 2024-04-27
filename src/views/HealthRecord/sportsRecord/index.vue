@@ -190,7 +190,7 @@
             align-center
             class="DIYsport"
             v-model="DIYvisible"
-            title="添加自定义运动"
+            title="申请添加运动"
             width="400"
         >
             <el-form
@@ -385,6 +385,7 @@ const addSportsRecord = () => {
     };
     setSportsRecord(data)
         .then((res) => {
+            ElMessage.success(res.msg);
             getSportsRecords();
             added.value = false;
         })
@@ -396,7 +397,7 @@ const addSportsRecord = () => {
 const deleteRecord = (record) => {
     delSportsRecord(record.id)
         .then((res) => {
-            console.log(res);
+            ElMessage.success(res.msg);
             getSportsRecords();
         })
         .catch((err) => {
@@ -431,6 +432,7 @@ const updateRecords = (record, index) => {
         .then((res) => {
             updateSportsRecord(data)
                 .then((res) => {
+                    ElMessage.success(res.msg);
                     getSportsRecords();
                     updateVisible.value[record.id] = false;
                 })

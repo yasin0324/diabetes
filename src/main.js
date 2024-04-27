@@ -32,7 +32,7 @@ app.component("chat-ai", chatAi);
 router.beforeEach((to, from, next) => {
     // 验证token，只有存在token的时候，才能跳转到内容页
     const token = localStorage.getItem("token");
-    if (token || to.path === "/login") {
+    if (token || to.path === "/login" || to.path === "/home") {
         next();
     } else {
         next("/login");
