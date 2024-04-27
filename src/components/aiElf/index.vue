@@ -559,7 +559,10 @@ const getChatMsg = (id) => {
         .then((res) => {
             allChats.value = res.data.reverse();
             res.data.map((item) => {
-                updatemsg(item.id);
+                console.log(item, userId.value);
+                if (item.sendId !== userId.value) {
+                    updatemsg(item.id);
+                }
             });
         })
         .catch((err) => {

@@ -735,7 +735,6 @@ const addToCommonMedicine = (medicine) => {
         };
         setCommonMedicine(data)
             .then((res) => {
-                ElMessage.success(res.msg);
                 if (res.code === 200) {
                     ElMessage({
                         message: res.msg,

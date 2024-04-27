@@ -145,7 +145,7 @@
                             </div>
                             <div class="addButton">
                                 <el-button class="diySport" @click="openDIY"
-                                    >自定义运动</el-button
+                                    >申请添加运动</el-button
                                 >
                                 <el-button class="close" @click="added = false"
                                     >取消</el-button
@@ -230,6 +230,7 @@
                         :file-list="sportFileLists"
                         :on-success="(file) => handleSuccess(file)"
                         :headers="headers"
+                        :on-preview="handlePictureCardPreview"
                     >
                         <el-icon class="food-uploader-icon"><Plus /></el-icon>
                     </el-upload>
@@ -250,6 +251,12 @@
             >
         </el-dialog>
     </div>
+    <el-dialog
+        style="display: flex; justify-content: center"
+        v-model="pictureDialogVisible"
+    >
+        <img :src="dialogImageUrl" alt="" />
+    </el-dialog>
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
@@ -344,6 +351,7 @@ const getSportsRecords = () => {
     getSportsRecord(recordDate.value, recordDate.value)
         .then((res) => {
             sportsRecords.value = res.data.sportRecordVOList[0];
+            console.log(sportsRecords.value);
             // 给所有的updateVisible赋值
             sportsRecords.value.map((item) => {
                 updateVisible.value[item.id] = false;

@@ -186,7 +186,7 @@
                             <el-radio-group
                                 v-model="ruleForm.familyMedicalHistory"
                             >
-                                <el-radio value="1">有</el-radio>
+                                <el-radio value="0.7">有</el-radio>
                                 <el-radio value="0">无</el-radio>
                             </el-radio-group>
                         </el-form-item>

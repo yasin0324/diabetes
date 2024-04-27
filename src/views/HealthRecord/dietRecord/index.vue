@@ -32,25 +32,25 @@
                             <div v-if="allHeat <= recommendHeat">
                                 <div
                                     style="
-                                        font-size: 1.8vh;
+                                        font-size: 2vh;
                                         font-weight: bold;
                                         margin-bottom: 1vh;
                                     "
                                 >
                                     还可以吃
                                 </div>
-                                <div style="font-size: 3vh; font-weight: bold">
+                                <div style="font-size: 4vh; font-weight: bold">
                                     {{ recommendHeat - allHeat }}
                                 </div>
                             </div>
                             <div v-else>
-                                <div style="font-size: 2vh; font-weight: bold">
+                                <div style="font-size: 4vh; font-weight: bold">
                                     吃多啦！
                                 </div>
                             </div>
                             <div
                                 style="
-                                    font-size: 1.2vh;
+                                    font-size: 2vh;
                                     color: #8f8f8f;
                                     margin-top: 1vh;
                                 "
@@ -177,8 +177,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.heat *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.heat *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -187,8 +190,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.protein *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.protein *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template></el-table-column
@@ -197,8 +203,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.fat *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.fat *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -210,8 +219,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.carbohydrate *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.carbohydrate *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -248,9 +260,9 @@
                                                         size="small"
                                                         type="primary"
                                                         @click="
-                                                            breakfastPopoverVisible[
-                                                                scope.row.id
-                                                            ] = true
+                                                            handleSelectBreakfast(
+                                                                scope.row
+                                                            )
                                                         "
                                                         >编辑</el-button
                                                     >
@@ -386,8 +398,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.heat *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.heat *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -396,8 +411,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.protein *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.protein *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template></el-table-column
@@ -406,8 +424,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.fat *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.fat *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -419,8 +440,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.carbohydrate *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.carbohydrate *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -456,9 +480,9 @@
                                                         size="small"
                                                         type="primary"
                                                         @click="
-                                                            lunchPopoverVisible[
-                                                                scope.row.id
-                                                            ] = true
+                                                            handleSelectLunch(
+                                                                scope.row
+                                                            )
                                                         "
                                                         >编辑</el-button
                                                     >
@@ -595,8 +619,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.heat *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.heat *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -605,8 +632,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.protein *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.protein *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template></el-table-column
@@ -615,8 +645,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.fat *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.fat *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -628,8 +661,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.carbohydrate *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.carbohydrate *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -666,9 +702,9 @@
                                                         size="small"
                                                         type="primary"
                                                         @click="
-                                                            dinnerPopoverVisible[
-                                                                scope.row.id
-                                                            ] = true
+                                                            handleSelectDinner(
+                                                                scope.row
+                                                            )
                                                         "
                                                         >编辑</el-button
                                                     >
@@ -805,8 +841,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.heat *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.heat *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -815,8 +854,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.protein *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.protein *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template></el-table-column
@@ -825,8 +867,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.fat *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.fat *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -838,8 +883,11 @@
                                         <template #default="scope">
                                             <div>
                                                 {{
-                                                    scope.row.carbohydrate *
-                                                    (scope.row.foodNum / 100)
+                                                    (
+                                                        scope.row.carbohydrate *
+                                                        (scope.row.foodNum /
+                                                            100)
+                                                    ).toFixed(2)
                                                 }}
                                             </div>
                                         </template>
@@ -876,9 +924,9 @@
                                                         size="small"
                                                         type="primary"
                                                         @click="
-                                                            moreEatPopoverVisible[
-                                                                scope.row.id
-                                                            ] = true
+                                                            handleSelectMoreEat(
+                                                                scope.row
+                                                            )
                                                         "
                                                         >编辑</el-button
                                                     >
@@ -1891,36 +1939,69 @@ function resetAddFood() {
     foodsList.value = [];
     foodsListData.value = [];
 }
+const breakfastFoodWeight = ref([]);
+function handleSelectBreakfast(item) {
+    breakfastPopoverVisible.value[item.id] = true;
+    breakfastFoodWeight.value[item.id] = item.foodNum;
+}
+const lunchFoodWeight = ref([]);
+function handleSelectLunch(item) {
+    lunchPopoverVisible.value[item.id] = true;
+    lunchFoodWeight.value[item.id] = item.foodNum;
+}
+const dinnerFoodWeight = ref([]);
+function handleSelectDinner(item) {
+    dinnerPopoverVisible.value[item.id] = true;
+    dinnerFoodWeight.value[item.id] = item.foodNum;
+    console.log(item);
+    console.log(dinnerFoodWeight.value[item.id]);
+}
+const moreEatFoodWeight = ref([]);
+function handleSelectMoreEat(item) {
+    moreEatPopoverVisible.value[item.id] = true;
+    moreEatFoodWeight.value[item.id] = item.foodNum;
+}
 // 修改食物重量
 function updateFood(label, item) {
     let record = {};
-    if (label === "早餐") record = breakfast.value[0];
-    else if (label === "午餐") record = lunch.value[0];
-    else if (label === "晚餐") record = dinner.value[0];
-    else record = moreEat.value[0];
-    let data1 = {
-        id: record.id,
-        removeFoodAndDietIds: [item.id],
-    };
+    let weight = 0;
+    if (label === "早餐") {
+        record = breakfast.value[0];
+        weight = breakfastFoodWeight.value[item.id];
+    } else if (label === "午餐") {
+        record = lunch.value[0];
+        weight = lunchFoodWeight.value[item.id];
+    } else if (label === "晚餐") {
+        record = dinner.value[0];
+        weight = dinnerFoodWeight.value[item.id];
+    } else {
+        record = moreEat.value[0];
+        weight = moreEatFoodWeight.value[item.id];
+    }
+    // let data1 = {
+    //     id: record.id,
+    //     removeFoodAndDietIds: [item.id],
+    // };
     let data2 = {
         id: record.id,
         addFoodAndDiets: [
             {
                 foodId: item.id,
-                foodNum: item.foodNum,
+                foodNum: item.foodNum - weight,
             },
         ],
     };
-    updateDietRecord(data1)
+    updateDietRecord(data2)
         .then((res) => {
-            updateDietRecord(data2)
-                .then((res) => {
-                    console.log(res);
-                    getDietRecord();
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            // updateDietRecord(data2)
+            //     .then((res) => {
+            //         console.log(res);
+            //         getDietRecord();
+            //     })
+            //     .catch((err) => {
+            //         console.log(err);
+            //     });
+            getDietRecord();
         })
         .catch((err) => {
             console.log(err);
