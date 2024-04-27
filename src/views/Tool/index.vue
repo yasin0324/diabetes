@@ -277,7 +277,9 @@
                         <div class="content1">
                             评估结果：{{ predictScore * 100 }}分
                         </div>
-                        <div class="content2">糖尿病高危人群，请进一步检查!</div>
+                        <div class="content2">
+                            糖尿病高危人群，请进一步检查!
+                        </div>
                     </div>
                 </div>
             </div>
@@ -449,7 +451,7 @@ const submitForm = () => [
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f3f3f3;
+    background-color: #fff;
     .tool1 {
         margin-top: 5vh;
         margin-bottom: 3vh;
@@ -475,7 +477,7 @@ const submitForm = () => [
                 height: 1vh;
                 width: 40vh;
                 background-color: #a0a5a8;
-                box-shadow: 0 0 1vh #a0a5a8;
+                box-shadow: 0 1vh 1vh #a0a5a8;
             }
         }
         .reportData {
@@ -566,7 +568,7 @@ const submitForm = () => [
                 height: 1vh;
                 width: 40vh;
                 background-color: #a0a5a8;
-                box-shadow: 0 0 1vh #a0a5a8;
+                box-shadow: 0 1vh 1vh #a0a5a8;
             }
         }
         .conversion {
@@ -580,6 +582,7 @@ const submitForm = () => [
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
+                background-color: #ecf0f3;
                 .tool {
                     width: 42vh;
                     .toolMain {
@@ -690,12 +693,11 @@ const submitForm = () => [
                 height: 1vh;
                 width: 40vh;
                 background-color: #a0a5a8;
-                box-shadow: 0 0 1vh #a0a5a8;
+                box-shadow: 0 1vh 1vh #a0a5a8;
             }
         }
         .predict {
             width: 100vh;
-
             background-color: #ecf0f3;
             border-radius: 3vh;
             display: flex;
@@ -706,6 +708,7 @@ const submitForm = () => [
                 width: 80vh;
                 margin: 0 auto;
                 padding-left: 5vh;
+                background-color: #ecf0f3;
                 .el-form {
                     margin-top: 2vh;
                     .el-form-item {
