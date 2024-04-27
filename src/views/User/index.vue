@@ -1369,7 +1369,7 @@ function finishCheck() {
                         token:res.data.token
                     }
                 }).then(res =>{
-                    console.log(res)
+                    // console.log(res)
                     UserNews.value = res.data.data;
                     UserNewsValue.value = UserNews.value;
                     AllUserValue.value = [];
@@ -1438,6 +1438,7 @@ function putUserValue(data){
             type: 'success',
         })
         UserNewsValue.value = UserNews.value;
+        location.reload()
         getUserValue();
     })
     .catch(error =>{
