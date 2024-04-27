@@ -26,7 +26,7 @@
                                 border-bottom: 1px solid #d8d8d8;
                             "
                         >
-                            ai控糖小精灵
+                            AI控糖小精灵
                         </div>
                         <div
                             class="chatMain"
@@ -51,7 +51,7 @@
                             >
                                 <div class="avatar">
                                     <img
-                                        src="../../common/image/face.png"
+                                        :src="img2"
                                         style="width: 5vh; border-radius: 50%"
                                     />
                                 </div>
@@ -177,6 +177,7 @@
                                 maxlength="100"
                                 show-word-limit
                                 type="textarea"
+                                :disabled="inputDisabled"
                                 resize="none"
                                 :autosize="{ minRows: 3, maxRows: 3 }"
                             >
@@ -245,14 +246,14 @@
                                               width: '1vh',
                                               height: '1vh',
                                               borderRadius: '50%',
-                                              backgroundColor: '#00ff00',
+                                              backgroundColor: '#a0a5a8',
                                               marginRight: '1vh',
                                           }
                                         : {
                                               width: '1vh',
                                               height: '1vh',
                                               borderRadius: '50%',
-                                              backgroundColor: '#a0a5a8',
+                                              backgroundColor: '#00ff00',
                                               marginRight: '1vh',
                                           }
                                 "
@@ -301,7 +302,7 @@
                                         :src="
                                             item.sendId === user.userId
                                                 ? user.avatar
-                                                : img2
+                                                : img3
                                         "
                                         style="width: 5vh; border-radius: 50%"
                                     />
@@ -377,7 +378,7 @@
                                 type="textarea"
                                 resize="none"
                                 :autosize="{ minRows: 3, maxRows: 3 }"
-                                :disabled="!serviceStatus"
+                                :disabled="serviceStatus"
                             >
                             </el-input>
                             <div class="footer">
@@ -390,7 +391,7 @@
                                         right: 0;
                                         bottom: 0;
                                     "
-                                    :disabled="!serviceStatus"
+                                    :disabled="serviceStatus"
                                     >发 送</el-button
                                 >
                             </div>
@@ -404,14 +405,18 @@
 <script setup>
 import { ref, onMounted, watch, nextTick } from "vue";
 import img1 from "../../common/image/user.png";
-import img2 from "../../common/image/face.png";
+import img2 from "../../common/image/aiChat.png";
+import img3 from "../../common/image/service.png";
 import { aiElf, getChats, updatemsg } from "../../api/Tool/index.js";
 import { getInfo } from "../../api/Login/index";
 
+// 判断token是否存在
+const token = localStorage.getItem("token");
+const inputDisabled = ref(token ? false : true);
 const messageLists = ref([]);
 const message = ref();
-const sendDisabled = ref(false);
-const refreshDisabled = ref(false);
+const sendDisabled = ref(token ? false : true);
+const refreshDisabled = ref(token ? false : true);
 const send = () => {
     sendDisabled.value = true;
     refreshDisabled.value = true;
@@ -584,9 +589,8 @@ watch(
 const scrollBottom1 = () => {
     chatContent1.value.scrollTop = chatContent1.value.scrollHeight;
 };
-const serviceStatus = ref(true);
+const serviceStatus = ref(token ? false : true);
 const openChat = () => {
-    serviceStatus.value = true;
     websocket.value = new WebSocket(
         "ws://124.221.104.7:12007/ws/" + userId.value
     );
@@ -600,8 +604,9 @@ const openChat = () => {
 
     websocket.value.onmessage = function (event) {
         console.log(event.data);
+        serviceStatus.value = false;
         if (event.data === "发送失败，接收者已下线！") {
-            serviceStatus.value = false;
+            serviceStatus.value = true;
         }
         getChatMsg(9);
     };
