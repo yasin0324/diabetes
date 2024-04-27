@@ -47,17 +47,16 @@
                     </el-timeline>
                 </div>
             </div>
-            <el-backtop
-                :right="100"
-                style="
-                    background-color: var(--el-bg-color-overlay);
-                    box-shadow: var(--el-box-shadow-lighter);
-                    text-align: center;
-                    line-height: 40px;
-                    color: #a3c576;
-                "
-                :bottom="100"
-            />
+            <el-backtop 
+            :right="100" 
+            :bottom="100">
+                <div>
+                    <el-icon><CaretTop /></el-icon>
+                    <span>
+                        回到顶部
+                    </span>
+                </div>
+            </el-backtop>
         </div>
     </div>
 </template>
@@ -200,6 +199,34 @@ function getUserValue() {
                         color: #62744c;
                         float: right;
                     }
+                }
+            }
+        }
+        .el-backtop{
+            width:53px;
+            height:53px;
+            background-color: var(--el-bg-color-overlay);
+            box-shadow: var(--el-box-shadow-lighter);
+            text-align: center;
+            color: #a3c576;
+            div{
+                display: flex;
+                flex-direction: column;
+                justify-content: center; 
+                align-items: center;
+                width:100%;
+                text-align: center;
+                .el-icon{
+                    line-height: 0.8em;
+                    height: 0.8em;
+                    width:  0.8em;
+                    svg {
+                        height: 0.8em;
+                        width:  0.8em;
+                    }
+                }
+                span{
+                    font-size: 0.9vw;
                 }
             }
         }

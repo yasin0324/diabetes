@@ -67,24 +67,26 @@
         </div>
         <div class="footer">
             <div class="wrapper">
-            <div class="top">
-                <ul>
-                    <li><span>个性化服务</span></li>
-                    <li><span>实时监测</span></li>
-                    <li><span>专业指导</span></li>
-                </ul>
-            </div>
-            <div class="bottom">
-                <p>
-                    <span @click="toAbout">用户公告</span>
-                    |
-                    <span @click="toFeed_back">问题反馈</span>
-                </p>
-                <p>版权所有 © 控糖宝-糖尿病患者个性化血糖管理系统</p>
+                <div class="top">
+                    <ul>
+                        <li><span>个性化服务</span></li>
+                        <li><span>实时监测</span></li>
+                        <li><span>专业指导</span></li>
+                    </ul>
+                </div>
+                <div class="bottom">
+                    <p>
+                        <span @click="dialogaboutMy = true">关于我们</span>
+                        |
+                        <span @click="toFeed_back">问题反馈</span>
+                    </p>
+                    <p>版权所有 © 控糖宝-糖尿病患者个性化血糖管理系统</p>
+                </div>
             </div>
         </div>
-</div>
+        <el-dialog v-model="dialogaboutMy">
 
+        </el-dialog>
     </div>
 </template>
 
@@ -97,6 +99,8 @@ import {
 
 const router = useRouter()
 
+// 关于我们
+const dialogaboutMy = ref(false)
 
 const showImages = () => {
     const img1 = document.querySelector(".head1 img");
@@ -137,9 +141,6 @@ const toUrlnews = () =>{
     router.push("/articles")
 }
 
-const toAbout = () =>{
-    router.push("/about")
-}
 
 const toFeed_back = () =>{
     router.push("/feed_back")
@@ -337,6 +338,32 @@ const toFeed_back = () =>{
         a {
             text-decoration: none;
             color: #333;
+        }
+    }
+    :deep(.el-dialog){
+        display: flex;
+        flex-direction: column;
+        justify-content: center; 
+        align-items: center;
+        border-radius:2vw;
+        padding: 2%;
+        position: relative;
+        .el-dialog__body{
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;
+            .button{
+                height: 10%;
+                position: absolute;
+                right: 5%;
+                bottom: 1%;
+            }
+        }
+        .cell-item {
+            display: flex;
+            align-items: center;
         }
     }
 }
