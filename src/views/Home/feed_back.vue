@@ -1,11 +1,5 @@
 <template>
     <div class="main">
-        <!-- <div class="BannerFeed">
-            <div class="userNews">
-                <h1>提交反馈<el-icon><CopyDocument /></el-icon></h1>
-                
-            </div>
-        </div> -->
         <div class="BannerFeed">
             <div class="userNews">
                 <h1>我的反馈记录<el-icon><CopyDocument /></el-icon></h1>
