@@ -18,6 +18,7 @@
                 <div
                     class="recordMainTop"
                     v-loading="loading"
+                    element-loading-text="正在加载"
                     element-loading-background="#ecf0f3"
                 >
                     <div class="heat">
@@ -294,17 +295,23 @@
                                                     </div>
                                                 </template>
                                             </el-popover>
-
-                                            <el-button
-                                                link
-                                                size="small"
-                                                type="danger"
-                                                @click="
+                                            <el-popconfirm
+                                                title="确定删除吗？"
+                                                @confirm="
                                                     delRecord('早餐', scope.row)
                                                 "
+                                                confirm-button-text="确认"
+                                                cancel-button-text="取消"
                                             >
-                                                删除
-                                            </el-button>
+                                                <template #reference>
+                                                    <el-button
+                                                        link
+                                                        size="small"
+                                                        type="danger"
+                                                        >删除</el-button
+                                                    ></template
+                                                >
+                                            </el-popconfirm>
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -497,16 +504,23 @@
                                                 </template>
                                             </el-popover>
 
-                                            <el-button
-                                                link
-                                                size="small"
-                                                type="danger"
-                                                @click="
+                                            <el-popconfirm
+                                                title="确定删除吗？"
+                                                @confirm="
                                                     delRecord('午餐', scope.row)
                                                 "
+                                                confirm-button-text="确认"
+                                                cancel-button-text="取消"
                                             >
-                                                删除
-                                            </el-button>
+                                                <template #reference>
+                                                    <el-button
+                                                        link
+                                                        size="small"
+                                                        type="danger"
+                                                        >删除</el-button
+                                                    ></template
+                                                >
+                                            </el-popconfirm>
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -700,16 +714,23 @@
                                                 </template>
                                             </el-popover>
 
-                                            <el-button
-                                                link
-                                                size="small"
-                                                type="danger"
-                                                @click="
+                                            <el-popconfirm
+                                                title="确定删除吗？"
+                                                @confirm="
                                                     delRecord('晚餐', scope.row)
                                                 "
+                                                confirm-button-text="确认"
+                                                cancel-button-text="取消"
                                             >
-                                                删除
-                                            </el-button>
+                                                <template #reference>
+                                                    <el-button
+                                                        link
+                                                        size="small"
+                                                        type="danger"
+                                                        >删除</el-button
+                                                    ></template
+                                                >
+                                            </el-popconfirm>
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -903,16 +924,23 @@
                                                 </template>
                                             </el-popover>
 
-                                            <el-button
-                                                link
-                                                size="small"
-                                                type="danger"
-                                                @click="
+                                            <el-popconfirm
+                                                title="确定删除吗？"
+                                                @confirm="
                                                     delRecord('加餐', scope.row)
                                                 "
+                                                confirm-button-text="确认"
+                                                cancel-button-text="取消"
                                             >
-                                                删除
-                                            </el-button>
+                                                <template #reference>
+                                                    <el-button
+                                                        link
+                                                        size="small"
+                                                        type="danger"
+                                                        >删除</el-button
+                                                    ></template
+                                                >
+                                            </el-popconfirm>
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -1062,7 +1090,7 @@
             </div>
             <div class="footer">
                 <el-button class="diyFood" @click="openDIY">
-                    自定义食物
+                    申请添加食物
                 </el-button>
                 <el-popover placement="top" trigger="hover" :width="410">
                     <template #reference
@@ -1206,6 +1234,7 @@
             <div
                 class="dietaryMain"
                 v-loading="loading"
+                element-loading-text="正在为您推荐食谱"
                 element-loading-background="#ecf0f3"
             >
                 <div class="visible">
@@ -1712,6 +1741,7 @@ function addDietRecord() {
     };
     setDietRecord(data)
         .then((res) => {
+            ElMessage.success("添加记录成功");
             dialogVisible.value = false;
             resetAddFood();
             getDietRecord();
@@ -1744,7 +1774,7 @@ function updateRecord() {
     };
     updateDietRecord(data)
         .then((res) => {
-            console.log(res);
+            ElMessage.success(res.msg);
             dialogVisible.value = false;
             resetAddFood();
             getDietRecord();
@@ -1768,7 +1798,7 @@ function delRecord(time, e) {
     if (item.foodDetailVOS.length <= 1) {
         delDietRecord(item.id)
             .then((res) => {
-                console.log(res);
+                ElMessage.success(res.msg);
                 getDietRecord();
             })
             .catch((err) => {
@@ -1777,7 +1807,7 @@ function delRecord(time, e) {
     } else {
         updateDietRecord(data)
             .then((res) => {
-                console.log(res);
+                ElMessage.success(res.msg);
                 getDietRecord();
             })
             .catch((err) => {

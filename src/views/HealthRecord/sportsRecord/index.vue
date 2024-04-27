@@ -1014,10 +1014,8 @@ const handlePictureCardPreview = async (file) => {
         }
     }
 }
-:deep(.el-input) {
-    .el-input__wrapper {
-        border-radius: 2vh;
-    }
+:deep(.el-input__wrapper) {
+    border-radius: 2vh;
 }
 :deep(.el-button) {
     border-radius: 2vh;
