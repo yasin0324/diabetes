@@ -39,7 +39,10 @@
             <div class="moreNews">
                 <h2>热门信息文章</h2>
                 <div >
-                    <span @click="toUrlnews">更多文章信息</span>
+                    <el-button type="primary" plain color="#a3c576" style="font-size: 1.4vw;" @click="toUrlnews">
+                        更多文章信息
+                    </el-button>
+                    <!-- <span  ></span> -->
                 </div>
             </div>
             <ul>
@@ -85,7 +88,7 @@
             </div>
         </div>
         <el-dialog v-model="dialogaboutMy" width="1000">
-            
+
         </el-dialog>
     </div>
 </template>
@@ -119,7 +122,7 @@ onMounted(()=>{
     getNews();
 })
 
-let News = ref('')
+let News = ref([])
 function getNews() {
     let data = {
         title:"",
@@ -128,8 +131,12 @@ function getNews() {
     }
     getTextNews(data)
         .then((res) => {
-            console.log(res);
-            News.value = res.data;
+            // console.log(res);
+            // News.value = res.data;
+            for(let i=0;i<12;i++){
+                News.value.push(res.data[i])
+            }
+            
         })
         .catch((err) => {
             console.log(err);
@@ -189,6 +196,9 @@ const toFeed_back = () =>{
         height: 30vh;
         margin-top: 2vw;
         text-align: center;
+        h2{
+            font-size: 2vw;
+        }
         .el-row {
             margin-left: 15vw;
             margin-right: 15vw;
@@ -225,12 +235,15 @@ const toFeed_back = () =>{
         .moreNews {
             min-height: 20px;
             height: 5vh;
-            div {
+            h2{
+                font-size: 2.3vw;
+            }
+            div{
                 cursor: pointer;
-                span {
+                .el-button{
                     position: absolute;
                     top: 2vh;
-                    right: 5vw;
+                    right: 3vw;
                     min-height: 20px;
                     font-size: 12px;
                     text-align: center;

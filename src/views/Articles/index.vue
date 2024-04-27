@@ -417,10 +417,6 @@ function highlightItemLeft(index,item) {
             fillLike.value = res.data
             fillCollect.value = res.data
             // console.log(NewsArticles.value)
-            ElMessage({
-                message: '获取成功',
-                type: 'success',
-            })
             const defaultColorCollect = '#FFA500';
             fillCollect.value.forEach((item, index) => {
                 fillColor1.value[index].color = defaultColorCollect;
@@ -439,10 +435,6 @@ function highlightItemLeft(index,item) {
             NewsArticles.value = res.data
             fillLike.value = res.data
             fillCollect.value = res.data
-            ElMessage({
-                message: '获取成功',
-                type: 'success',
-            })
             const defaultColorLike = '#ff0000';
             fillLike.value.forEach((item, index) => {
                 fillColor2.value[index].color = defaultColorLike;
@@ -476,12 +468,12 @@ function toggleColor1(index,item) {
   if(!getToken){
     return;
   }
-  const svgWidth = document.querySelector(".svgbox1 div");
-  svgWidth.style.width = "10%";
-  setTimeout(() => {
-        // 将宽度放大到原始宽度
-        svgWidth.style.width = "100%";
-    }, 500);
+//   const svgWidth = document.querySelector(".svgbox1 div");
+//   svgWidth.style.width = "10%";
+//   setTimeout(() => {
+//         // 将宽度放大到原始宽度
+//         svgWidth.style.width = "100%";
+//     }, 500);
   fillColor1.value[index].color = fillColor1.value[index].color === '#dbdbdb' ? '#FFA500' : '#dbdbdb'
   activeIndex.value = index
   if(fillColor1.value[index].color === "#FFA500"){
@@ -515,12 +507,12 @@ function toggleColor2(index,item) {
   if(!getToken){
     return;
   }
-  const svgWidth = document.querySelector(".svgbox2 div");
-  svgWidth.style.width = "10%";
-  setTimeout(() => {
-        // 将宽度放大到原始宽度
-        svgWidth.style.width = "100%";
-    }, 500);
+//   const svgWidth = document.querySelector(".svgbox2 div");
+//   svgWidth.style.width = "10%";
+//   setTimeout(() => {
+//         // 将宽度放大到原始宽度
+//         svgWidth.style.width = "100%";
+//     }, 500);
 //   svgWidth.style.width = "45%"
   fillColor2.value[index].color = fillColor2.value[index].color === '#dbdbdb' ? '#ff0000' : '#dbdbdb'
   activeIndex.value = index
@@ -577,7 +569,7 @@ function getTopAllNews(){
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url(./img/header.jpg);
+    background-image: url(./img/header1.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
