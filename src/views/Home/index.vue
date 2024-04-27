@@ -84,8 +84,8 @@
                 </div>
             </div>
         </div>
-        <el-dialog v-model="dialogaboutMy">
-
+        <el-dialog v-model="dialogaboutMy" width="1000">
+            
         </el-dialog>
     </div>
 </template>

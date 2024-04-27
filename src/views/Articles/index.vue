@@ -85,7 +85,7 @@
                                 <img :src="item.picture" alt="">
                                 </el-col>
                                 <el-col :span="16">
-                                <a href="item.link" target="_blank">
+                                <a :href="item.link" target="_blank">
                                     <h3>{{ item.title }}</h3>
                                 </a>
                                 <p>
@@ -463,20 +463,12 @@ function highlightItemHead(index,item) {
         showCollect = false;
         showLike = false;
         getAll();
-        ElMessage({
-            message: '获取成功',
-            type: 'success',
-        })
     }else {
         // console.log(item)
         showAll = true;
         showCollect = false;
         showLike = false;
         getAll(item);
-        ElMessage({
-            message: '获取成功',
-            type: 'success',
-        })
     }
 }
 
