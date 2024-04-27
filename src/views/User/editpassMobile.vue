@@ -28,7 +28,6 @@
                         </div>
                     </template>
                     {{ UserNews.mobile }}
-                    <el-button type="success" plain :icon="Edit" circle @click="showPassORmobile(1)" />
                     </el-descriptions-item>
 
                 </el-descriptions>

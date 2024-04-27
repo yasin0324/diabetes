@@ -261,7 +261,7 @@ const toFeed_back = () =>{
         text-align: center;
         .moreNews {
             min-height: 20px;
-            height: 5vh;
+            height: 8vh;
             h2{
                 font-size: 2.3vw;
             }
