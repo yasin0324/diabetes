@@ -2,7 +2,7 @@
     <div>
         <div class="header-nav">
             <div class="logoImg">
-                <img src="./logo/logo.png" alt="" />
+                <img src="../../common/image/2.png" alt="" />
             </div>
             <div class="time">
                 <!-- <span>
@@ -252,7 +252,7 @@ onMounted(() => {
         align-items: center;
         img {
             height: 100%;
-            width: 15vh;
+            width: 20vh;
             margin-left: 1vh;
         }
     }

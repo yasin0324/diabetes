@@ -444,6 +444,7 @@ import {
     BloodRecordList,
 } from "../../../api/healthRecord";
 import { CloseBold } from "@element-plus/icons-vue";
+import { ElMessage } from "element-plus";
 import * as echarts from "echarts";
 
 // 血糖记录日期
@@ -494,7 +495,7 @@ const addRecord = () => {
     console.log(data.value);
     setBloodRecord(data.value)
         .then((res) => {
-            console.log(res);
+            ElMessage.success(res.msg)
             getRecordOne();
             addRecordData.value = {
                 bloodNum: 0,
@@ -612,7 +613,7 @@ const updateRecord = (index) => {
     };
     updateBloodRecord(data)
         .then((res) => {
-            console.log(res);
+            ElMessage.success(res.msg)
             getRecordOne();
             updateOpen.value[index] = false;
         })
@@ -649,7 +650,7 @@ const getRecordOne = () => {
 const delRecord = (id) => {
     delBloodRecord(id)
         .then((res) => {
-            console.log(res);
+            ElMessage.success(res.msg)
             getRecordOne();
         })
         .catch((err) => {
@@ -1307,6 +1308,22 @@ onMounted(() => {
                 width: 50vh;
             }
         }
+    }
+}
+:deep(.el-input__wrapper) {
+    border-radius: 2vh;
+}
+:deep(.el-button) {
+    border-radius: 2vh;
+}
+:deep(.el-select) {
+    .el-select__wrapper {
+        border-radius: 2vh;
+    }
+}
+:deep(.el-textarea) {
+    .el-textarea__inner {
+        border-radius: 2vh;
     }
 }
 </style>

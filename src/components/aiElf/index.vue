@@ -460,23 +460,55 @@ const send = () => {
                                 controller.close();
                                 return;
                             }
-                            reply.message += new TextDecoder("utf-8").decode(
+                            reply.message += new TextDecoder("gb2312").decode(
                                 value
                             );
                             controller.enqueue(value);
                             push();
+                            scrollBottom();
 
                             messageLists.value[messageLists.value.length - 1] =
                                 { ...reply };
                         });
                     }
                     push();
+                    sendDisabled.value = false;
+                    refreshDisabled.value = false;
                 },
             });
         })
         .catch((err) => {
             console.log(err);
         });
+
+    // fetch(`/api/tool/aiElf?question=${message.value}`, {
+    //     method: "get",
+    //     headers: {
+    //         token: localStorage.getItem("token"),
+    //     },
+    // })
+    //     .then((res) => res.text()) // 使用text()方法获取所有数据
+    //     .then((data) => {
+    //         let i = 0;
+    //         let intervalId = setInterval(() => {
+    //             if (i < data.length) {
+    //                 reply.message += data[i];
+    //                 i++;
+    //                 // 使用Vue.set来更新messageLists
+    //                 messageLists.value[messageLists.value.length - 1] = {
+    //                     ...reply,
+    //                 };
+    //                 scrollBottom();
+    //             } else {
+    //                 clearInterval(intervalId);
+    //                 sendDisabled.value = false;
+    //                 refreshDisabled.value = false;
+    //             }
+    //         }, 50); // 这里的100是每个字符之间的间隔时间，单位是毫秒
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //     });
 
     message.value = "";
 };

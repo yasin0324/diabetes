@@ -946,7 +946,7 @@ const addClock = () => {
                 .timelineRecord {
                     padding-left: 1vh;
                     padding-top: 1vh;
-                    height: 70vh;
+                    max-height: 70vh;
                     overflow: scroll;
                     overflow-x: hidden;
                     scrollbar-color: #fff #ecf0f3;
@@ -1000,7 +1000,7 @@ const addClock = () => {
                 .timelineClock {
                     padding-left: 1vh;
                     padding-top: 1vh;
-                    height: 70vh;
+                    max-height: 70vh;
                     overflow: scroll;
                     overflow-x: hidden;
                     scrollbar-color: #fff #ecf0f3;
@@ -1202,5 +1202,11 @@ const addClock = () => {
     bottom: 0px;
     left: 50%;
     transform: translateX(-50%);
+}
+:deep(.el-input__wrapper) {
+    border-radius: 2vh;
+}
+:deep(.el-button) {
+    border-radius: 2vh;
 }
 </style>
