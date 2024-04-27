@@ -70,7 +70,7 @@
                     <el-form-item>
                         <el-radio-group v-model="loginType">
                             <el-radio label="userName">用户名登录</el-radio>
-                            <el-radio aria-label="mobile"
+                            <el-radio label="mobile"
                                 >手机登录</el-radio
                             ></el-radio-group
                         >
@@ -355,7 +355,6 @@ function getSmsCode() {
             const timer = setInterval(() => {
                 if (countdown.value > 0) {
                     countdown.value--;
-                    console.log(countdown.value);
                 } else {
                     isCountingDown.value = false;
                     countdown.value = 60;
