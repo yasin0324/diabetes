@@ -253,7 +253,11 @@
                         >清 空</el-button
                     >
                 </div>
-                <div class="result" v-if="predictScore !== 0">
+                <div
+                    class="result"
+                    v-loading="loading"
+                    v-if="predictScore !== 0"
+                >
                     <div class="low" v-if="predictScore < 0.4">
                         <div class="content1">
                             评估结果：{{ predictScore * 100 }}分
@@ -415,9 +419,12 @@ const rules = ref({
     age: [{ required: true, message: "请输入年龄", trigger: "change" }],
 });
 // 提交表单
+const loading = ref(true);
 const submitForm = () => [
     ruleFormRef.value.validate((valid) => {
         if (valid) {
+            loading.value = true;
+            predictScore.value = -1;
             let data = ruleForm.value;
             data.familyMedicalHistory = parseInt(
                 ruleForm.value.familyMedicalHistory
@@ -425,6 +432,7 @@ const submitForm = () => [
             predictDiabetes(data)
                 .then((res) => {
                     predictScore.value = res.data;
+                    loading.value = false;
                 })
                 .catch((err) => {
                     console.log(err);
@@ -441,15 +449,23 @@ const submitForm = () => [
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #f3f3f3;
     .tool1 {
         margin-top: 5vh;
         margin-bottom: 3vh;
-        height: 40vh;
+        width: 70%;
+        background: #fff;
+        border-radius: 3vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 2vh;
+        padding-bottom: 5vh;
         .topTitle {
+            margin-bottom: 1vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 1vh;
             .title {
                 font-size: 4vh;
                 font-weight: bold;
@@ -463,7 +479,7 @@ const submitForm = () => [
             }
         }
         .reportData {
-            width: 104vh;
+            width: 100vh;
             height: 30vh;
             background-image: url("../../common/image/excelTable.jpg");
             background-size: 60% 100%;
@@ -528,6 +544,14 @@ const submitForm = () => [
     }
     .tool2 {
         margin-bottom: 3vh;
+        background: #fff;
+        border-radius: 3vh;
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 2vh;
+        padding-bottom: 5vh;
         .topTitle {
             display: flex;
             flex-direction: column;
@@ -644,6 +668,14 @@ const submitForm = () => [
     }
     .tool3 {
         margin-bottom: 3vh;
+        background: #fff;
+        border-radius: 3vh;
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 2vh;
+        padding-bottom: 5vh;
         .topTitle {
             display: flex;
             flex-direction: column;
