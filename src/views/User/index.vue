@@ -1364,6 +1364,7 @@ function finishCheck() {
                 message:"切换账号登录成功",
                 type:"success"
             })
+            location.reload();
             toggleLoginID.value = '';
             axios.get("/api/customer/list",{
                     headers: {

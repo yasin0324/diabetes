@@ -372,7 +372,7 @@ function registerByMobile() {
     registerUser(register.value)
         .then((res) => {
             isSwitched.value = true;
-            console.log(res);
+            ElMessage.success(res.msg);
         })
         .catch((err) => {
             console.log(err);
