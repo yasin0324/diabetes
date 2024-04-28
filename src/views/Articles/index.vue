@@ -198,7 +198,7 @@
                         <ul>
                             <li style="color: #a3c576; font-size:1.5vw"> <el-icon style="padding-right:10px"><Pointer /></el-icon>文章点赞排行</li>
                             <li v-for="(item,index) in frontRight" :key="index" class="frontNews">
-                                <a :href="item.link" >
+                                <a :href="item.link" target="_blank">
                                     <p style="width: 60%;">
                                         {{ (index+1) +".  " + item.title }}
                                     </p>
