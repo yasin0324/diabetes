@@ -11,6 +11,14 @@
                         format="YYYY-MM-DD"
                         value-format="YYYY-MM-DD"
                         @change="getDietRecord"
+                        ><template #default="cell">
+                            <div
+                                class="cell"
+                                :class="{ current: cell.isCurrent }"
+                            >
+                                <span class="text">{{ cell.text }}</span>
+                                <span v-if="isClock(cell)" class="holiday" />
+                            </div> </template
                     ></el-date-picker>
                 </div>
             </div>
@@ -1349,6 +1357,7 @@ import {
     getFoodByType,
     getAllType,
     addFoodInfo,
+    getDietDate,
 } from "../../../api/healthRecord";
 import { recommendRecipes } from "../../../api/Tool";
 import { getUserName } from "../../../api/User";
@@ -1538,6 +1547,7 @@ onMounted(() => {
     getFoodType();
     getDietRecord();
     getUser();
+    getRecordedDate();
 });
 
 const dialogVisible = ref(false);
@@ -2103,6 +2113,20 @@ const handlePictureCardPreview = async (file) => {
     dialogImageUrl.value = file.url;
     pictureDialogVisible.value = true;
 };
+
+const isRecorded = ref([]);
+const isClock = ({ dayjs }) => {
+    return isRecorded.value.includes(dayjs.format("YYYY-MM-DD"));
+};
+const getRecordedDate = () => {
+    getDietDate()
+        .then((res) => {
+            isRecorded.value = res.data;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
 </script>
 <style lang="less" scoped>
 .main {
@@ -2249,6 +2273,7 @@ const handlePictureCardPreview = async (file) => {
                                 width: 20vh;
                                 height: 20vh;
                                 border-radius: 5vh;
+
                                 background-color: #67c23a;
                                 .el-icon {
                                     height: 10vh;
@@ -2459,5 +2484,37 @@ const handlePictureCardPreview = async (file) => {
 .picture-item {
     height: 19vh;
     overflow: hidden;
+}
+</style>
+<style lang="less" scoped>
+.cell {
+    height: 30px;
+    padding: 3px 0;
+    box-sizing: border-box;
+}
+.cell .text {
+    width: 24px;
+    height: 24px;
+    display: block;
+    margin: 0 auto;
+    line-height: 24px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+}
+.cell.current .text {
+    background: #626aef;
+    color: #fff;
+}
+.cell .holiday {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--el-color-danger);
+    border-radius: 50%;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 </style>

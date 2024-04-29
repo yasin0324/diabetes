@@ -11,6 +11,14 @@
                         format="YYYY-MM-DD"
                         value-format="YYYY-MM-DD"
                         @change="getSportsRecords"
+                        ><template #default="cell">
+                            <div
+                                class="cell"
+                                :class="{ current: cell.isCurrent }"
+                            >
+                                <span class="text">{{ cell.text }}</span>
+                                <span v-if="isClock(cell)" class="holiday" />
+                            </div> </template
                     ></el-date-picker>
                 </div>
             </div>
@@ -272,6 +280,7 @@ import {
     getSportsByName,
     getAllSportsType,
     addSportInfo,
+    getSportDate,
 } from "../../../api/healthRecord";
 import { ElMessage } from "element-plus";
 import { get } from "jquery";
@@ -670,6 +679,7 @@ onMounted(() => {
     getRecentlySports();
     getSportsType();
     getSportsRecords();
+    getRecordedDate();
 });
 
 // 运动类别
@@ -762,6 +772,20 @@ const dialogImageUrl = ref("");
 const handlePictureCardPreview = async (file) => {
     dialogImageUrl.value = file.url;
     pictureDialogVisible.value = true;
+};
+
+const isRecorded = ref([]);
+const isClock = ({ dayjs }) => {
+    return isRecorded.value.includes(dayjs.format("YYYY-MM-DD"));
+};
+const getRecordedDate = () => {
+    getSportDate()
+        .then((res) => {
+            isRecorded.value = res.data;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 };
 </script>
 <style lang="less" scoped>
@@ -1036,5 +1060,37 @@ const handlePictureCardPreview = async (file) => {
 }
 :deep(.el-dialog) {
     --el-dialog-border-radius: 3vh;
+}
+</style>
+<style lang="less" scoped>
+.cell {
+    height: 30px;
+    padding: 3px 0;
+    box-sizing: border-box;
+}
+.cell .text {
+    width: 24px;
+    height: 24px;
+    display: block;
+    margin: 0 auto;
+    line-height: 24px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+}
+.cell.current .text {
+    background: #626aef;
+    color: #fff;
+}
+.cell .holiday {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--el-color-danger);
+    border-radius: 50%;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 </style>

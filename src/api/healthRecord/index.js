@@ -62,6 +62,16 @@ export function BloodRecordList(begin, end) {
         },
     });
 }
+// 获取有记录的日期
+export function getBloodDate() {
+    return request({
+        method: "get",
+        url: "/customer/glucose/record/hasDate",
+        headers: {
+            token: token,
+        },
+    });
+}
 // -----------------------------------------
 
 // 饮食记录----------------------------------
@@ -191,6 +201,16 @@ export function addFoodInfo(data) {
             heat: data.heat,
             fat: data.fat,
             carbohydrate: data.carbohydrate,
+        },
+    });
+}
+// 获取有记录的日期
+export function getDietDate() {
+    return request({
+        method: "get",
+        url: "/customer/diet/record/hasDate",
+        headers: {
+            token: token,
         },
     });
 }
@@ -515,6 +535,16 @@ export function addSportInfo(data) {
             type: data.type,
             picture: data.picture,
             consumption: data.consumption,
+        },
+    });
+}
+// 查询有记录的日期
+export function getSportDate() {
+    return request({
+        method: "get",
+        url: "/customer/sport/record/hasDate",
+        headers: {
+            token: token,
         },
     });
 }
