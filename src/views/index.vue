@@ -2,7 +2,7 @@
     <div class="main">
         <header-nav> </header-nav>
         <router-view></router-view>
-        <chat-ai class="ai"></chat-ai>
+        <!-- <chat-ai class="ai"></chat-ai> -->
     </div>
 </template>
 <script setup></script>
