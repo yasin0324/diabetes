@@ -188,7 +188,7 @@ function padZero(num) {
 const routerArr = [
     { name: "首页", path: "home" },
     { name: "健康记录", path: "health" },
-    { name: "工具栏", path: "tool" },
+    // { name: "工具栏", path: "tool" },
     { name: "文章推荐", path: "articles" },
     { name: "公告", path: "about" },
 ];
