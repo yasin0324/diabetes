@@ -1065,6 +1065,7 @@
                             <li
                                 class="food"
                                 v-for="(item, index) in getFoodsList"
+                                :key="index"
                             >
                                 <div class="img" style="margin-right: 1vh">
                                     <img :src="item.picture" />

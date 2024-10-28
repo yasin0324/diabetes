@@ -13,13 +13,13 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
     (config) => {
-        // // 是否需要配置token
-        // const isToken = (config.headers||{}).isToken===false
-        // //设置token
-        // if(getToken() && !isToken){
-        //   //为请求设置token
-        //   config.headers['Authorization']=getToken()
-        // }
+        // 是否需要配置token
+        const isToken = (config.headers || {}).isToken === false;
+        //设置token
+        if (getToken() && !isToken) {
+            //为请求设置token
+            config.headers["Authorization"] = getToken();
+        }
         return config;
     },
     (err) => {
